@@ -21,9 +21,14 @@ class User(AbstractUser):
             verbose_name="Site web",
             help_text="A link to your website."
     )
+    n_pins = models.PositiveIntegerField(default=0,
+            verbose_name="Pins'number")
+    n_boards = models.PositiveIntegerField(default=0,
+            verbose_name="Boards'number")
 
     def save(self, **kwargs):
         """Make a unique slug from username then save."""
-        slug = '%s' % (self.username)
-        unique_slugify(self, slug)
+        if self.pk == None:
+            slug = '%s' % (self.username)
+            unique_slugify(self, slug)
         super(User, self).save()

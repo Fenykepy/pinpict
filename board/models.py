@@ -3,6 +3,7 @@ from django.db import models
 from django_extensions.db.fields import UUIDField
 
 from user.models import User
+from board.slug import unique_slugify
 
 
 BOARD_POLICY_CHOICES = (
@@ -35,8 +36,10 @@ class Pin(models.Model):
         verbose_name="Source of original picture")
     n_boards = models.PositiveIntegerField(default=0,
         verbose_name="Board number")
-    width = models.PositiveIntegerField(verbose_name="Pin width, in pixels")
-    height = models.PositiveIntegerField(verbose_name="Pin height, in pixels")
+    width = models.PositiveIntegerField(default=0,
+            verbose_name="Pin width, in pixels")
+    height = models.PositiveIntegerField(default=0,
+            verbose_name="Pin height, in pixels")
     size = models.PositiveIntegerField(default=0,
         verbose_name="Size of picture, in bytes")
     type = models.CharField(max_length=30,
@@ -67,6 +70,14 @@ class Board(models.Model):
     class Meta:
         ordering = ['date_created']
         unique_together = ('user', 'slug')
+
+    def save(self, **kwargs):
+        """Make a unique slug for from title, then save."""
+        slug = '%s' % (self.title)
+        unique_slugify(self, slug,
+                queryset=Board.objects.filter(user=self.user))
+        super(Board, self).save()
+
 
 
 

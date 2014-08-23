@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>{% block title %}{% endblock %}, on pinpict</title>
+    <meta charset="utf-8" />
+
+    {# including css files #}
+    {% load static %}
+    
+    {# PROD: compiled file #}
+    <link rel="stylesheet" href="{% static 'css/pinpict.min.css' %}" />
+    
+    {# DEVEL: less file #}
+    <link rel="stylesheet/less" href="{% static 'css/controller.less' %}" />
+</head>
+<body>
+{% block body %}
+{% endblock %}
+{# DEVEL less compilation client side #}
+<script src="{% static 'scripts/less-1.4.1.min.js' %}" type="text/javascript"></script>
+</body>
+</html>
+
