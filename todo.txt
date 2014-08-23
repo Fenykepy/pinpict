@@ -1,0 +1,68 @@
+# vim: syntax=note
+
+
+==== Architecture ====
+
+boards :
+
+    - date-created  (board creation date)
+    - date-updated  (last board update date)
+    - title         (title of the board -- for display)
+    - slug          (slug of the board (from title, unique)
+        --> url == '/user-slug/board-slug/')
+    - description   (description of board)
+    - category ?    (with content-type)
+    - tag ?         (with content-type)
+    - n_pins        (number of pins of the board)
+    - pins          (M2M to pins through description)
+    - user          FK -> user
+    - policy        (choices : public, private and later friends only)
+
+pin_board
+    - id
+    - FK boards
+    - FK pin
+    - Description
+
+pin :
+    - date-created
+    - date-updated
+    - uniqid        https://djangosnippets.org/snippets/1262/
+                    http://sametmax.com/utiliser-des-uuid-comme-primary-key-avec-lorm-de-django/
+                    http://sametmax.com/quest-ce-quun-uuid-et-a-quoi-ca-sert/
+    - url-origin    (uniq-together avec url-src)
+    - url-scr
+    - n_boards      (number of boards, when 0, delete pin)
+    - file
+    - width         (width of image)
+    - height        (height of image)
+    - weight        (weight of image)
+    
+
+user :
+    - slug
+    - avatar
+    - signature
+    - website
+    - default_board_policy -> private or public
+
+
+apps :
+    - user
+    - boards
+
+Les pin sont communs, les boards appartiennent à un utilisateur particulier,
+les descriptions des pins appartiennent à l'utilisateur qui a créé le pin.
+Les boards peuvent être:
+    - publics
+    - privés
+    - réservés aux amis
+
+À l'ajout d'une url dans le form, wget récupère l'url au format html, scanne pour les fichiers jpegs, pngs, tiffs, et svg présents, les présente ordonnés par taille à l'utilisateur.
+L'utilisateur choisi l'image.
+L'utilisateur choisi le tableau, ou en crée un nouveau
+L'utilisateur choisi la description calqué sur l'attribut alt ou figcaption par défaut
+Le fichier est téléchargé dans un dossier temporaire <user>, renommé avec son uniqid, puis déplacé dans le dossier pins
+
+
+                        
