@@ -30,7 +30,7 @@ class Pin(models.Model):
     date_updated =models.DateTimeField(auto_now_add=True,
             auto_now=True,
             verbose_name="Last update date")
-    uniqid = UUIDField(primary_key=True)
+    uniqid = UUIDField()
     source = models.URLField(verbose_name="Source of web page pin comes from")
     source_file = models.URLField(unique=True,
         verbose_name="Source of original picture")

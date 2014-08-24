@@ -1,69 +1,92 @@
-- model: board.Board
-    pk: 1
-    fields:
-        date_created: 2014-08-23 23:22:13.0000+0000
-        date_updated: 2014-08-23 23:22:13.0000+0000
-        title: Paolo Roversi
-        description: Photographies de Paolo Roversi
-        policy: 1
-        user: 1
+- model: user.User
+  pk: 1
+  fields:
+    username: flr
+    slug: flr
+    password: toto
+    last_login: 2014-08-23 23:22:13.0000+0000
+    is_superuser: True
+    is_staff: True
+    is_active: True
+    last_name: Frédéric
+    first_name: Lavilotte-Rolle
+    email: pro@lavilotte-rolle.fr
+    date_joined: 2014-08-23 23:22:13.0000+0000
+    website: http://lavilotte-rolle.fr
+    n_pins: 2
+    n_boards: 3
 
 - model: board.Board
-    pk: 2
-    fields:
-        date_created: 2014-08-23 23:28:13.0000+0000
-        date_updated: 2014-08-23 23:28:13.0000+0000
-        title: Patrick Demarchelier
-        description: Photographies de Patrick Demarchelier
-        policy: 1
-        user: 1
+  pk: 1
+  fields:
+    date_created: 2014-08-23 23:22:13.0000+0000
+    date_updated: 2014-08-23 23:22:13.0000+0000
+    title: Paolo Roversi
+    slug: paolo-roversi
+    description: Photographies de Paolo Roversi
+    policy: 1
+    user: 1
 
 - model: board.Board
-    pk: 3
-    fields:
-        date_created: 2014-08-23 23:30:13.0000+0000
-        date_updated: 2014-08-23 23:30:13.0000+0000
-        title: Richard Avedon
-        description: Photographies de Richard Avedon
-        policy: 1
-        user: 1
+  pk: 2
+  fields:
+    date_created: 2014-08-23 23:28:13.0000+0000
+    date_updated: 2014-08-23 23:28:13.0000+0000
+    title: Patrick Demarchelier
+    slug: patrick-demarchelier
+    description: Photographies de Patrick Demarchelier
+    policy: 1
+    user: 1
+
+- model: board.Board
+  pk: 3
+  fields:
+    date_created: 2014-08-23 23:30:13.0000+0000
+    date_updated: 2014-08-23 23:30:13.0000+0000
+    title: Richard Avedon
+    slug: richard-avedon
+    description: Photographies de Richard Avedon
+    policy: 1
+    user: 1
 
 
 - model: board.Pin
-    pk: 5259801d-3be8-4797-9051-0b2e1ac464a2
-    fields:
-        date_created: 2014-08-23 23:31:13.0000+0000
-        date_updated: 2014-08-23 23:31:13.0000+0000
-        source: http://designget.com/photography-masters-richard-avedon/
-        source_file: http://designget.com/wp-content/uploads/2010/12/John-Ford.jpg
-        n_board: 1
-        width: 555
-        height: 700
-        type: jpg
+  pk: 1
+  fields:
+    uniqid: 5259801d-3be8-4797-9051-0b2e1ac464a2
+    date_created: 2014-08-23 23:31:13.0000+0000
+    date_updated: 2014-08-23 23:31:13.0000+0000
+    source: http://designget.com/photography-masters-richard-avedon/
+    source_file: http://designget.com/wp-content/uploads/2010/12/John-Ford.jpg
+    n_boards: 1
+    width: 555
+    height: 700
+    type: jpg
 
 
 - model: board.Pin
-    pk: b7e3e7af-752f-4a43-9436-98d905dbd99b
-    fields:
-        date_created: 2014-08-23 23:34:13.0000+0000
-        date_updated: 2014-08-23 23:34:13.0000+0000
-        source: http://www.coolhunting.com/culture/avedon-fashion.php
-        source_file: http://assets.coolhunting.com/coolhunting/mt_asset_cache/culture/assets/images/avedon-1-1.jpg
-        n_board: 1
-        width: 305
-        height: 327
-        type: jpg
+  pk: 2
+  fields:
+    uniqid: b7e3e7af-752f-4a43-9436-98d905dbd99b
+    date_created: 2014-08-23 23:34:13.0000+0000
+    date_updated: 2014-08-23 23:34:13.0000+0000
+    source: http://www.coolhunting.com/culture/avedon-fashion.php
+    source_file: http://assets.coolhunting.com/coolhunting/mt_asset_cache/culture/assets/images/avedon-1-1.jpg
+    n_boards: 1
+    width: 305
+    height: 327
+    type: jpg
 
 - model: board.Pin_board
-    pk: 1
-        fields:
-        board: 3
-        pin: 1
-        pin_description: Great American Movie Director, John Ford.... by Richard Avedon.
+  pk: 1
+  fields:
+    board: 3
+    pin: 1
+    pin_description: Great American Movie Director, John Ford.... by Richard Avedon.
 
 - model: board.Pin_board
-    pk: 2
-    fields:
-        board: 3
-        pin: 2
-        pin_description: Richard Avedon 1944 - 2000 brought models to life, dispensing with the expected static poses the fashion world was more used to (pose)
+  pk: 2
+  fields:
+    board: 3
+    pin: 2
+    pin_description: Richard Avedon 1944 - 2000 brought models to life, dispensing with the expected static poses the fashion world was more used to (pose)
