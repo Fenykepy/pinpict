@@ -38,6 +38,24 @@ class BoardTest(TestCase):
         self.assertEqual(date, True)
         self.assertEqual(update, True)
 
+        # get pins
+        pin = Pin.objects.filter(id=2)
+        self.assertEqual(pin[0].uniqid,
+                'b7e3e7af-752f-4a43-9436-98d905dbd99b')
+        self.assertEqual(pin[0].source_domain,
+                'coolhunting.com')
+        self.assertEqual(pin[0].source,
+                'http://www.coolhunting.com/culture/avedon-fashion.php')
+        self.assertEqual(pin[0].source_file,
+                'http://assets.coolhunting.com/coolhunting/' +
+                'mt_asset_cache/culture/assets/images/avedon-1-1.jpg')
+        self.assertEqual(pin[0].n_boards, 1)
+        self.assertEqual(pin[0].width, 305)
+        self.assertEqual(pin[0].height, 327)
+        self.assertEqual(pin[0].type, 'jpg')
+
+
+
     def test_urls(self):
         """Test urls and their templates."""
         urls = [
@@ -58,3 +76,6 @@ class BoardTest(TestCase):
             self.assertEqual(response.status_code, elem['status'])
             response = self.client.get(elem['url'], follow=True)
             self.assertEqual(response.templates[0].name, elem['template'])
+
+
+

@@ -31,6 +31,8 @@ class Pin(models.Model):
             auto_now=True,
             verbose_name="Last update date")
     uniqid = UUIDField()
+    source_domain = models.CharField(max_length=254,
+            verbose_name="Pin origin domain")
     source = models.URLField(verbose_name="Source of web page pin comes from")
     source_file = models.URLField(unique=True,
         verbose_name="Source of original picture")

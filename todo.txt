@@ -1,6 +1,22 @@
 # vim: syntax=note
+===== TODO =====
 
+    - pin_view view
+    - pin_view template
+    - description du pin dans :
+        - pin_view
+        - pin_list
+    - login page
+    - logout page
+    - board creation form
+    - board update form
+    - board delete form
+    - pin creation form
+    - pin update form
+    - pin delete form
 
+    - CSS
+    
 ==== Architecture ====
 
 boards :
@@ -64,5 +80,46 @@ L'utilisateur choisi le tableau, ou en crée un nouveau
 L'utilisateur choisi la description calqué sur l'attribut alt ou figcaption par défaut
 Le fichier est téléchargé dans un dossier temporaire <user>, renommé avec son uniqid, puis déplacé dans le dossier pins
 
+user : connected user if any
+owner : user who owns current page (the on who's username is in url)
+===== Présentation =====
 
-                        
+La présentation est copiée sur celle de pinterest (some toute pas si mal),
+peut-être en reprenant les couleurs de LR.
+
+board_list :
+
+une liste div aux coins arrondis avec un petit padding autour
+    - l'image « titre » de 216px de large et 146px de haut (crop) (coins arrondis).
+    - les 4 premières images de 45px de côté, carrée, dessous (coins arrondis).
+    - un bouton « Edit » si l'user est l'owner
+    - le nombre de pins du tableau
+
+
+pin_list :
+    
+une liste de div aux coins arrondis, pas de padding
+    - l'image de 236px de large
+    - la description de l'image
+    - pinned from
+    - le domaine d'origine (en lien vers la page du site)
+
+pin_view :
+
+    - l'image à 736px de large
+    - found on "le domaine d'origine" (en lien vers la page du site)
+    - un lien « voir l'originale »
+
+
+==== Les aperçus ====
+
+Les images à l'import sont renommées avec un uuid
+l'image est déposées dans un sous-dossier correspondant à sa taille
+puis dans un sous dossier correspondant à ses 2 premiers bytes
+
+sous-dossiers :
+    45/
+    216-146/
+    236/
+    736/
+    full/

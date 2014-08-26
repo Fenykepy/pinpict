@@ -1,12 +1,18 @@
 {% extends "base.html" %}
 {% block title %}
+{{ owner.username }}
 {% endblock %}
 
 {% block body %}
 <article id="user">
+    <img src="{{ owner.avatar }}" alt="{{ owner.username }}" />
+    <h1>{{ owner.username }}</h1>
+    {% if owner.website %}
+    <div class="user-website">{{ owner.website }}</div>
+    {% endif %}
 </article>
 
-{% if user.is_authenticated %}
+{% if user.is_authenticated and user == owner %}
 <article id="create-board">
     <h1>Create a board</h1>
 </article>
@@ -14,11 +20,27 @@
 {% for board in boards %}
 <article class="board">
     <header>
-        <h1><a href="{% url "board_view" board.user.slug board.slug %}">{{ board.title }}</a></h1>
-    {{ board.n_pins }}
+        <a href="{% url "board_view" board.user.slug board.slug %}" title="More from {{ board.title }}"><h1>{{ board.title }}</h1></a>
     </header>
+    <a href="{% url "board_view" board.user.slug board.slug %}" title="More from {{ board.title }}">
+    <div class="board-previews">
+        {% with first=board.pins.all.0 %}
+        <img class="board-main-preview" src="/media/216-146/{{ first.uniqid|slice:":2" }}/{{ first.uniqid }}.jpg" alt="{{ board.title }}" />
+        {% endwith %}
+        <ul>
+        {% for preview in board.pins.all|slice:"1:5" %}
+        <li><img class="board-small-preview" src="/media/45/{{ preview.uniqid|slice:":2" }}/{{ preview.uniqid }}.jpg" alt="{{ board.title }}" /></li>
+        {% endfor %}
+        </ul>
+        <div class="board-n-pins">{{ board.n_pins }}</div>
+    </div>{# board-previews #}
+    </a>
+
     {{ board.description }}
-    {{ board.user.slug }}
+
+{% if user.is_authenticated and user == owner %}
+<a href="" title="Edit board"><button>Edit</button></a>
+{% endif %}
 </article>
 {% endfor %}
 

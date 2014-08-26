@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}
+{{ board.title }}
+{% endblock %}
+
+{% block body %}
+
+
+<header>
+    <h1>{{ board.title }}</h1>
+    {{ board.n_pins }}
+</header>
+
+<article id="user-compact">
+    <a href="{% url "boards_list" owner.username %}">{{ owner.avatar }}{{ owner.username }}</a>
+</article>
+
+{% if user.is_authenticated and user == owner %}
+<article id="add-pin">
+    <h1>Add a pin</h1>
+</article>
+{% endif %}
+{% for pin in pins %}
+<article class="pin">
+    <a href="{% url "pin_view" pin.pk %}"><img src="/media/236/{{ pin.uniqid|slice:":2" }}/{{ pin.uniqid }}.jpg" alt="" /></a>
+    {{ pin.description }}
+     <a href="{{ pin.source }}"><footer>
+        Pinned from<br />
+       {{ pin.source_domain }}
+    </footer></a>
+</article>
+{% endfor %}
+{% endblock body %}

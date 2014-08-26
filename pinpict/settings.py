@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar', # comment for prod
     'user',
     'board',
 )
@@ -48,6 +49,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware', # comment for prod
 )
 
 ROOT_URLCONF = 'pinpict.urls'
@@ -76,6 +78,7 @@ DATABASES = {
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
+DEFAULT_CHARSET = 'utf-8'
 
 LANGUAGE_CODE = 'fr-FR'
 
@@ -91,4 +94,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
+STATIC_ROOT = ''
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, 'pinpict/assets/'),
+)
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'pinpict/data/')
+
+MEDIA_URL = '/media/'

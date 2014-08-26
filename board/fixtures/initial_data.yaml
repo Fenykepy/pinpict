@@ -45,6 +45,7 @@
     date_updated: 2014-08-23 23:30:13.0000+0000
     title: Richard Avedon
     slug: richard-avedon
+    n_pins: 2
     description: Photographies de Richard Avedon
     policy: 1
     user: 1
@@ -56,6 +57,7 @@
     uniqid: 5259801d-3be8-4797-9051-0b2e1ac464a2
     date_created: 2014-08-23 23:31:13.0000+0000
     date_updated: 2014-08-23 23:31:13.0000+0000
+    source_domain: designget.com
     source: http://designget.com/photography-masters-richard-avedon/
     source_file: http://designget.com/wp-content/uploads/2010/12/John-Ford.jpg
     n_boards: 1
@@ -70,6 +72,7 @@
     uniqid: b7e3e7af-752f-4a43-9436-98d905dbd99b
     date_created: 2014-08-23 23:34:13.0000+0000
     date_updated: 2014-08-23 23:34:13.0000+0000
+    source_domain: coolhunting.com
     source: http://www.coolhunting.com/culture/avedon-fashion.php
     source_file: http://assets.coolhunting.com/coolhunting/mt_asset_cache/culture/assets/images/avedon-1-1.jpg
     n_boards: 1
