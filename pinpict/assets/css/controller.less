@@ -1,0 +1,29 @@
+// Compilation
+// 1. cd in pinpict root directory
+// 2. cd in pinpict/assets/css directory
+
+// 3. run:
+// lessc -x controller.less > pinpict.min.css
+
+// 4. in templates/base.html:
+// comment {# DEVEL #} ended lines
+// uncomment {# PROD #} ended lines
+// 5. check in your browser to see if css are displayed correctly
+
+
+// some usefull directorys :
+@base-css: '../css/';
+@base-image: '../images/css/';
+@base-font: '../fonts/';
+
+// reset
+@import '@{base-css}reset.less';
+
+// color palette
+@import '@{base-css}palette.less';
+
+// layout
+@import '@{base-css}layout.less';
+
+// list_boards
+@import '@{base-css}list_boards.less';
