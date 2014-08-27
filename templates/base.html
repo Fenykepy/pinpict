@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <title>{% block title %}{% endblock %} on Pinpict</title>
+    <title>{% block title %}Pinpict{% endblock %}</title>
     <meta charset="utf-8" />
 
     {# including css files #}
     {% load static %}
     
     {# PROD: compiled file #}
-    <link rel="stylesheet" href="{% static 'css/pinpict.min.css' %}" />
+    {#    <link rel="stylesheet" href="{% static 'css/pinpict.min.css' %}" />{# PROD #}
     
     {# DEVEL: less file #}
-    <link rel="stylesheet/less" href="{% static 'css/controller.less' %}" />
+    <link rel="stylesheet/less" href="{% static 'css/controller.less' %}" />{# DEVEL #}
 </head>
 <body>
 {% block body %}

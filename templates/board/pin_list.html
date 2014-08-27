@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}
-{{ board.title }}
+{{ board.title }} on Pinpict
 {% endblock %}
 
 {% block body %}
@@ -20,9 +20,9 @@
     <h1>Add a pin</h1>
 </article>
 {% endif %}
-{% for pin in pins %}
+{% for pin in board.pin_set.all %}
 <article class="pin">
-    <a href="{% url "pin_view" pin.pk %}"><img src="/media/236/{{ pin.uniqid|slice:":2" }}/{{ pin.uniqid }}.jpg" alt="" /></a>
+    <a href="{% url "pin_view" pin.pk %}"><img src="/media/236/{{ pin.resource.pathname }}" alt="" /></a>
     {{ pin.description }}
      <a href="{{ pin.source }}"><footer>
         Pinned from<br />

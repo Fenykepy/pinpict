@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block body %}
+{% with owner=pin.board.user %}
+<article>
+<header>
+    <a href="{{ pin.source }}">
+    <button>Visit Site</button>
+    </a>
+    {% if user.is_authenticated and user == owner %}
+    <a href="">
+    <button>Edit</button>
+    </a>
+    {% endif %}
+</header>
+{# !!! look to add a lightbox link here, or a link to full image, in template or not #}
+<img src="/media/736/{{ pin.resource.pathname }}" alt="{{ pin.description }}" />
+<footer>
+<a href="{{ pin.source }}">Found on {{ pin.source_domain }}</a>
+</footer>
+</article>
+<article class="pin-description">
+{{ pin.description }}
+</article>
+{% endwith %}
+{% endblock %}

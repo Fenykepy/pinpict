@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% block title %}
-{{ owner.username }}
+{{ boards.0.user.username }} on Pinpict
 {% endblock %}
 
 {% block body %}
+{% with owner=boards.0.user %}
 <article id="user">
     <img src="{{ owner.avatar }}" alt="{{ owner.username }}" />
     <h1>{{ owner.username }}</h1>
@@ -24,12 +25,12 @@
     </header>
     <a href="{% url "board_view" board.user.slug board.slug %}" title="More from {{ board.title }}">
     <div class="board-previews">
-        {% with first=board.pins.all.0 %}
-        <img class="board-main-preview" src="/media/216-146/{{ first.uniqid|slice:":2" }}/{{ first.uniqid }}.jpg" alt="{{ board.title }}" />
+        {% with first=board.pin_set.all.0 %}
+        <img class="board-main-preview" src="/media/216-146/{{ first.resource.pathname }}" alt="{{ board.title }}" />
         {% endwith %}
         <ul>
-        {% for preview in board.pins.all|slice:"1:5" %}
-        <li><img class="board-small-preview" src="/media/45/{{ preview.uniqid|slice:":2" }}/{{ preview.uniqid }}.jpg" alt="{{ board.title }}" /></li>
+        {% for preview in board.pin_set.all|slice:"1:5" %}
+        <li><img class="board-small-preview" src="/media/45/{{ preview.resource.pathname }}" alt="{{ board.title }}" /></li>
         {% endfor %}
         </ul>
         <div class="board-n-pins">{{ board.n_pins }}</div>
@@ -44,6 +45,6 @@
 </article>
 {% endfor %}
 
+{% endwith %}
 {% endblock body %}
-
 

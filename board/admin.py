@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from board.models import Board, Pin, Resource
+
+admin.site.register(Board)
+admin.site.register(Pin)
+admin.site.register(Resource)

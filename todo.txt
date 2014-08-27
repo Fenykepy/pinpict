@@ -1,11 +1,11 @@
 # vim: syntax=note
 ===== TODO =====
 
-    - pin_view view
-    - pin_view template
-    - description du pin dans :
-        - pin_view
-        - pin_list
+#    - pin_view view
+#    - pin_view template
+#    - description du pin dans :
+#        - pin_view
+#        - pin_list
     - login page
     - logout page
     - board creation form
