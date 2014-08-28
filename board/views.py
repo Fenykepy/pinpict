@@ -1,6 +1,8 @@
 from django.views.generic import ListView, DetailView, \
         CreateView, UpdateView, DeleteView
 from django.views.generic.base import ContextMixin
+from django.core.urlresolvers import reverse_lazy
+from django.shortcuts import redirect
 
 from user.models import User
 from board.models import Board, Pin
@@ -79,8 +81,28 @@ class CreateBoard(CreateView, AjaxableResponseMixin):
     """View to create a new board."""
     form_class = BoardForm
     model = Board
-    template_name = 'board/board_edit.html'
-    pass
+    template_name = 'board/board_forms.html'
+
+    def get_success_url(self):
+        return reverse_lazy('boards_list',
+                kwargs={'user': self.request.user.slug})
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateBoard, self).get_context_data(**kwargs)
+        context['title'] = 'Create a board'
+        context['button'] = 'Create board'
+
+        return context
+
+    def form_valid(self, form):
+        """If form is valid, save associated model."""
+        self.object = form.save(commit=False)
+        # definition of user
+        self.object.user = self.request.user
+        # save form
+        self.object.save()
+        # redirect to success url
+        return redirect(self.get_success_url())
 
 
 

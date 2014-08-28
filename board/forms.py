@@ -22,6 +22,7 @@ class BoardForm(ModelForm):
     """Board creation and edition form."""
     class Meta:
         model = Board
+        fields = ('title', 'description', 'policy')
 
 
 

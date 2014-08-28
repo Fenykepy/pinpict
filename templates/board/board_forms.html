@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}
+Create a board
+{% endblock %}
+{% block body %}
+
+<article id="form">
+    <h1>{{ title }}</h1>
+    <form method="post" action="{{ action }}">
+    <p><span id="red"><span class="red">*</span></span>: Required fiels.</p>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for field in form %}
+    <div class="field_wrapper">
+        {{ field.label_tag }}{% if field.field.required %}<span class="red"> *</span>{% endif %}
+        {{ field.errors }}
+        {{ field }}{% if field.help_text %}<span class="help_text">{{ field.help_text }}</span>{% endif %}
+    </div>
+    {% endfor %}
+    <p class="center-align">
+    <input type="submit" name="save" value="{{ button }}" />
+    </p>
+</article>
+{% endblock %}
