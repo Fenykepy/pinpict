@@ -5,6 +5,7 @@
 
 {% block body %}
 {% with owner=boards.0.user %}
+<section id="boards">
 <article id="user">
     <img src="{{ owner.avatar }}" alt="{{ owner.username }}" />
     <h1>{{ owner.username }}</h1>
@@ -12,19 +13,20 @@
     <div class="user-website">{{ owner.website }}</div>
     {% endif %}
 </article>
-
+{% spaceless %}
 {% if user.is_authenticated and user == owner %}
 <article id="create-board">
+    <a href="{% url "board_create" %}">
     <h1>Create a board</h1>
+    </a>
 </article>
 {% endif %}
 {% for board in boards %}
 <article class="board">
+    <a class="board-previews" href="{% url "board_view" board.user.slug board.slug %}" title="More from {{ board.title }}">
     <header>
-        <a href="{% url "board_view" board.user.slug board.slug %}" title="More from {{ board.title }}"><h1>{{ board.title }}</h1></a>
+        <h1>{{ board.title }}</h1>
     </header>
-    <a href="{% url "board_view" board.user.slug board.slug %}" title="More from {{ board.title }}">
-    <div class="board-previews">
         {% with first=board.pin_set.all.0 %}
         <img class="board-main-preview" src="/media/216-146/{{ first.resource.pathname }}" alt="{{ board.title }}" />
         {% endwith %}
@@ -34,17 +36,14 @@
         {% endfor %}
         </ul>
         <div class="board-n-pins">{{ board.n_pins }}</div>
-    </div>{# board-previews #}
     </a>
-
-    {{ board.description }}
-
 {% if user.is_authenticated and user == owner %}
 <a href="" title="Edit board"><button>Edit</button></a>
 {% endif %}
 </article>
 {% endfor %}
-
+{% endspaceless %}
+</section>
 {% endwith %}
 {% endblock body %}
 

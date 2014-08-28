@@ -1,8 +1,10 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, \
+        CreateView, UpdateView, DeleteView
 from django.views.generic.base import ContextMixin
 
 from user.models import User
 from board.models import Board, Pin
+from board.forms import BoardForm, PinForm
 
 
 class ListBoards(ListView):
@@ -43,4 +45,72 @@ class PinView(DetailView):
     context_object_name = 'pin'
     template_name = 'board/pin_view.html'
     pass
+
+
+class AjaxableResponseMixin(object):
+    """Mixin to add ajax support to a form
+    must be used with a object-based FormViem (e.g. CreateView)."""
+    def render_to_json_response(self, context, **response_kwargs):
+        data = json.dumps(context)
+        response_kwargs['content_type'] = 'application/json'
+        return HttpResponse(data, **response_kwargs)
+
+    def form_invalid(self, form):
+        response = super(AjaxableResponseMixin, self).form_invalid(form)
+        if self.request.is_ajax():
+            html = render_to_string(self.get_template_names(),
+                    self.get_context_data(form=form, request=self.request))
+            return self.render_to_json_response({'form': html})
+        else:
+            return response
+
+    def form_valid(self, form):
+        response = super(AjaxableResponseMixin, self).form_valid(form)
+        if self.request.is_ajax():
+            data = { 'pk': self.object.pk }
+            return self.render_to_json_response(data)
+        else:
+            return response
+
+
+
+
+class CreateBoard(CreateView, AjaxableResponseMixin):
+    """View to create a new board."""
+    form_class = BoardForm
+    model = Board
+    template_name = 'board/board_edit.html'
+    pass
+
+
+
+class UpdateBoard(UpdateView, AjaxableResponseMixin):
+    """View to update a board."""
+    pass
+
+
+
+class DeleteBoard(DeleteView, AjaxableResponseMixin):
+    """View to delete a board."""
+    pass
+
+
+
+class CreatePin(CreateView, AjaxableResponseMixin):
+    """View to create a pin."""
+    pass
+
+
+
+class UpdatePin(UpdateView, AjaxableResponseMixin):
+    """View to update a pin."""
+    pass
+
+
+
+class DeletPin(DeleteView, AjaxableResponseMixin):
+    """View to delete a pin."""
+    pass
+
+
 
