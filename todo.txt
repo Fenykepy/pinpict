@@ -9,8 +9,10 @@
     - login page
     - logout page
 #    - board creation form
-    - board update form
-    - board delete form
+#    - board update form
+#    - board delete form
+        - link buttons act as submit in forms (for delete and cancel, need to open in new tab)
+        - return 404 instead of redirection when wrong user try to update or delete
     - pin creation form
     - pin update form
     - pin delete form

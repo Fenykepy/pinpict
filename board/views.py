@@ -112,8 +112,7 @@ class UpdateBoard(UpdateView, AjaxableResponseMixin):
     template_name = 'board/board_forms.html'
 
     def dispatch(self, request, *args, **kwargs):
-        self.user = self.kwargs['user']
-        if self.user != request.user.slug:
+        if self.kwargs['user'] != request.user.slug:
             return redirect(reverse_lazy('boards_list',
                 kwargs={'user': self.kwargs['user']}))
         return super(UpdateBoard, self).dispatch(request, *args, **kwargs)
@@ -138,7 +137,26 @@ class UpdateBoard(UpdateView, AjaxableResponseMixin):
 
 class DeleteBoard(DeleteView, AjaxableResponseMixin):
     """View to delete a board."""
-    pass
+    model = Board
+    template_name = 'board/board_delete.html'
+    context_object_name = 'board'
+
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.kwargs['user'] != request.user.slug:
+            return redirect(reverse_lazy('boards_list',
+                kwargs={'user': self.kwargs['user']}))
+        return super(DeleteBoard, self).dispatch(request, *args, **kwargs)
+
+
+    def get_object(self, queryset=None):
+        self.user = User.objects.get(slug=self.kwargs['user'])
+        return Board.objects.get(user=self.user, slug=self.kwargs['board'])
+
+    def get_success_url(self):
+        print('deleted')
+        return reverse_lazy('boards_list',
+                kwargs={'user': self.request.user.slug})
 
 
 

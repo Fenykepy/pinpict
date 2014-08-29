@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}
+Delete a board
+{% endblock %}
+{% block body %}
+
+<article id="form">
+    <h1>Delete this board ?</h1>
+    <form method="post" action="{{ action }}">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <p>Are you sure you want to permanently delete "{{ board.title }}" board ?</p>
+    {% spaceless %}
+    <p class="center-align">
+    <a href="{% url "boards_list" user.slug %}"><button>Cancel</button></a>
+    <input type="submit" name="delete" value="Delete board" />
+    </p>
+    {% endspaceless %}
+</article>
+{% endblock %}

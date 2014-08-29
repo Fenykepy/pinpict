@@ -7,7 +7,7 @@ Create a board
 <article id="form">
     <h1>{{ title }}</h1>
     <form method="post" action="{{ action }}">
-    <p><span id="red"><span class="red">*</span></span>: Required fiels.</p>
+    <p><span id="red"><span class="red">*</span></span>: Required fields.</p>
     {% csrf_token %}
     {{ form.non_field_errors }}
     {% for field in form %}
