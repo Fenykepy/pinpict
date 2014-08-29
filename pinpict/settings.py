@@ -66,6 +66,8 @@ APPEND_SLASH = True
 ## users abstract model
 AUTH_USER_MODEL = 'user.User'
 
+## login page
+#LOGIN_URL = '/login/'
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 

@@ -76,7 +76,6 @@ class AjaxableResponseMixin(object):
 
 
 
-
 class CreateBoard(CreateView, AjaxableResponseMixin):
     """View to create a new board."""
     form_class = BoardForm
@@ -108,7 +107,32 @@ class CreateBoard(CreateView, AjaxableResponseMixin):
 
 class UpdateBoard(UpdateView, AjaxableResponseMixin):
     """View to update a board."""
-    pass
+    form_class = BoardForm
+    model = Board
+    template_name = 'board/board_forms.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.user = self.kwargs['user']
+        if self.user != request.user.slug:
+            return redirect(reverse_lazy('boards_list',
+                kwargs={'user': self.kwargs['user']}))
+        return super(UpdateBoard, self).dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy('boards_list',
+                kwargs={'user': self.request.user.slug})
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateBoard, self).get_context_data(**kwargs)
+        context['title'] = 'edit a board'
+        context['button'] = 'save changes'
+        context['delete'] = 'delete board'
+
+        return context
+
+    def get_object(self, queryset=None):
+        self.user = User.objects.get(slug=self.kwargs['user'])
+        return Board.objects.get(user=self.user, slug=self.kwargs['board'])
 
 
 

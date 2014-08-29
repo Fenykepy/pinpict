@@ -17,8 +17,13 @@ Create a board
         {{ field }}{% if field.help_text %}<span class="help_text">{{ field.help_text }}</span>{% endif %}
     </div>
     {% endfor %}
+    {% spaceless %}
     <p class="center-align">
+    {% if delete %}
+    <a href="{% url "board_delete" user.slug board.slug %}"><button>{{ delete }}</button></a>
+    {% endif %}
     <input type="submit" name="save" value="{{ button }}" />
     </p>
+    {% endspaceless %}
 </article>
 {% endblock %}

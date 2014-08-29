@@ -38,7 +38,7 @@
         <div class="board-n-pins">{{ board.n_pins }}</div>
     </a>
 {% if user.is_authenticated and user == owner %}
-<a href="" title="Edit board"><button>Edit</button></a>
+<a href="{% url "board_update" owner.slug board.slug %}" title="Edit board"><button>Edit</button></a>
 {% endif %}
 </article>
 {% endfor %}
