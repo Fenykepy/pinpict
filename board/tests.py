@@ -163,11 +163,11 @@ class BoardTest(TestCase):
         # get form
         response = self.client.get('/flr/palo-roversi/edit/')
         # assert user has been redirected to home page
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 404)
         # get form and follow redirection
         response = self.client.get('/flr/palo-roversi/edit/', follow=True)
         self.assertEqual(response.templates[0].name,
-                'board/board_list.html'
+                '404.html'
         )
 
         # try to send form
@@ -178,7 +178,7 @@ class BoardTest(TestCase):
             },
         )
         # assert user has been redirected to home page
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 404)
 
         # try to submit form and follow redirection
         response = self.client.post('/flr/paolo-roversi/edit/', {
@@ -188,7 +188,7 @@ class BoardTest(TestCase):
             }, follow=True,
         )
         self.assertEqual(response.templates[0].name,
-                'board/board_list.html'
+                '404.html'
         )
 
         # assert changes haven't been save in db
@@ -238,20 +238,20 @@ class BoardTest(TestCase):
         # get form
         response = self.client.get('/flr/paolo-roversi/delete/')
 
-        # assert user has been redirected to home page
-        self.assertEqual(response.status_code, 302)
+        # assert user has a 404 page
+        self.assertEqual(response.status_code, 404)
         # get form and follow redirection
         response = self.client.get('/flr/paolo-roversi/delete/',
                 follow=True
         )
         self.assertEqual(response.templates[0].name,
-                'board/board_list.html'
+                '404.html'
         )
 
         # try to submit form
         response = self.client.post('/flr/paolo-roversi/delete/')
         # assert user has been redirected
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 404)
 
         # try to send form and follow redirection
         response = self.client.post('/flr/paolo-roversi/delete/',
@@ -259,7 +259,7 @@ class BoardTest(TestCase):
         )
 
         self.assertEqual(response.templates[0].name,
-                'board/board_list.html'
+                '404.html'
         )
 
         # assert board hasn't been deleted from db

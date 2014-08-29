@@ -2,6 +2,7 @@ from django.views.generic import ListView, DetailView, \
         CreateView, UpdateView, DeleteView
 from django.views.generic.base import ContextMixin
 from django.core.urlresolvers import reverse_lazy
+from django.http import Http404
 from django.shortcuts import redirect
 
 from user.models import User
@@ -112,9 +113,9 @@ class UpdateBoard(UpdateView, AjaxableResponseMixin):
     template_name = 'board/board_forms.html'
 
     def dispatch(self, request, *args, **kwargs):
+        # if user is not board owner, 404
         if self.kwargs['user'] != request.user.slug:
-            return redirect(reverse_lazy('boards_list',
-                kwargs={'user': self.kwargs['user']}))
+            raise Http404
         return super(UpdateBoard, self).dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
@@ -143,9 +144,9 @@ class DeleteBoard(DeleteView, AjaxableResponseMixin):
 
 
     def dispatch(self, request, *args, **kwargs):
+        # if user is not board owner, 404
         if self.kwargs['user'] != request.user.slug:
-            return redirect(reverse_lazy('boards_list',
-                kwargs={'user': self.kwargs['user']}))
+            raise Http404
         return super(DeleteBoard, self).dispatch(request, *args, **kwargs)
 
 
