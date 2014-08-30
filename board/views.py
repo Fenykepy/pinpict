@@ -7,7 +7,7 @@ from django.shortcuts import redirect
 
 from user.models import User
 from board.models import Board, Pin
-from board.forms import BoardForm, PinForm
+from board.forms import BoardForm, UpdateBoardForm, PinForm
 
 
 class ListBoards(ListView):
@@ -17,8 +17,15 @@ class ListBoards(ListView):
     template_name = 'board/board_list.html'
 
     def get_queryset(self):
-        user = User.objects.get(slug=self.kwargs['user'])
-        return user.board_set.all()
+        self.user = User.objects.get(slug=self.kwargs['user'])
+        return Board.publics.filter(user=self.user)
+
+    def get_context_data(self, **kwargs):
+        context = super(ListBoards, self).get_context_data(**kwargs)
+        context['owner'] = self.user
+        context['private_boards'] = Board.privates.filter(user=self.user)
+
+        return context
 
 
 
@@ -94,11 +101,17 @@ class CreateBoard(CreateView, AjaxableResponseMixin):
 
         return context
 
+    def set_policy(self):
+        """Set policy before saving object."""
+        self.object.policy = 1
+
     def form_valid(self, form):
         """If form is valid, save associated model."""
         self.object = form.save(commit=False)
         # definition of user
         self.object.user = self.request.user
+        # definition of policy
+        self.set_policy()
         # save form
         self.object.save()
         # redirect to success url
@@ -106,9 +119,26 @@ class CreateBoard(CreateView, AjaxableResponseMixin):
 
 
 
+class CreatePrivateBoard(CreateBoard):
+    """View to create a new private board."""
+    form_class = BoardForm
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateBoard, self).get_context_data(**kwargs)
+        context['title'] = 'Create a private board'
+        context['button'] = 'Create a private board'
+
+        return context
+
+    def set_policy(self):
+        """Set policy before saving object."""
+        self.object.policy = 0
+
+
+
 class UpdateBoard(UpdateView, AjaxableResponseMixin):
     """View to update a board."""
-    form_class = BoardForm
+    form_class = UpdateBoardForm
     model = Board
     template_name = 'board/board_forms.html'
 

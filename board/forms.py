@@ -18,11 +18,18 @@ class ModelForm(forms.ModelForm):
 
 
 
-class BoardForm(ModelForm):
+class UpdateBoardForm(ModelForm):
     """Board creation and edition form."""
     class Meta:
         model = Board
         fields = ('title', 'description', 'policy')
+
+
+class BoardForm(ModelForm):
+    """Private board creation form."""
+    class Meta:
+        model = Board
+        fields = ('title', 'description')
 
 
 

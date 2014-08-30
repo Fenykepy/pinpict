@@ -76,6 +76,11 @@ class BoardTest(TestCase):
            #     'status': 302,
            #     'template': 'board/board_forms.html',
            # },
+           # {
+           #     'url': '/board/create/private/',
+           #     'status': 302,
+           #     'template': 'board/board_forms.html',
+ 
            #{
            #    'url': '/flr/paolo-roversi/edit/',
            #    'status': 302,
@@ -97,7 +102,7 @@ class BoardTest(TestCase):
 
 
 
-    def test_board_creation(self):
+    def test_public_board_creation(self):
         """Test new board creation."""
         # login
         login = self.client.login(username='flr', password='top_secret')
@@ -107,7 +112,6 @@ class BoardTest(TestCase):
         response = self.client.post('/board/create/', {
             'title': 'Richard Avedon',
             'description': 'Photographies de Richard Avedon',
-            'policy': 1,
             }, follow=True
         )
         # assert redirection is ok
@@ -116,9 +120,44 @@ class BoardTest(TestCase):
                 'board/board_list.html'
         )
         # assert board has been saved in db
-        new_board = Board.objects.get(slug='richard-avedon')
+        new_board = Board.publics.get(slug='richard-avedon')
         # assert user is the good one
         self.assertEqual(new_board.user.username, 'flr')
+        # assert policy is good one
+        self.assertEqual(new_board.policy, 1)
+        # assert it doesn't appears in private boards list
+        board = Board.privates.filter(slug='richard-avedon').count()
+        self.assertEqual(board, 0)
+
+
+
+    def test_private_board_creation(self):
+        """Test new private board creation."""
+        # login
+        login = self.client.login(username='flr', password='top_secret')
+        self.assertEqual(login, True)
+
+        # send form
+        response = self.client.post('/board/create/private/', {
+            'title': 'Richard Avedon',
+            'description': 'photographies de Richard Avedon',
+            }, follow=True
+        )
+        # assert redirection is ok
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name,
+                'board/board_list.html'
+        )
+        # assert board has been saved in db
+        new_board = Board.privates.get(slug='richard-avedon')
+        # assert user is the good one
+        self.assertEqual(new_board.user.username, 'flr')
+        # assert policy is good one
+        self.assertEqual(new_board.policy, 0)
+        # assert it doesn't appears in public boards list
+        board = Board.publics.filter(slug='richard-avedon').count()
+        self.assertEqual(board, 0)
+
 
 
 
@@ -145,6 +184,49 @@ class BoardTest(TestCase):
         new_board = Board.objects.get(slug='paolo-roversi')
         # assert description is new one
         self.assertEqual(new_board.description, 'Photographies de Paolo Roversi :)')
+
+        ## try to change policy in two directions
+        # assert board is public
+        board = Board.publics.filter(slug='paolo-roversi').count()
+        self.assertEqual(board, 1)
+
+        ## send form
+        response = self.client.post('/flr/paolo-roversi/edit/', {
+            'title': 'Paolo Roversi',
+            'description': 'Photographies de Paolo Roversi :)',
+            'policy': 0,
+            }, follow=True
+        )
+
+        # assert redirection is ok
+        self.assertEqual(response.status_code, 200)
+        
+        # assert board is private 
+        public_board = Board.publics.filter(slug='paolo-roversi').count()
+        self.assertEqual(public_board, 0)
+        private_board = Board.privates.filter(slug='paolo-roversi').count()
+        self.assertEqual(private_board, 1)
+
+
+        ## send form
+        response = self.client.post('/flr/paolo-roversi/edit/', {
+            'title': 'Paolo Roversi',
+            'description': 'Photographies de Paolo Roversi :)',
+            'policy': 1,
+            }, follow=True
+        )
+
+        # assert redirection is ok
+        self.assertEqual(response.status_code, 200)
+        
+        # assert board is private 
+        public_board = Board.publics.filter(slug='paolo-roversi').count()
+        self.assertEqual(public_board, 1)
+        private_board = Board.privates.filter(slug='paolo-roversi').count()
+        self.assertEqual(private_board, 0)
+
+
+
 
 
     def test_board_update_with_wrong_user(self):

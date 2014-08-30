@@ -24,6 +24,23 @@ PIN_TYPE_CHOICES = (
 
 
 
+class PublicBoardsManager(models.Manager):
+    """Returns a queryset with all public boards."""
+    def get_query_set(self):
+        return super(PublicBoardsManager, self).get_query_set().filter(
+                policy=1)
+
+
+
+
+class PrivateBoardsManager(models.Manager):
+    """Returns a queryset with all public boards."""
+    def get_query_set(self):
+        return super(PrivateBoardsManager, self).get_query_set().filter(
+                policy=0)
+
+
+
 class Board(models.Model):
     """Table for all boards."""
     date_created = models.DateTimeField(auto_now_add=True,
@@ -39,13 +56,19 @@ class Board(models.Model):
             verbose_name="Board description")
     n_pins = models.PositiveIntegerField(default=0,
             verbose_name="Pins number")
-    policy = models.PositiveIntegerField(max_length=150,
-                    choices=BOARD_POLICY_CHOICES, verbose_name="Policy")
+    policy = models.PositiveIntegerField(
+            choices=BOARD_POLICY_CHOICES, verbose_name="Policy")
     user = models.ForeignKey(User)
+    order = models.PositiveIntegerField(default=100000)
+
+    # managers
+    objects = models.Manager()
+    publics = PublicBoardsManager()
+    privates = PrivateBoardsManager()
 
     class Meta:
-        ordering = ['date_created']
-        unique_together = ('user', 'slug')
+        ordering = ['order', 'date_created']
+        unique_together = (('user', 'slug'),)
 
     def save(self, **kwargs):
         """Make a unique slug for from title, then save."""
