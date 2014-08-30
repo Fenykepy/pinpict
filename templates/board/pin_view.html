@@ -4,11 +4,11 @@
 <article>
 <header>
     <a href="{{ pin.source }}">
-    <button>Visit Site</button>
+    <button type="button">Visit Site</button>
     </a>
     {% if user.is_authenticated and user == owner %}
     <a href="">
-    <button>Edit</button>
+    <button type="button">Edit</button>
     </a>
     {% endif %}
 </header>

@@ -12,7 +12,7 @@ Delete a board
     <p>Are you sure you want to permanently delete "{{ board.title }}" board ?</p>
     {% spaceless %}
     <p class="center-align">
-    <a href="{% url "boards_list" user.slug %}"><button>Cancel</button></a>
+    <a href="{% url "boards_list" user.slug %}"><button type="button">Cancel</button></a>
     <input type="submit" name="delete" value="Delete board" />
     </p>
     {% endspaceless %}
