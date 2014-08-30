@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'debug_toolbar', # comment for prod
     'user',
     'board',
+    'pin',
 )
 
 MIDDLEWARE_CLASSES = (

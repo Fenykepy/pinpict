@@ -1,6 +1,6 @@
 from django import forms
 
-from board.models import Board, Pin
+from board.models import Board
 
 
 
@@ -32,8 +32,3 @@ class BoardForm(ModelForm):
         fields = ('title', 'description')
 
 
-
-class PinForm(ModelForm):
-    """Pin creation and edition form."""
-    class Meta:
-        model = Pin
