@@ -2,7 +2,7 @@ from django import forms
 
 from board.forms import Form, ModelForm
 
-from pin.models import Pin
+from pin.models import Pin, Resource
 
 
 class PinForm(ModelForm):
@@ -13,8 +13,8 @@ class PinForm(ModelForm):
 
 
 
-class UploadPinForm(Form):
+class UploadPinForm(ModelForm):
     """Pin file upload form."""
-    file = forms.ImageField(widget=forms.FileInput(attrs={
-        'required': 'required'
-    }), required=True, label='')
+    class Meta:
+        model = Resource
+        fields = ('source_file',)

@@ -10,7 +10,6 @@ from pin.models import Pin, Resource
 from board.models import Board
 from pin.forms import PinForm, UploadPinForm
 
-import hashlib
 
 class ListPins(ListView):
     """List all pins of a board."""
@@ -77,32 +76,6 @@ class UploadPin(FormView, AjaxableResponseMixin):
         context['button'] = 'Updload'
 
         return context
-
-    def form_valid(self, form):
-        """If form is valid, create new resource."""
-        #form.cleaned_data = {'file': <InMemoryUploadedFile: OC.jpg (image/jpeg)>}
-        resource = Resource()
-        resource.size = form.cleaned_data['file'].size
-        #resource.width = form.cleaned_data['file'].width
-        #resource.height = form.cleaned_data['file'].height
-
-        #print(resource.height)
-        #print(resource.width)
-        print(resource.size)
-
-
-        sha1 = hashlib.sha1()
-        for chunk in form.cleaned_data['file'].chunks():
-            sha1.update(chunk)
-
-        sha1sum = sha1.hexdigest()
-        print(sha1sum)
-
-
-
-
-
-        return redirect(self.get_success_url())
 
 
 
