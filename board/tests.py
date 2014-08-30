@@ -36,6 +36,7 @@ class BoardTest(TestCase):
     """Board app tests."""
 
     def setUp(self):
+        # create first user
         self.user = User.objects.create_user(
                 username='flr',
                 email='pro@lavilotte-rolle.fr',
@@ -43,17 +44,41 @@ class BoardTest(TestCase):
         )
         self.user.website = 'http://lavilotte-rolle.fr'
         self.user.save()
+        
+        # create a second user
+        self.user2 = User.objects.create_user(
+                username='toto',
+                email='toto@lavilotte-rolle.fr',
+                password='top_secret'
+        )
 
 
+        # create a public board
         board = Board()
         board.title = 'Paolo Roversi'
         board.description = 'Photographies de Paolo Roversi.'
         board.policy = 1
         board.user = self.user
         board.save()
-        
-
+ 
+        # create a private board
+        board = Board()
+        board.title = 'My private board'
+        board.description = 'Private board'
+        board.policy = 0
+        board.user = self.user
+        board.save()
+               
+        # start client
         self.client = Client()
+
+
+
+    def login(self, user):
+        """Login with given user, assert it's ok"""
+        login = self.client.login(username=user.username,
+                password='top_secret')
+        self.assertEqual(login, True)
 
 
 
@@ -101,12 +126,45 @@ class BoardTest(TestCase):
             self.assertEqual(response.templates[0].name, elem['template'])
 
 
+    def test_board_list_with_standard_user(self):
+        """Test board list context."""
+        # login with not owner user
+        self.login(self.user2)
+
+        # go to board list page
+        response = self.client.get('/flr/')
+        self.assertEqual(response.status_code, 200)
+        # assert we have public boards
+        self.assertEqual(len(response.context['boards']), 1)
+        self.assertEqual(response.context['boards'][0].title, 'Paolo Roversi')
+        # assert we don't have private boards
+        self.assertEqual(hasattr(response.context, 'private_boards'), False)
+
+
+
+    def test_board_list_with_owner_user(self):
+        """Test board list context."""
+        # login with not owner user
+        self.login(self.user)
+
+        # go to board list page
+        response = self.client.get('/flr/')
+        self.assertEqual(response.status_code, 200)
+        # assert we have public boards
+        self.assertEqual(len(response.context['boards']), 1)
+        self.assertEqual(response.context['boards'][0].title, 'Paolo Roversi')
+
+        # assert we have private boards
+        self.assertEqual(len(response.context['private_boards']), 1)
+        self.assertEqual(response.context['private_boards'][0].title,
+                'My private board')
+
+
 
     def test_public_board_creation(self):
         """Test new board creation."""
         # login
-        login = self.client.login(username='flr', password='top_secret')
-        self.assertEqual(login, True)
+        self.login(self.user)
 
         # send form
         response = self.client.post('/board/create/', {
@@ -134,8 +192,7 @@ class BoardTest(TestCase):
     def test_private_board_creation(self):
         """Test new private board creation."""
         # login
-        login = self.client.login(username='flr', password='top_secret')
-        self.assertEqual(login, True)
+        self.login(self.user)
 
         # send form
         response = self.client.post('/board/create/private/', {
@@ -164,8 +221,7 @@ class BoardTest(TestCase):
     def test_board_update(self):
         """Test board update."""
         # login
-        login = self.client.login(username='flr', password='top_secret')
-        self.assertEqual(login, True)
+        self.login(self.user)
 
         # send form
         response = self.client.post('/flr/paolo-roversi/edit/', {
@@ -231,16 +287,8 @@ class BoardTest(TestCase):
 
     def test_board_update_with_wrong_user(self):
         """Test board update with a user which is not owner of board."""
-
-        self.user2 = User.objects.create_user(
-                username='toto',
-                email='toto@lavilotte-rolle.fr',
-                password='top_secret'
-        )
-
         # login with user 2
-        login = self.client.login(username='toto', password='top_secret')
-        self.assertEqual(login, True)
+        self.login(self.user2)
         
         # get form
         response = self.client.get('/flr/palo-roversi/edit/')
@@ -283,8 +331,7 @@ class BoardTest(TestCase):
     def test_board_delete(self):
         """Test board deletion."""
         # login
-        login = self.client.login(username='flr', password='top_secret')
-        self.assertEqual(login, True)
+        self.login(self.user)
 
         # send form
         response = self.client.post('/flr/paolo-roversi/delete/',
@@ -307,15 +354,8 @@ class BoardTest(TestCase):
         """Test deletion of a board with a user which is not
         it's owner."""
 
-        self.user2 = User.objects.create_user(
-                username='toto',
-                email='toto@lavilotte-rolle.fr',
-                password='top_secret'
-        )
-
         # login with user 2
-        login = self.client.login(username='toto', password='top_secret')
-        self.assertEqual(login, True)
+        self.login(self.user2)
 
         # get form
         response = self.client.get('/flr/paolo-roversi/delete/')

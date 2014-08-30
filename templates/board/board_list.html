@@ -45,7 +45,7 @@
 </section>
 
 
-{% if user.is_authenticated and user == owner %}
+{% if private_boards %}
 {% spaceless %}
 <section id="private-boards">
 <article id="create-board">
