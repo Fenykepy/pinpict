@@ -1,10 +1,10 @@
+import os
+
+from django.core.files.storage import FileSystemStorage
 from django.db import models
-from django_extensions.db.fields import UUIDField
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 from board.models import Board
-from pin.utils import extract_domain_name
+from pin.utils import extract_domain_name, get_sha1_hexdigest
 
 
 RESOURCE_TYPE_CHOICES = (
@@ -17,6 +17,27 @@ RESOURCE_TYPE_CHOICES = (
 
 
 
+class ResourceFileSystemStorage(FileSystemStorage):
+    def get_available_name(self, name):
+        return name
+
+    def _save(self, name, content):
+        if self.exists(name):
+            # if the file exists, do not call the superclasses _save method
+            return name
+        # if the file is new, DO call it
+        return super(ResourceFileSystemStorage, self)._save(name, content)
+
+
+
+def set_pathname(instance, filename):
+    """Set pathname under form
+    full/4a/52/4a523fe9c50a2f0b1dd677ae33ea0ec6e4a4b2a9.ext."""
+    sha1 = instance.sha1
+    basename, ext = os.path.splitext(filename)
+    return os.path.join('previews', 'full', sha1[0:2], sha1[2:4],
+            sha1 + '.' + ext.lower())
+
 
 
 class Resource(models.Model):
@@ -24,11 +45,13 @@ class Resource(models.Model):
     date_created = models.DateTimeField(auto_now_add=True,
             auto_now=False,
             verbose_name="Creation date")
-    uniqid = UUIDField(unique=True, db_index=True)
-    pathname = models.CharField(max_length=254, blank=True, null=True,
-        verbose_name="Pathname to file, including last directory " +
-        "and extension")
-    source_file = models.URLField(unique=True,
+    sha1 = models.CharField(max_length=42, unique=True, db_index=True)
+    source_file = models.ImageField(
+            null=True, blank=True,
+            upload_to=set_pathname,
+            storage=ResourceFileSystemStorage()
+    )
+    source_file_url = models.URLField(unique=True,
         verbose_name="Source of original picture")
     n_pins = models.PositiveIntegerField(default=0,
         verbose_name="Board number")
@@ -39,7 +62,8 @@ class Resource(models.Model):
     size = models.PositiveIntegerField(default=0,
         verbose_name="Size of picture, in bytes")
     type = models.CharField(max_length=30,
-        choices=RESOURCE_TYPE_CHOICES, verbose_name="Type of file")
+        choices=RESOURCE_TYPE_CHOICES, verbose_name="Type of file",
+        blank=True, null=True)
     order = models.PositiveIntegerField(default=100000)
 
     class Meta:
@@ -48,18 +72,13 @@ class Resource(models.Model):
     def __str__(self):
         return "%s" % self.uniqid
 
-
-
-@receiver(post_save, sender=Resource)
-def set_pathname(sender, instance, **kwargs):
-    """Complete pathname from uniqid then save."""
-    if not instance.pathname:
-        instance.pathname = "{0}/{1}.{2}".format(
-                instance.uniqid[:2],
-                instance.uniqid,
-                instance.type
-            )
-        instance.save()
+    def save(self, *args, **kwargs):
+        if not self.sha1:
+            self.sha1 = get_sha1_hexdigest(self.source_file)
+            self.width = self.source_file.width
+            self.height = self.source_file.height
+            self.size = self.source.size
+        super(Resource, self).save(*args, **kwargs)
 
 
 

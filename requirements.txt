@@ -1,2 +1,2 @@
 django==1.6.6                   # django framework
-django-extensions==1.3.11       # some extensions for django (UUID_field)
+pillow==2.5.3                   # Python Imaging Librairy fork
