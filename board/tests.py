@@ -65,7 +65,38 @@ class BoardTest(TestCase):
             {
                 'url': '/flr/paolo-roversi/',
                 'status': 200,
-                'template': 'board/pin_list.html',
+                'template': 'pin/pin_list.html',
+            },
+            # unknown user should return 404
+            {
+                'url': '/tom/',
+                'status': 404,
+                'template': '404.html',
+            },
+            # unknown user with known board should return 404
+            {
+                'url': '/tom/paolo-roversi/',
+                'status': 404,
+                'template': '404.html',
+            },
+            # unknown user with unknown board should return 404
+            {
+                'url': '/tom/tom-board/',
+                'status': 404,
+                'template': '404.html',
+            },
+            # known user with unknown board should return 404
+            {
+                'url': '/flr/tom-board/',
+                'status': 404,
+                'template': '404.html',
+            },
+            # known user with known board which doesn't belong to him
+            # should return 404
+            {
+                'url': '/toto/paolo-roversi/',
+                'status': 404,
+                'template': '404.html',
             },
             # to reactivate when login page will work
            # {

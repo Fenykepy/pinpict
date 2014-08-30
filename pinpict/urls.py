@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     ## public board creation
     url(r'^board/create/$', login_required(CreateBoard.as_view()),
         name='board_create'),
+
     ## private board creation
     url(r'^board/create/private/$', login_required(CreatePrivateBoard.as_view()),
         name='private_board_create'),

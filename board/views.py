@@ -2,7 +2,7 @@ from django.views.generic import ListView, DetailView, \
         CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
 from django.http import Http404
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 
 from user.models import User
 from board.models import Board
@@ -16,7 +16,7 @@ class ListBoards(ListView):
     template_name = 'board/board_list.html'
 
     def get_queryset(self):
-        self.user = User.objects.get(slug=self.kwargs['user'])
+        self.user = get_object_or_404(User, slug=self.kwargs['user'])
         return Board.publics.filter(user=self.user)
 
     def get_context_data(self, **kwargs):
@@ -133,7 +133,7 @@ class UpdateBoard(UpdateView, AjaxableResponseMixin):
         return context
 
     def get_object(self, queryset=None):
-        self.user = User.objects.get(slug=self.kwargs['user'])
+        self.user = get_object_or_404(User, slug=self.kwargs['user'])
         return Board.objects.get(user=self.user, slug=self.kwargs['board'])
 
 
@@ -153,7 +153,7 @@ class DeleteBoard(DeleteView, AjaxableResponseMixin):
 
 
     def get_object(self, queryset=None):
-        self.user = User.objects.get(slug=self.kwargs['user'])
+        self.user = get_object_or_404(User, slug=self.kwargs['user'])
         return Board.objects.get(user=self.user, slug=self.kwargs['board'])
 
     def get_success_url(self):

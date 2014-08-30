@@ -8,12 +8,18 @@
 #        - pin_list
     - login page
     - logout page
+    - profil page
+    - header with:
+        - user info
+        - search bar
 #    - board creation form
 #    - board update form
 #    - board delete form
 #        - link buttons act as submit in forms (for delete and cancel, need to open in new tab)
 #            - need to add <button type="button"></button> instead of <button></button>
 #        - return 404 instead of redirection when wrong user try to update or delete
+#        - return 404 when user is not found (for list views)
+#        - test that unknown user in url returns 404
     - pin creation form
     - pin update form
     - pin delete form
@@ -30,6 +36,8 @@
                 - load a form to enter an url
                     - load a "find" page with url in parameter and list of all
                     given page picture.
+                        - first all <img> with scr attributes
+                        - second all <a> with href attribute ending by .jpg to get content of lightboxes.
                     - choose picture
                     - pin board and description form
             - On your computer

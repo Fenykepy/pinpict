@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block body %}
+
+<article>
+    <h1>Add a pin from</h1>
+    <ul>
+    <a href=""><li>The web</li></a>
+    <a href="{% url "pin_upload" %}"><li>Your computer</li></a>
+    </ul>
+</article>
+{% endblock %}
+
