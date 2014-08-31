@@ -7,15 +7,6 @@ from board.models import Board
 from pin.utils import extract_domain_name, get_sha1_hexdigest
 
 
-RESOURCE_TYPE_CHOICES = (
-        ('jpg', 'jpg'),
-        ('tiff', 'tiff'),
-        ('png', 'png'),
-        ('gif', 'gif'),
-        ('svg', 'svg'),
-)
-
-
 
 class ResourceFileSystemStorage(FileSystemStorage):
     def get_available_name(self, name):
@@ -46,12 +37,10 @@ class Resource(models.Model):
             auto_now=False,
             verbose_name="Creation date")
     sha1 = models.CharField(max_length=42, unique=True, db_index=True)
-    source_file = models.ImageField(
-            null=True, blank=True,
-            upload_to=set_pathname,
+    source_file = models.ImageField(upload_to=set_pathname,
             storage=ResourceFileSystemStorage()
     )
-    source_file_url = models.URLField(unique=True,
+    source_file_url = models.URLField(blank=True, null=True,
         verbose_name="Source of original picture")
     n_pins = models.PositiveIntegerField(default=0,
         verbose_name="Board number")
@@ -62,7 +51,7 @@ class Resource(models.Model):
     size = models.PositiveIntegerField(default=0,
         verbose_name="Size of picture, in bytes")
     type = models.CharField(max_length=30,
-        choices=RESOURCE_TYPE_CHOICES, verbose_name="Type of file",
+        verbose_name="Type of file",
         blank=True, null=True)
     order = models.PositiveIntegerField(default=100000)
 
@@ -71,14 +60,6 @@ class Resource(models.Model):
 
     def __str__(self):
         return "%s" % self.uniqid
-
-    def save(self, *args, **kwargs):
-        if not self.sha1:
-            self.sha1 = get_sha1_hexdigest(self.source_file)
-            self.width = self.source_file.width
-            self.height = self.source_file.height
-            self.size = self.source_file.size
-        super(Resource, self).save(*args, **kwargs)
 
 
 

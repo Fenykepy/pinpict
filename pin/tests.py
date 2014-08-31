@@ -3,7 +3,7 @@ import os
 from django.test import TestCase, Client
 from django.core.files import File
 
-from pinpict.settings import BASE_DIR
+from pinpict.settings import BASE_DIR, MEDIA_ROOT
 from user.models import User
 from board.models import Board
 from pin.models import Pin, Resource
@@ -117,12 +117,21 @@ class ResourceTest(TestCase):
         response = self.client.get('/pin/upload/', follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.templates[0].name, 'board/board_forms.html')
+        
+        def post_image():
+            # post an image file
+            with open(os.path.join(BASE_DIR, 'pin',
+                'test_files', 'test.jpg'), 'rb') as fp:
+                self.client.post('/pin/upload/', {'source_file': fp})
+            self.assertEqual(response.status_code, 200)
 
-        # post an image file
-        with open(os.path.join(BASE_DIR, 'pin',
-            'test_files', 'test.jpg'), 'rb') as fp:
-            self.client.post('/pin/upload/', {'source_file': fp})
-        self.assertEqual(response.status_code, 200)
+        # post image file
+        post_image()
+
+        # assert file has been save on hdd
+        self.assertEqual(os.path.isfile(os.path.join(MEDIA_ROOT,
+            'previews/full/f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg')),
+            True)
 
         # assert resource has been save in db
         resource = Resource.objects.get(
@@ -132,6 +141,34 @@ class ResourceTest(TestCase):
         self.assertEqual(resource.width, 200)
         self.assertEqual(resource.height, 300)
         self.assertEqual(resource.size, 16628)
+
+
+        # upload again same image
+        post_image()
+
+        # assert no new file has been saved on hdd (with a similar name,
+        # in case FyleSystemStorage didn't work
+        path = os.path.join(MEDIA_ROOT, 'previews/full/f5/fb/')
+        count = 0
+
+        for file in os.listdir(path):
+            if file[:40] == 'f5fbd1897ef61b69f071e36295342571e81017b9':
+                count +=1
+        # assert only one file is present
+        self.assertEqual(count, 1)
+
+
+        # assert no new entry has been saved in db
+        resource = Resource.objects.filter(
+                sha1='f5fbd1897ef61b69f071e36295342571e81017b9').count()
+        self.assertEqual(resource, 1)
+
+        # remove file from MEDIA_ROOT
+        os.remove(os.path.join(MEDIA_ROOT,
+            'previews/full/f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg'))
+
+
+
 
 
 

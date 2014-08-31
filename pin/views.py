@@ -1,3 +1,5 @@
+import os
+
 from django.views.generic import ListView, DetailView, \
         CreateView, UpdateView, DeleteView, TemplateView, \
         FormView
@@ -9,6 +11,7 @@ from user.models import User
 from pin.models import Pin, Resource
 from board.models import Board
 from pin.forms import PinForm, UploadPinForm
+from pin.utils import get_sha1_hexdigest
 
 
 class ListPins(ListView):
@@ -77,6 +80,31 @@ class UploadPin(CreateView, AjaxableResponseMixin):
         context['button'] = 'Updload'
 
         return context
+
+    def form_valid(self, form):
+        """If form is valid, save associated model."""
+        self.object = form.save(commit=False)
+        # compute file sha1
+        self.object.sha1 = get_sha1_hexdigest(self.object.source_file)
+
+        # search resource with same hash
+        clone = Resource.objects.filter(sha1=self.object.sha1)
+
+        # if we have another resource with same hash
+        # returns create_pin view with it's ID, and don't save anything
+        if clone:
+            return redirect(self.get_success_url() + '?resource={0}'.format(clone[0].pk))
+
+        self.object.width = self.object.source_file.width
+        self.object.height = self.object.source_file.height
+        self.object.size = self.object.source_file.size
+        basename, ext = os.path.splitext(self.object.source_file.name)
+        self.object.type = ext.lower().lstrip('.')
+
+        self.object.save()
+
+
+        return redirect(self.get_success_url())
 
 
 
