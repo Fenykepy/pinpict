@@ -49,4 +49,91 @@ class UtilsTest(TestCase):
 
 
 
+class ResourceTest(TestCase):
+    """Resource model and views tests."""
+
+    def setUp(self):
+        # create first user
+        self.user = User.objects.create_user(
+                username='flr',
+                email='pro@lavilotte-rolle.fr',
+                password='top_secret'
+        )
+        self.user.website = 'http://lavilotte-rolle.fr'
+        self.user.save()
+        
+        # create a second user
+        self.user2 = User.objects.create_user(
+                username='toto',
+                email='toto@lavilotte-rolle.fr',
+                password='top_secret'
+        )
+
+
+
+    def login(self, user):
+        """Login with given user, assert it's ok"""
+        login = self.client.login(username=user.username,
+                password='top_secret')
+        self.assertEqual(login, True)
+
+
+
+    def test_urls(self):
+        """Test urls and their templates."""
+        urls = [
+             # to reactivate when login page will work 
+            {
+                'url': '/pin/choose-origin/',
+                'status': 302,
+                'template': '404.html',
+            },
+            {
+                'url': '/pin/upload/',
+                'status': 302,
+                'template': '404.html',
+            },
+        ]
+
+        for elem in urls:
+            response = self.client.get(elem['url'])
+            self.assertEqual(response.status_code, elem['status'])
+            response = self.client.get(elem['url'], follow=True)
+            self.assertEqual(response.templates[0].name, elem['template'])
+
+
+    def test_resource_upload(self):
+        """Test upload of a resource file."""
+        # login with user
+        self.login(self.user)
+
+        # go to choose origin page
+        response = self.client.get('/pin/choose-origin/', follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name,
+                'pin/pin_choose_origin.html')
+
+        # go to resource upload page
+        response = self.client.get('/pin/upload/', follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'board/board_forms.html')
+
+        # post an image file
+        with open(os.path.join(BASE_DIR, 'pin',
+            'test_files', 'test.jpg'), 'rb') as fp:
+            self.client.post('/pin/upload/', {'source_file': fp})
+        self.assertEqual(response.status_code, 200)
+
+        # assert resource has been save in db
+        resource = Resource.objects.get(
+                sha1='f5fbd1897ef61b69f071e36295342571e81017b9')
+        self.assertEqual(resource.source_file,
+            'previews/full/f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg')
+        self.assertEqual(resource.width, 200)
+        self.assertEqual(resource.height, 300)
+        self.assertEqual(resource.size, 16628)
+
+
+
+
 

@@ -98,27 +98,26 @@ class BoardTest(TestCase):
                 'status': 404,
                 'template': '404.html',
             },
-            # to reactivate when login page will work
-           # {
-           #     'url': '/board/create/',
-           #     'status': 302,
-           #     'template': 'board/board_forms.html',
-           # },
-           # {
-           #     'url': '/board/create/private/',
-           #     'status': 302,
-           #     'template': 'board/board_forms.html',
- 
-           #{
-           #    'url': '/flr/paolo-roversi/edit/',
-           #    'status': 302,
-           #    'template': 'board/board_forms.html',
-           #},
-           #{
-           #    'url': '/flr/paolo-roversi/delete/',
-           #    'status': 302,
-           #    'template': 'board/board_delete.html',
-            #},
+            {
+                'url': '/board/create/',
+                'status': 302,
+                'template': '404.html',
+            },
+            {
+                'url': '/board/create/private/',
+                'status': 302,
+                'template': '404.html',
+            },
+            {
+               'url': '/flr/paolo-roversi/edit/',
+               'status': 302,
+               'template': '404.html',
+            },
+            {
+               'url': '/flr/paolo-roversi/delete/',
+               'status': 302,
+               'template': '404.html',
+            },
             
         ]
 

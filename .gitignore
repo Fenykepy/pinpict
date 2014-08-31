@@ -8,6 +8,10 @@ __pycache__/
 # bdd
 db.sqlite3
 
+# data files
+pinpict/data/previews/*/
+pinpict/data/previews/*
+
 # Distribution / packaging
 .Python
 env/

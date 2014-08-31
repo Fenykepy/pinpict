@@ -36,7 +36,7 @@ def set_pathname(instance, filename):
     sha1 = instance.sha1
     basename, ext = os.path.splitext(filename)
     return os.path.join('previews', 'full', sha1[0:2], sha1[2:4],
-            sha1 + '.' + ext.lower())
+            sha1 + ext.lower())
 
 
 
@@ -77,7 +77,7 @@ class Resource(models.Model):
             self.sha1 = get_sha1_hexdigest(self.source_file)
             self.width = self.source_file.width
             self.height = self.source_file.height
-            self.size = self.source.size
+            self.size = self.source_file.size
         super(Resource, self).save(*args, **kwargs)
 
 

@@ -64,8 +64,9 @@ class DeletePin(DeleteView, AjaxableResponseMixin):
 
 
 
-class UploadPin(FormView, AjaxableResponseMixin):
+class UploadPin(CreateView, AjaxableResponseMixin):
     """View to upload a pin file."""
+    model = Resource
     template_name = 'board/board_forms.html'
     form_class = UploadPinForm
     success_url = reverse_lazy('create_pin')
