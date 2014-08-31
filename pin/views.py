@@ -101,10 +101,11 @@ class UploadPin(CreateView, AjaxableResponseMixin):
         basename, ext = os.path.splitext(self.object.source_file.name)
         self.object.type = ext.lower().lstrip('.')
 
+        # save object
         self.object.save()
 
-
-        return redirect(self.get_success_url())
+        # redirect to create_pin view
+        return redirect(self.get_success_url() + '?ressorce={0}'.format(self.object.pk))
 
 
 
