@@ -21,6 +21,11 @@
 #        - return 404 when user is not found (for list views)
 #        - test that unknown user in url returns 404
     - pin creation form
+#        - pin file upload form
+        - pin source url form
+        - pin find image in url page
+        - previews generation functions
+        - pin itself creation form
     - pin update form
     - pin delete form
 

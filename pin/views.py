@@ -11,7 +11,7 @@ from user.models import User
 from pin.models import Pin, Resource
 from board.models import Board
 from pin.forms import PinForm, UploadPinForm
-from pin.utils import get_sha1_hexdigest
+from pin.utils import get_sha1_hexdigest, generate_previews
 
 
 class ListPins(ListView):
@@ -93,6 +93,7 @@ class UploadPin(CreateView, AjaxableResponseMixin):
         # if we have another resource with same hash
         # returns create_pin view with it's ID, and don't save anything
         if clone:
+            print('clone')
             return redirect(self.get_success_url() + '?resource={0}'.format(clone[0].pk))
 
         self.object.width = self.object.source_file.width
@@ -101,11 +102,20 @@ class UploadPin(CreateView, AjaxableResponseMixin):
         basename, ext = os.path.splitext(self.object.source_file.name)
         self.object.type = ext.lower().lstrip('.')
 
+
+
         # save object
         self.object.save()
 
+
+        # create previews
+        generate_previews(self.object)
+
+
+
+
         # redirect to create_pin view
-        return redirect(self.get_success_url() + '?ressorce={0}'.format(self.object.pk))
+        return redirect(self.get_success_url() + '?resource={0}'.format(self.object.pk))
 
 
 

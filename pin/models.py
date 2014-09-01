@@ -54,12 +54,15 @@ class Resource(models.Model):
         verbose_name="Type of file",
         blank=True, null=True)
     order = models.PositiveIntegerField(default=100000)
+    previews_path = models.CharField(max_length=254,
+        blank=True, null=True)
+            
 
     class Meta:
         ordering = ['order', 'date_created']
 
     def __str__(self):
-        return "%s" % self.uniqid
+        return "%s" % self.source_file
 
 
 

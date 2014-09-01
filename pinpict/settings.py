@@ -12,6 +12,23 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+# Previews generation settings
+
+# previews with given width
+PREVIEWS_JPG_QUALITY = 70
+
+# (width, destination folder relative to PREVIEWS_ROOT
+PREVIEWS_WIDTH = [
+        (736, '736'),
+        (236, '236'),
+]
+
+# previews with given width and height
+# (width, height, destination folder relative to PREVIEWS_ROOT
+PREVIEWS_CROP = [
+        (216, 146, '216-146'),
+        (45, 45, '45'),
+]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -105,5 +122,7 @@ STATICFILES_DIRS = (
 )
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'pinpict/data/')
+
+PREVIEWS_ROOT = os.path.join(MEDIA_ROOT, 'previews')
 
 MEDIA_URL = '/media/'
