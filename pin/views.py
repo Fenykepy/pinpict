@@ -102,11 +102,8 @@ class UploadPin(CreateView, AjaxableResponseMixin):
         basename, ext = os.path.splitext(self.object.source_file.name)
         self.object.type = ext.lower().lstrip('.')
 
-
-
         # save object
         self.object.save()
-
 
         # create previews
         generate_previews(self.object)

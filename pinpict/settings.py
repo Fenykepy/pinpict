@@ -13,21 +13,20 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Previews generation settings
+# JPEG quality shouldn't be more than 95 and less than 50.
+# 90 for big previews and 70 for small ones are a good value.
 
-# previews with given width
-PREVIEWS_JPG_QUALITY = 70
-
-# (width, destination folder relative to PREVIEWS_ROOT
+# (width, destination folder relative to PREVIEWS_ROOT, and JPEG quality
 PREVIEWS_WIDTH = [
-        (736, '736'),
-        (236, '236'),
+        (736, '736', 90),
+        (236, '236', 70),
 ]
 
 # previews with given width and height
-# (width, height, destination folder relative to PREVIEWS_ROOT
+# (width, height, destination folder relative to PREVIEWS_ROOT, and JPEG quality
 PREVIEWS_CROP = [
-        (216, 146, '216-146'),
-        (45, 45, '45'),
+        (216, 146, '216-146', 70),
+        (45, 45, '45', 70),
 ]
 
 # Quick-start development settings - unsuitable for production

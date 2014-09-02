@@ -13,6 +13,7 @@
         - user info
         - search bar
 #    - board creation form
+        - add a field for a cover pin/resource
 #    - board update form
 #    - board delete form
 #        - link buttons act as submit in forms (for delete and cancel, need to open in new tab)
@@ -24,7 +25,8 @@
 #        - pin file upload form
         - pin source url form
         - pin find image in url page
-        - previews generation functions
+#        - previews generation functions
+            - previews generation tests
         - pin itself creation form
     - pin update form
     - pin delete form
