@@ -112,7 +112,7 @@ def generate_previews(resource):
             # save preview
             save_preview(img, destination, quality)
         # else, symlink to original file
-        else:
+        elif not os.path.isfile(destination):
             os.symlink(source, destination)
 
     # generate width and height based previews
@@ -135,7 +135,8 @@ def generate_previews(resource):
         
         # if source is smaller than destination, symlink to original file
         if full_width < width and full_height < height:
-            os.symlink(source, destination)
+            if not os.path.isfile(destination):
+                os.symlink(source, destination)
             continue
        
         # create intermediate thumbnail before crop (much faster)
@@ -146,8 +147,6 @@ def generate_previews(resource):
             size = (width, int(width / full_ratio + 1))
         # create thumbnail
         img.thumbnail(size, Image.ANTIALIAS)
-        print('thumbnail')
-        print(img.size)
         # get new picture size
         new_width, new_height = img.size
         # define crop coordinates, depending of ratios
@@ -168,8 +167,6 @@ def generate_previews(resource):
         img = img.crop((left, upper, right, lower))
         # save preview
         save_preview(img, destination, quality)
-        print('crop')
-        print(img.size)
 
 
 

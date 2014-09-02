@@ -1,9 +1,12 @@
 import os
 
+from PIL import Image
+
 from django.test import TestCase, Client
 from django.core.files import File
 
-from pinpict.settings import BASE_DIR, MEDIA_ROOT
+from pinpict.settings import BASE_DIR, MEDIA_ROOT, PREVIEWS_WIDTH, \
+        PREVIEWS_CROP, PREVIEWS_ROOT
 from user.models import User
 from board.models import Board
 from pin.models import Pin, Resource
@@ -129,9 +132,32 @@ class ResourceTest(TestCase):
         post_image()
 
         # assert file has been save on hdd
-        self.assertEqual(os.path.isfile(os.path.join(MEDIA_ROOT,
-            'previews/full/f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg')),
-            True)
+        full = os.path.join(MEDIA_ROOT,
+            'previews/full/f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg')
+        self.assertEqual(os.path.isfile(full), True)
+
+        # assert previews have been generated and file size are good
+        for preview in PREVIEWS_WIDTH:
+            preview_file = os.path.join(MEDIA_ROOT, 'previews', preview[1],
+                'f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg')
+            self.assertEqual(os.path.isfile(preview_file), True)
+            img = Image.open(preview_file)
+            width = img.size[0]
+            # assert it's good width
+            if preview[0] > 200:
+                self.assertEqual(width, 200)
+            else:
+                self.assertEqual(img.size[0], preview[0])
+
+        for preview in PREVIEWS_CROP:
+            preview_file = os.path.join(MEDIA_ROOT, 'previews', preview[2],
+                'f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg')
+            self.assertEqual(os.path.isfile(preview_file), True)
+            img = Image.open(preview_file)
+            width, height = img.size
+            # assert it's good width and height
+            self.assertEqual(width, preview[0])
+            self.assertEqual(height, preview[1])
 
         # assert resource has been save in db
         resource = Resource.objects.get(
@@ -163,9 +189,36 @@ class ResourceTest(TestCase):
                 sha1='f5fbd1897ef61b69f071e36295342571e81017b9').count()
         self.assertEqual(resource, 1)
 
-        # remove file from MEDIA_ROOT
+        # remove files from MEDIA_ROOT
         os.remove(os.path.join(MEDIA_ROOT,
             'previews/full/f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg'))
+        for preview in PREVIEWS_WIDTH:
+            os.remove(os.path.join(MEDIA_ROOT, 'previews', preview[1],
+                'f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg'))
+
+        for preview in PREVIEWS_CROP:
+            os.remove(os.path.join(MEDIA_ROOT, 'previews', preview[2],
+                'f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg'))
+
+        # remove empty folders from MEDIA_ROOT, 'previews'
+        path = os.path.join(MEDIA_ROOT, 'previews')
+
+        def remove_empty_folders(path):
+            # remove empty subfolders
+            files = os.listdir(path)
+            if len(files):
+                for f in files:
+                    fullpath = os.path.join(path, f)
+                    if os.path.isdir(fullpath):
+                        remove_empty_folders(fullpath)
+
+            # if folder is empty, delete it
+            files = os.listdir(path)
+            if len(files) == 0:
+                print('Remove empty folder: {}'.format(path))
+                os.rmdir(path)
+
+        remove_empty_folders(path)
 
 
 
