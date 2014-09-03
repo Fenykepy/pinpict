@@ -24,7 +24,7 @@
 {% endif %}
 {% for pin in board.pin_set.all %}
 <article class="pin">
-    <a href="{% url "pin_view" pin.pk %}"><img src="/media/236/{{ pin.resource.previews_path }}" alt="" /></a>
+    <a href="{% url "pin_view" pin.pk %}"><img src="{{ MEDIA_URL }}previews/236/{{ pin.resource.previews_path }}" alt="" /></a>
     {{ pin.description }}
      <a href="{{ pin.source }}"><footer>
         Pinned from<br />

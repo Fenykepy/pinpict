@@ -10,7 +10,7 @@ from pinpict.settings import BASE_DIR, MEDIA_ROOT, PREVIEWS_WIDTH, \
 from user.models import User
 from board.models import Board
 from pin.models import Pin, Resource
-from pin.utils import extract_domain_name, get_sha1_hexdigest
+from pin.utils import *
 
 
 class UtilsTest(TestCase):
@@ -188,6 +188,19 @@ class ResourceTest(TestCase):
         resource = Resource.objects.filter(
                 sha1='f5fbd1897ef61b69f071e36295342571e81017b9').count()
         self.assertEqual(resource, 1)
+        
+        # get resource
+        resource = Resource.objects.get(
+                sha1='f5fbd1897ef61b69f071e36295342571e81017b9')
+
+        # test set_previews_filename
+        filename = set_previews_filename(resource)
+        self.assertEqual(filename,
+                'f5fbd1897ef61b69f071e36295342571e81017b9.jpg')
+
+        # test set_previews_subdirs
+        subdirs = set_previews_subdirs(resource)
+        self.assertEqual(subdirs, 'f5/fb/')
 
         # remove files from MEDIA_ROOT
         os.remove(os.path.join(MEDIA_ROOT,

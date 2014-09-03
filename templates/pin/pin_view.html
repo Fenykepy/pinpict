@@ -13,7 +13,7 @@
     {% endif %}
 </header>
 {# !!! look to add a lightbox link here, or a link to full image, in template or not #}
-<img src="/media/736/{{ pin.resource.previews_path }}" alt="{{ pin.description }}" />
+<img src="{{ MEDIA_URL }}previews/736/{{ pin.resource.previews_path }}" alt="{{ pin.description }}" />
 <footer>
 <a href="{{ pin.source }}">Found on {{ pin.source_domain }}</a>
 </footer>

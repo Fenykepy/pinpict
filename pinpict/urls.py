@@ -2,6 +2,9 @@ from django.conf.urls import patterns, include, url
 
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf.urls.static import static
 
 from board.views import *
 from pin.views import ListPins
@@ -49,3 +52,8 @@ urlpatterns = patterns('',
         login_required(DeleteBoard.as_view()),
         name='board_delete'),
 )
+
+
+# To get static files during development
+urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
