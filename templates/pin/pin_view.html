@@ -3,9 +3,11 @@
 {% with owner=pin.board.user %}
 <article>
 <header>
+    {% if pin.source %}
     <a href="{{ pin.source }}">
     <button type="button">Visit Site</button>
     </a>
+    {% endif %}
     {% if user.is_authenticated and user == owner %}
     <a href="">
     <button type="button">Edit</button>
@@ -15,7 +17,9 @@
 {# !!! look to add a lightbox link here, or a link to full image, in template or not #}
 <img src="{{ MEDIA_URL }}previews/736/{{ pin.resource.previews_path }}" alt="{{ pin.description }}" />
 <footer>
+{% if pin.source %}
 <a href="{{ pin.source }}">Found on {{ pin.source_domain }}</a>
+{% endif %}
 </footer>
 </article>
 <article class="pin-description">

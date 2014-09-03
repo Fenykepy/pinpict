@@ -26,9 +26,12 @@
 <article class="pin">
     <a href="{% url "pin_view" pin.pk %}"><img src="{{ MEDIA_URL }}previews/236/{{ pin.resource.previews_path }}" alt="" /></a>
     {{ pin.description }}
-     <a href="{{ pin.source }}"><footer>
+    <footer>
+    {% if pin.source_domain %}
+     <a href="{{ pin.source }}">
         Pinned from<br />
        {{ pin.source_domain }}
+    {% endif %}
     </footer></a>
 </article>
 {% endfor %}

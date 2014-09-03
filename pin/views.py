@@ -61,6 +61,16 @@ class CreatePin(CreateView, AjaxableResponseMixin):
 
         return context
 
+    def get(self, request, *args, **kwargs):
+        """
+        Handles GET requests and instantiates a blank version of the form.
+        """
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        form.fields["board"].queryset = Board.objects.filter(user=request.user)
+        return self.render_to_response(self.get_context_data(form=form))
+
     def form_valid(self, form):
         """If form is valid, save associated model."""
         self.object = form.save(commit=False)
