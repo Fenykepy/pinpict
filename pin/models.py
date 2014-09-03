@@ -76,7 +76,8 @@ class Pin(models.Model):
             verbose_name="Last update date")
     source_domain = models.CharField(max_length=254, blank=True, null=True,
             verbose_name="Domain pin comes from")
-    source = models.URLField(verbose_name="Web page pin comes from")
+    source = models.URLField(null=True, blank=True,
+            verbose_name="Web page pin comes from")
     description = models.TextField(verbose_name="Pin description")
     board = models.ForeignKey(Board)
     resource = models.ForeignKey(Resource)
@@ -86,7 +87,8 @@ class Pin(models.Model):
 
     def save(self, **kwargs):
         """get domain from source, then save."""
-        self.source_domain = extract_domain_name(self.source)
+        if self.source:
+            self.source_domain = extract_domain_name(self.source)
 
         super(Pin, self).save()
 

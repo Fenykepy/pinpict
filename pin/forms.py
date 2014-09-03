@@ -9,7 +9,7 @@ class PinForm(ModelForm):
     """Pin creation and edition form."""
     class Meta:
         model = Pin
-        fields = ('board', 'description', 'source')
+        fields = ('board', 'description')
 
 
 

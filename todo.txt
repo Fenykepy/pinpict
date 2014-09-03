@@ -22,6 +22,10 @@
 #        - return 404 when user is not found (for list views)
 #        - test that unknown user in url returns 404
     - pin creation form
+        - list only user's boards in form
+        - redirect to form in case of wrong resource or board
+        - pass resource pk in a hidden field
+
 #        - pin file upload form
         - pin source url form
         - pin find image in url page

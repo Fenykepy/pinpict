@@ -7,7 +7,7 @@ urlpatterns = patterns('',
 
         ## pin creation
         # create pin itself
-        url(r'^create/$',
+        url(r'^create/(?P<resource>\d+)/$',
             login_required(CreatePin.as_view()), name='create_pin'),
 
         # choose pin file origin

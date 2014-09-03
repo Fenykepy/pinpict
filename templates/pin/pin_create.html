@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block body %}
+
+<article id="form">
+    <h1>Select a board</h1>
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="field_wrapper">
+            {{ form.board.label_tag }}
+            {{ form.board.errors }}
+            {{ form.board }}
+        </div>
+
+        <div class="field_wrapper">
+            {{ form.description.label_tag }}
+            {{ form.description.errors }}
+            {{ form.description }}
+        </div>
+
+        {% spaceless %}
+        <p class="center-align">
+        <a href="{% url "boards_list" user.slug %}"><button type="button">Cancel</button></a>
+        <input type="submit" name="save" value="Pin it" />
+        </p>
+        {% endspaceless %}
+    </form>
+    <img src="{{ MEDIA_URL }}previews/236/{{ resource.previews_path }}" alt="" />
+</article>
+
+{% endblock %}

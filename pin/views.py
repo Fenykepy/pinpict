@@ -51,7 +51,35 @@ class ChoosePinOrigin(TemplateView, AjaxableResponseMixin):
 
 class CreatePin(CreateView, AjaxableResponseMixin):
     """View to create a pin."""
-    pass
+    form_class = PinForm
+    model = Pin
+    template_name = 'pin/pin_create.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CreatePin, self).get_context_data(**kwargs)
+        context['resource'] = Resource.objects.get(pk=self.kwargs['resource'])
+
+        return context
+
+    def form_valid(self, form):
+        """If form is valid, save associated model."""
+        self.object = form.save(commit=False)
+        # set resource
+        try:
+            resource = Resource.objects.get(pk=self.kwargs['resource'])
+        except:
+            redirect('/')
+        self.object.resource = resource
+        # save object
+        self.object.save()
+        # redirect to board
+        return redirect(reverse_lazy('board_view',
+                kwargs={
+                    'user': self.request.user.slug,
+                    'board': self.object.board.slug
+                }))
+
+
 
 
 
@@ -81,6 +109,7 @@ class UploadPin(CreateView, AjaxableResponseMixin):
 
         return context
 
+
     def form_valid(self, form):
         """If form is valid, save associated model."""
         self.object = form.save(commit=False)
@@ -94,7 +123,8 @@ class UploadPin(CreateView, AjaxableResponseMixin):
         # returns create_pin view with it's ID, and don't save anything
         if clone:
             print('clone')
-            return redirect(self.get_success_url() + '?resource={0}'.format(clone[0].pk))
+            return redirect(reverse_lazy('create_pin',
+                kwargs={'resource': clone[0].pk}))
 
         self.object.width = self.object.source_file.width
         self.object.height = self.object.source_file.height
@@ -112,7 +142,8 @@ class UploadPin(CreateView, AjaxableResponseMixin):
 
 
         # redirect to create_pin view
-        return redirect(self.get_success_url() + '?resource={0}'.format(self.object.pk))
+        return redirect(reverse_lazy('create_pin',
+            kwargs={'resource': self.object.pk}))
 
 
 
