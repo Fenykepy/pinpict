@@ -188,6 +188,9 @@ class BoardTest(TestCase):
         # assert it doesn't appears in private boards list
         board = Board.privates.filter(slug='richard-avedon').count()
         self.assertEqual(board, 0)
+        # assert user n_boards has been updated
+        user = User.objects.get(username='flr')
+        self.assertEqual(user.n_boards, 3)
 
 
 

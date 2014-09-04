@@ -22,8 +22,8 @@
 #        - return 404 when user is not found (for list views)
 #        - test that unknown user in url returns 404
     - pin creation form
-        - list only user's boards in form
-        - redirect to form in case of wrong resource or board
+#        - list only user's boards in form
+#        - raise 404 in case of wrong resource or board 
         - pass resource pk in a hidden field
 
 #        - pin file upload form
@@ -31,9 +31,13 @@
         - pin find image in url page
 #        - previews generation functions
 #            - previews generation tests
-        - pin itself creation form
+#        - pin itself creation form
     - pin update form
     - pin delete form
+#    - test board n_pins counter
+#    - test user n_boards counter
+#    - test user n_pins counter
+#    - test resource n_pins counter
 
     - CSS
 

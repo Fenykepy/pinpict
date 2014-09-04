@@ -248,6 +248,18 @@ class ResourceTest(TestCase):
             description='Description of pin').count()
         self.assertEqual(pins, 1)
 
+        # assert resource n_pins has been updated
+        resource = Resource.objects.get(pk=1)
+        self.assertEqual(resource.n_pins, 1)
+
+        # assert user n_pins has been updated
+        user = User.objects.get(pk=1)
+        self.assertEqual(user.n_pins, 1)
+
+        # assert board n_pins has been updated
+        board = Board.objects.get(pk=1)
+        self.assertEqual(board.n_pins, 1)
+
         # test pin creation with a board which isn't user's one
         response = self.client.post('/pin/create/1/', {
             'board': self.board2.pk,
