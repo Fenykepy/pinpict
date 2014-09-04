@@ -71,7 +71,21 @@ class ResourceTest(TestCase):
                 email='toto@lavilotte-rolle.fr',
                 password='top_secret'
         )
+        
+        # create one board for each user
+        self.board = Board(
+                title="user board",
+                description="user board for tests",
+                policy=1,
+                user=self.user)
+        self.board.save()
 
+        self.board2 = Board(
+                title="user2 board",
+                description="user2 board for tests",
+                policy=1,
+                user=self.user2)
+        self.board2.save()
 
 
     def login(self, user):
@@ -93,6 +107,11 @@ class ResourceTest(TestCase):
             },
             {
                 'url': '/pin/upload/',
+                'status': 302,
+                'template': '404.html',
+            },
+            {
+                'url': '/pin/create/1/',
                 'status': 302,
                 'template': '404.html',
             },
@@ -202,6 +221,54 @@ class ResourceTest(TestCase):
         subdirs = set_previews_subdirs(resource)
         self.assertEqual(subdirs, 'f5/fb/')
 
+        # test pin creation with new resource
+        response = self.client.get('/pin/create/1/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'pin/pin_create.html')
+        # assert no other users in board select
+        self.assertEqual(response.context['form'].fields['board']._queryset.count(), 1)
+        self.assertEqual(response.context['form'].fields['board']._queryset[0].pk, 1)
+
+        # assert ressource is in context
+        self.assertEqual(response.context['resource'], resource)
+
+        # test pin creation with not existing resource
+        response = self.client.get('/pin/create/22/')
+        self.assertEqual(response.status_code, 404)
+
+        # test pin creation
+        response = self.client.post('/pin/create/1/', {
+            'board': self.board.pk,
+            'description': 'Description of pin',
+            }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'pin/pin_list.html')
+        # assert pin is in db
+        pins = Pin.objects.filter(resource=resource, board=self.board.pk,
+            description='Description of pin').count()
+        self.assertEqual(pins, 1)
+
+        # test pin creation with a board which isn't user's one
+        response = self.client.post('/pin/create/1/', {
+            'board': self.board2.pk,
+            'description': 'Try to post a pin on a board which isn\'t mine',
+            }, follow=True)
+        # assert form is served again
+        self.assertEqual(response.templates[0].name, '404.html')
+        # assert no pin has been saved
+        pins = Pin.objects.all().count()
+        self.assertEqual(pins, 1)
+
+        # test pin creation with a resource which doesn't exists
+        response = self.client.post('/pin/create/2/', {
+            'board': self.board.pk,
+            'description': 'Try to post a pin with an inexisting resource.',
+            }, follow=True)
+        self.assertEqual(response.templates[0].name, '404.html')
+
+
+
+        
         # remove files from MEDIA_ROOT
         os.remove(os.path.join(MEDIA_ROOT,
             'previews/full/f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg'))
@@ -212,6 +279,7 @@ class ResourceTest(TestCase):
         for preview in PREVIEWS_CROP:
             os.remove(os.path.join(MEDIA_ROOT, 'previews', preview[2],
                 'f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg'))
+
 
         # remove empty folders from MEDIA_ROOT, 'previews'
         path = os.path.join(MEDIA_ROOT, 'previews')

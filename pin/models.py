@@ -2,6 +2,8 @@ import os
 
 from django.core.files.storage import FileSystemStorage
 from django.db import models
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
 from board.models import Board
 from pin.utils import extract_domain_name, get_sha1_hexdigest
@@ -93,4 +95,23 @@ class Pin(models.Model):
         super(Pin, self).save()
 
 
+@receiver(post_save, sender=Pin)
+@receiver(post_delete, sender=Pin)
+def update_n_pins(sender, instance, **kwargs):
+    """Update Board's n_pins, Resource's n_pins and
+    User's n_pins after a pin is save or delete."""
+    # update board n_pins
+    instance.board.n_pins = instance.board.pin_set.all().count()
+    instance.board.save()
 
+    # update resource n_pins
+    instance.resource.n_pins = instance.resource.pin_set.all().count()
+    instance.resource.save()
+
+    # update user n_pins
+    n = 0
+    for board in instance.board.user.board_set.all():
+        n += board.n_pins
+
+    instance.board.user.n_pins = n
+    instance.board.user.save()

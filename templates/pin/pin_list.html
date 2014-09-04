@@ -31,8 +31,11 @@
      <a href="{{ pin.source }}">
         Pinned from<br />
        {{ pin.source_domain }}
+    </a>
+    {% else %}
+        Uploaded to Pinpict
     {% endif %}
-    </footer></a>
+    </footer>
 </article>
 {% endfor %}
 {% endblock body %}

@@ -4,6 +4,7 @@ from django.views.generic import ListView, DetailView, \
         CreateView, UpdateView, DeleteView, TemplateView, \
         FormView
 from django.core.urlresolvers import reverse_lazy
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 
 from board.views import AjaxableResponseMixin
@@ -55,11 +56,18 @@ class CreatePin(CreateView, AjaxableResponseMixin):
     model = Pin
     template_name = 'pin/pin_create.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        # get resource from url parameter or raise 404
+        self.resource = get_object_or_404(Resource, pk=self.kwargs['resource'])
+        return super(CreateView, self).dispatch(request, *args, **kwargs)
+
+
     def get_context_data(self, **kwargs):
         context = super(CreatePin, self).get_context_data(**kwargs)
-        context['resource'] = Resource.objects.get(pk=self.kwargs['resource'])
+        context['resource'] = self.resource
 
         return context
+
 
     def get(self, request, *args, **kwargs):
         """
@@ -71,17 +79,18 @@ class CreatePin(CreateView, AjaxableResponseMixin):
         form.fields["board"].queryset = Board.objects.filter(user=request.user)
         return self.render_to_response(self.get_context_data(form=form))
 
+
     def form_valid(self, form):
         """If form is valid, save associated model."""
         self.object = form.save(commit=False)
-        # set resource
-        try:
-            resource = Resource.objects.get(pk=self.kwargs['resource'])
-        except:
-            redirect('/')
-        self.object.resource = resource
+        
+        # if posted board doesn't belongs to user raise 404
+        if self.object.board.user != self.request.user:
+            raise Http404
+        self.object.resource = self.resource
         # save object
         self.object.save()
+
         # redirect to board
         return redirect(reverse_lazy('board_view',
                 kwargs={
@@ -93,9 +102,17 @@ class CreatePin(CreateView, AjaxableResponseMixin):
 
 
 
-class UpdatePin(UpdateView, AjaxableResponseMixin):
+class UpdatePin(CreatePin, UpdateView):
     """View to update a pin."""
-    pass
+    def get_resource(self):
+        pass
+
+
+    def get_context_data(self, **kwargs):
+        context = super(CreatePin, self).get_context_data(**kwargs)
+        context['resource'] = self.object.resource
+
+        return context
 
 
 

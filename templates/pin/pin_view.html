@@ -9,7 +9,7 @@
     </a>
     {% endif %}
     {% if user.is_authenticated and user == owner %}
-    <a href="">
+    <a href="{% url 'update_pin' pin.pk %}">
     <button type="button">Edit</button>
     </a>
     {% endif %}
@@ -19,6 +19,8 @@
 <footer>
 {% if pin.source %}
 <a href="{{ pin.source }}">Found on {{ pin.source_domain }}</a>
+{% else %}
+Uploaded to Pinpict
 {% endif %}
 </footer>
 </article>

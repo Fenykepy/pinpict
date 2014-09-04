@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
 from user.models import User
 from board.slug import unique_slugify
@@ -67,4 +68,12 @@ class Board(models.Model):
 
     def __str__(self):
         return "%s" % self.title
+
+@receiver(post_save, sender=Board)
+@receiver(post_delete, sender=Board)
+def update_user_n_boards(sender, instance, **kwargs):
+    """Update user's n_boards after board save or delete."""
+    instance.user.n_boards = Board.objects.filter(user = instance.user).count()
+    instance.user.save()
+
 
