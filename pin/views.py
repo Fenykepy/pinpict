@@ -122,7 +122,7 @@ class UpdatePin(UpdateView, AjaxableResponseMixin):
         Handles get requests and instantiates a blank version of the form.
         """
         self.object = self.get_object()
-        # ensure user is pin owner
+        # ensure user is pin's owner
         self.check_user()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
@@ -131,19 +131,22 @@ class UpdatePin(UpdateView, AjaxableResponseMixin):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-    def form_valid(self, form)
+    def form_valid(self, form):
         """If form is valaid, save associated model."""
         self.object = form.save(commit=False)
 
-        # ensure user is pin owner
+        # ensure user is pin's owner
         self.check_user()
         self.object.save()
+
+        return redirect(self.get_success_url())
 
 
     def get_context_data(self, **kwargs):
         context = super(UpdatePin, self).get_context_data(**kwargs)
         context['submit'] = 'Save changes'
         context['delete'] = 'Delete pin'
+        context['resource'] = self.object.resource
 
         return context
 
@@ -169,7 +172,7 @@ class DeletePin(DeleteView, AjaxableResponseMixin):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        # ensure user is pin owner
+        # ensure user is pin's owner
         self.check_user()
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
@@ -182,14 +185,14 @@ class DeletePin(DeleteView, AjaxableResponseMixin):
         """
         self.object = self.get_object()
 
-        # ensure user is pin owner
+        # ensure user is pin's owner
         self.check_user()
         self.object.delete()
 
         return redirect(self.get_success_url())
 
 
-    # ensure that user is pin owner !!!
+    # ensure that user is pin's owner !!!
     def get_success_url(self):
         return reverse_lazy('boards_list',
                 kwargs={'user': self.request.user.slug})
