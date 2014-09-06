@@ -65,6 +65,7 @@ class CreatePin(CreateView, AjaxableResponseMixin):
     def get_context_data(self, **kwargs):
         context = super(CreatePin, self).get_context_data(**kwargs)
         context['resource'] = self.resource
+        context['submit'] = 'Pin it'
 
         return context
 
@@ -76,6 +77,7 @@ class CreatePin(CreateView, AjaxableResponseMixin):
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)
+        # ensure that only user's boards are listed
         form.fields["board"].queryset = Board.objects.filter(user=request.user)
         return self.render_to_response(self.get_context_data(form=form))
 
@@ -102,23 +104,50 @@ class CreatePin(CreateView, AjaxableResponseMixin):
 
 
 
-class UpdatePin(CreatePin, UpdateView):
+class UpdatePin(UpdateView, AjaxableResponseMixin):
     """View to update a pin."""
-    def get_resource(self):
-        pass
+    form_class = PinForm
+    model = Pin
+    template_name = 'pin/pin_create.html'
+    context_object_name = 'pin'
+
+    # ensure that user is pin owner !!!
+    def get(self, request, *args, **kwargs):
+        """
+        Handles get requests and instantiates a blank version of the form.
+        """
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        # ensure that only user's boards are listed
+        form.fields["board"].queryset = Board.objects.filter(user=request.user)
+        return self.render_to_response(self.get_context_data(form=form))
 
 
     def get_context_data(self, **kwargs):
-        context = super(CreatePin, self).get_context_data(**kwargs)
-        context['resource'] = self.object.resource
+        context = super(UpdatePin, self).get_context_data(**kwargs)
+        context['submit'] = 'Save changes'
+        context['delete'] = 'Delete pin'
 
         return context
+
+
+    def get_success_url(self):
+        return reverse_lazy('pin_view',
+                kwargs={'pk': self.object.pk})
 
 
 
 class DeletePin(DeleteView, AjaxableResponseMixin):
     """View to delete a pin."""
-    pass
+    model  = Pin
+    template_name = 'pin/pin_delete.html'
+    context_object_name = 'pin'
+
+    # ensure that user is pin owner !!!
+    def get_success_url(self):
+        return reverse_lazy('boards_list',
+                kwargs={'user': self.request.user.slug})
 
 
 

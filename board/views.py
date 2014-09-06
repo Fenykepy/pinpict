@@ -126,9 +126,9 @@ class UpdateBoard(UpdateView, AjaxableResponseMixin):
 
     def get_context_data(self, **kwargs):
         context = super(UpdateBoard, self).get_context_data(**kwargs)
-        context['title'] = 'edit a board'
-        context['button'] = 'save changes'
-        context['delete'] = 'delete board'
+        context['title'] = 'Edit a board'
+        context['button'] = 'Save changes'
+        context['delete'] = 'Delete board'
 
         return context
 

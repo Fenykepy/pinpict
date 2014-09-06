@@ -18,15 +18,18 @@
             {{ form.description.errors }}
             {{ form.description }}
         </div>
+        <img src="{{ MEDIA_URL }}previews/236/{{ pin.resource.previews_path }}" alt="" />
 
         {% spaceless %}
         <p class="center-align">
+        {% if delete %}
+        <a href="{% url "pin_delete" pin.pk %}"><button type="button">{{ delete }}</button></a>
+        {% endif %}
         <a href="{% url "boards_list" user.slug %}"><button type="button">Cancel</button></a>
-        <input type="submit" name="save" value="Pin it" />
+        <input type="submit" name="save" value="{{ submit }}" />
         </p>
         {% endspaceless %}
     </form>
-    <img src="{{ MEDIA_URL }}previews/236/{{ resource.previews_path }}" alt="" />
 </article>
 
 {% endblock %}
