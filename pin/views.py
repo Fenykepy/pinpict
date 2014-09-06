@@ -111,17 +111,33 @@ class UpdatePin(UpdateView, AjaxableResponseMixin):
     template_name = 'pin/pin_create.html'
     context_object_name = 'pin'
 
-    # ensure that user is pin owner !!!
+    def check_user(self):
+        """Raise 404 if user isn't object's owner."""
+        if self.object.board.user != self.request.user:
+            raise Http404
+
+
     def get(self, request, *args, **kwargs):
         """
         Handles get requests and instantiates a blank version of the form.
         """
         self.object = self.get_object()
+        # ensure user is pin owner
+        self.check_user()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         # ensure that only user's boards are listed
         form.fields["board"].queryset = Board.objects.filter(user=request.user)
         return self.render_to_response(self.get_context_data(form=form))
+
+
+    def form_valid(self, form)
+        """If form is valaid, save associated model."""
+        self.object = form.save(commit=False)
+
+        # ensure user is pin owner
+        self.check_user()
+        self.object.save()
 
 
     def get_context_data(self, **kwargs):
@@ -143,6 +159,35 @@ class DeletePin(DeleteView, AjaxableResponseMixin):
     model  = Pin
     template_name = 'pin/pin_delete.html'
     context_object_name = 'pin'
+
+    def check_user(self):
+        """Raise 404 if user isn't object's owner."""
+        if self.object.board.user != self.request.user:
+            raise Http404
+
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        # ensure user is pin owner
+        self.check_user()
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
+    
+    def delete(self, request, *args, **kwargs):
+        """
+        Calls the delete() method on the fetched object and then
+        redirects to the success URL.
+        """
+        self.object = self.get_object()
+
+        # ensure user is pin owner
+        self.check_user()
+        self.object.delete()
+
+        return redirect(self.get_success_url())
+
 
     # ensure that user is pin owner !!!
     def get_success_url(self):
