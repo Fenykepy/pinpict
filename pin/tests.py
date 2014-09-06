@@ -372,7 +372,7 @@ class PinCreationTest(TestCase):
 
 
         response = self.client.get('/pin/create/1/')
-        # assert no other users in board select
+        # assert no other users' boards are in select
         self.assertEqual(response.context['form'].fields['board']._queryset.count(), 1)
         self.assertEqual(response.context['form'].fields['board']._queryset[0].pk, 1)
 
@@ -426,8 +426,129 @@ class PinCreationTest(TestCase):
 
 
 
+class PinUpdateTest(TestCase):
+    """Pin update test class."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # create resources
+        create_test_resources(self)
+        # create boards
+        create_test_boards(self)
+        # create pins
+        create_test_pins(self)
+        # launch client
+        self.client = Client()
+
+
+    def test_urls(self):
+        urls = [
+            {
+                'url': '/pin/1/edit/',
+                'status': 302,
+                'template': '404.html',
+            },
+            {
+                'url': '/pin/302/edit/',
+                'status': 302,
+                'template': '404.html',
+            },
+            {
+                'url': '/pin/edit/',
+                'status': 404,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_logged_in_urls(self):
+        # login with user 1
+        login(self, self.user)
+
+        urls = [
+            # try to update user's pin
+            {
+                'url': '/pin/1/edit/',
+                'status': 200,
+                'template': 'pin/pin_create.html',
+            },
+            # try to update another user's pin
+            {
+                'url': '/pin/2/edit/',
+                'status': 404,
+                'template': '404.html',
+            },
+            {
+                'url': '/pin/302/edit/',
+                'status': 404,
+                'template': '404.html',
+            },
+            {
+                'url': '/pin/edit/',
+                'status': 404,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_pin_update(self):
+        # login with user
+        login(self, self.user)
+        
+        response = self.client.get('/pin/1/edit/')
+        # assert no other users' boards are in select
+        self.assertEqual(response.context['form'].fields['board']._queryset.count(), 1)
+        self.assertEqual(response.context['form'].fields['board']._queryset[0].pk, 1)
+
+        # assert resource is in context
+        self.assertEqual(response.context['resource'], self.resource)
+
+        # test post
+        response = self.client.post('/pin/1/edit/', {
+            'board': self.board.pk,
+            'description': 'New description',
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'pin/pin_view.html')
+        # assert change have been save in db
+        pin = Pin.objects.get(pk=1)
+        self.assertEqual(pin.description, 'New description')
+
+
+    def test_pin_update_with_wrong_board(self):
+        # login with user
+        login(self, self.user)
+        
+        response = self.client.post('/pin/1/edit/', {
+            'board': self.board2.pk,
+            'description': 'New description',
+        }, follow=True)
+        self.assertEqual(response.status_code, 404)
+        # assert change hasn't been save in db
+        pin = Pin.objects.get(pk=1)
+        self.assertEqual(pin.board, self.board)
+
+
+    def test_pin_update_with_wrong_user(self):
+        # login with user
+        login(self, self.user)
+
+        response = self.client.post('/pin/2/edit/', {
+            'board': self.board2.pk,
+            'description': 'New description',
+        }, follow=True)
+        self.assertEqual(response.status_code, 404)
+        # assert change hasn't been save in db
+        pin = Pin.objects.get(pk=2)
+        self.assertEqual(pin.description, 'Test pin for second board')
 
 
 
+class PinDeleteTest(TestCase):
+    """Pin deletion test class."""
+    pass
 
 
