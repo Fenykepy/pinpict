@@ -549,6 +549,129 @@ class PinUpdateTest(TestCase):
 
 class PinDeleteTest(TestCase):
     """Pin deletion test class."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # create resources
+        create_test_resources(self)
+        # create boards
+        create_test_boards(self)
+        # create pins
+        create_test_pins(self)
+        # launch client
+        self.client = Client()
+
+
+    def test_urls(self):
+        urls = [
+            {
+                'url': '/pin/1/delete/',
+                'status': 302,
+                'template': '404.html',
+            },
+            {
+                'url': '/pin/372/delete/',
+                'status': 302,
+                'template': '404.html',
+            },
+            {
+                'url': '/pin/delete/',
+                'status': 404,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_logged_in_urls(self):
+        # login with user 1
+        login(self, self.user)
+
+        urls = [
+            # try to delete user's pin
+            {
+                'url': '/pin/1/delete/',
+                'status': 200,
+                'template': 'pin/pin_delete.html',
+            },
+            # try to delete pin which doen't exist
+            {
+                'url': '/pin/372/delete/',
+                'status': 404,
+                'template': '404.html',
+            },
+            # try to delete another user's pin
+            {
+                'url': '/pin/2/delete/',
+                'status': 404,
+                'template': '404.html',
+            },
+            {
+                'url': '/pin/delete/',
+                'status': 404,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_pin_delete(self):
+        # login with user
+        login(self, self.user)
+
+        response = self.client.get('/pin/1/delete/')
+        self.assertEqual(response.context['pin'], self.pin)
+
+        response = self.client.post('/pin/1/delete/',
+                follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'board/board_list.html')
+        
+        # assert pin has been deleted
+        n_pins = Pin.objects.all().count()
+        self.assertEqual(n_pins, 1)
+        pins = Pin.objects.all()
+        self.assertEqual(pins[0].pk, 2)
+
+        # assert board n_pins, resource n_pins and user n_pins have been updated
+        resource = Resource.objects.get(pk=1)
+        self.assertEqual(resource.n_pins, 0)
+        
+        user = User.objects.get(pk=1)
+        self.assertEqual(user.n_pins, 0)
+
+        board = Board.objects.get(pk=1)
+        self.assertEqual(board.n_pins, 0)
+
+
+    def test_pin_delete_with_wrong_user(self):
+        # login with user
+        login(self, self.user)
+
+        response = self.client.post('/pin/2/delete/')
+        self.assertEqual(response.status_code, 404)
+        
+        # assert no pin has been deleted
+        n_pins = Pin.objects.all().count()
+        self.assertEqual(n_pins, 2)
+
+
+    def test_pin_delete_with_unexisting_pin(self):
+        # login with user
+        login(self, self.user)
+
+        response = self.client.post('/pin/673/delete/')
+        self.assertEqual(response.status_code, 404)
+
+
+class PinView(TestCase):
     pass
 
+
+
+
+
+
+        
 
