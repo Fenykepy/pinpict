@@ -204,7 +204,6 @@ class UploadPin(CreateView, AjaxableResponseMixin):
     model = Resource
     template_name = 'board/board_forms.html'
     form_class = UploadPinForm
-    success_url = reverse_lazy('create_pin')
 
     def get_context_data(self, **kwargs):
         context = super(UploadPin, self).get_context_data(**kwargs)
@@ -241,9 +240,6 @@ class UploadPin(CreateView, AjaxableResponseMixin):
 
         # create previews
         generate_previews(self.object)
-
-
-
 
         # redirect to create_pin view
         return redirect(reverse_lazy('create_pin',

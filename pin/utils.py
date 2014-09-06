@@ -33,6 +33,24 @@ def extract_domain_name(url):
 
 
 
+def remove_empty_folders(path):
+    # remove empty subfolders
+    files = os.listdir(path)
+        
+    if len(files):
+        for f in files:
+            fullpath = os.path.join(path, f)
+            if os.path.isdir(fullpath):
+                remove_empty_folders(fullpath)
+
+    # if folder is empty, delete it
+    files = os.listdir(path)
+    if len(files) == 0:
+        #print('Remove empty folder: {}'.format(path))
+        os.rmdir(path)
+
+
+
 def set_previews_filename(resource):
     """Create a filename from sha1."""
     return '{}.jpg'.format(resource.sha1)

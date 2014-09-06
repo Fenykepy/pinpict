@@ -13,8 +13,114 @@ from pin.models import Pin, Resource
 from pin.utils import *
 
 
+
+# to move to user.tests
+def create_test_users(instance):
+    """Create two users for running tests."""
+    # create first user (staff)
+    instance.user = User.objects.create_user(
+            username='flr',
+            email='pro@lavilotte-rolle.fr',
+            password='top_secret'
+    )
+    instance.user.is_staff = True
+    instance.user.save()
+
+    # create second user (normal)
+    instance.user2 = User.objects.create_user(
+            username='toto',
+            email='toto@lavilotte-rolle.fr',
+            password='top_secret'
+    )
+
+
+
+# to move to user.tests
+def login(instance, user):
+    """Login with given user, assert it's ok"""
+    login = instance.client.login(username=user.username,
+            password='top_secret')
+    instance.assertEqual(login, True)
+
+
+
+# to move to board.tests
+def create_test_boards(instance):
+    """Create one test board for each user.
+    run create_test_users first.
+    """
+    instance.board = Board(
+            title='user board',
+            description='user board for tests',
+            policy=1,
+            user = instance.user)
+    instance.board.save()
+
+    instance.board2 = Board(
+            title='user2 board',
+            description='user2 board for tests',
+            policy=1,
+            user = instance.user2)
+    instance.board2.save()
+
+
+
+def create_test_resources(instance):
+    """Create two resources for tests."""
+    instance.resource = Resource(
+        sha1='4a523fe9c50a2f0b1dd677ae33ea0ec6e4a4b2a9',
+        source_file='previews/full/4a/52/4a523fe9c50a2f0b1' +
+        'dd677ae33ea0ec6e4a4b2a9.jpg',
+    )
+    instance.resource.save()
+
+    instance.resource2 = Resource(
+        sha1='757838b58a509a1f5bd144bf81311c6a2beb4adf',
+        source_file='previews/full/75/78/757838b58a509a1' + 
+        'f5bd144bf81311c6a2beb4adf.jpg',
+    )
+    instance.resource2.save()
+
+
+
+def create_test_pins(instance):
+    """Create two pins for tests.
+    run create_test_boards and create_test_resources first.
+    """
+    instance.pin = Pin(
+            resource = instance.resource,
+            board = instance.board,
+            description = 'Test pin for first board'
+    )
+    instance.pin.save()
+
+    instance.pin2 = Pin(
+            resource = instance.resource2,
+            board = instance.board2,
+            description = 'Test pin for second board'
+    )
+    instance.pin2.save()
+
+
+
+def test_urls(instance, urls):
+    """Test urls."""
+    for elem in urls:
+        response = instance.client.get(elem['url'])
+        instance.assertEqual(response.status_code, elem['status'])
+        response = instance.client.get(elem['url'], follow=True)
+        instance.assertEqual(response.templates[0].name, elem['template'])
+
+
+
+
 class UtilsTest(TestCase):
     """Utils functions test."""
+
+    def setUp(self):
+        create_test_resources(self)
+
+
     def test_extract_domain_name(self):
         urls = [
             {
@@ -50,56 +156,31 @@ class UtilsTest(TestCase):
         self.assertEqual(len(sha1), 40)
 
 
+    def test_set_previews_filename(self):
+        filename = set_previews_filename(self.resource)
+        self.assertEqual(filename,
+                '4a523fe9c50a2f0b1dd677ae33ea0ec6e4a4b2a9.jpg')
+
+
+    def test_set_previews_subdirs(self):
+        subdirs = set_previews_subdirs(self.resource)
+        self.assertEqual(subdirs, '4a/52/')
+
+
 
 
 class ResourceTest(TestCase):
     """Resource model and views tests."""
 
     def setUp(self):
-        # create first user
-        self.user = User.objects.create_user(
-                username='flr',
-                email='pro@lavilotte-rolle.fr',
-                password='top_secret'
-        )
-        self.user.website = 'http://lavilotte-rolle.fr'
-        self.user.save()
-        
-        # create a second user
-        self.user2 = User.objects.create_user(
-                username='toto',
-                email='toto@lavilotte-rolle.fr',
-                password='top_secret'
-        )
-        
-        # create one board for each user
-        self.board = Board(
-                title="user board",
-                description="user board for tests",
-                policy=1,
-                user=self.user)
-        self.board.save()
-
-        self.board2 = Board(
-                title="user2 board",
-                description="user2 board for tests",
-                policy=1,
-                user=self.user2)
-        self.board2.save()
-
-
-    def login(self, user):
-        """Login with given user, assert it's ok"""
-        login = self.client.login(username=user.username,
-                password='top_secret')
-        self.assertEqual(login, True)
-
+        # create users
+        create_test_users(self)
+        # launch client
+        self.client = Client()
 
 
     def test_urls(self):
-        """Test urls and their templates."""
         urls = [
-             # to reactivate when login page will work 
             {
                 'url': '/pin/choose-origin/',
                 'status': 302,
@@ -110,45 +191,42 @@ class ResourceTest(TestCase):
                 'status': 302,
                 'template': '404.html',
             },
+        ]
+        test_urls(self, urls)
+
+    def test_logged_in_urls(self):
+        # login with user
+        login(self, self.user)
+
+        urls = [
             {
-                'url': '/pin/create/1/',
-                'status': 302,
-                'template': '404.html',
+                'url': '/pin/choose-origin/',
+                'status': 200,
+                'template': 'pin/pin_choose_origin.html',
+            },
+            {
+                'url': '/pin/upload/',
+                'status': 200,
+                'template': 'board/board_forms.html'
             },
         ]
-
-        for elem in urls:
-            response = self.client.get(elem['url'])
-            self.assertEqual(response.status_code, elem['status'])
-            response = self.client.get(elem['url'], follow=True)
-            self.assertEqual(response.templates[0].name, elem['template'])
+        test_urls(self, urls)
 
 
     def test_resource_upload(self):
         """Test upload of a resource file."""
         # login with user
-        self.login(self.user)
+        login(self, self.user)
 
-        # go to choose origin page
-        response = self.client.get('/pin/choose-origin/', follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name,
-                'pin/pin_choose_origin.html')
-
-        # go to resource upload page
-        response = self.client.get('/pin/upload/', follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'board/board_forms.html')
-        
         def post_image():
             # post an image file
             with open(os.path.join(BASE_DIR, 'pin',
                 'test_files', 'test.jpg'), 'rb') as fp:
-                self.client.post('/pin/upload/', {'source_file': fp})
-            self.assertEqual(response.status_code, 200)
+                return self.client.post('/pin/upload/', {'source_file': fp})
 
         # post image file
-        post_image()
+        response = post_image()
+        self.assertEqual(response.status_code, 302)
 
         # assert file has been save on hdd
         full = os.path.join(MEDIA_ROOT,
@@ -189,7 +267,8 @@ class ResourceTest(TestCase):
 
 
         # upload again same image
-        post_image()
+        response = post_image()
+        self.assertEqual(response.status_code, 302)
 
         # assert no new file has been saved on hdd (with a similar name,
         # in case FyleSystemStorage didn't work
@@ -208,78 +287,6 @@ class ResourceTest(TestCase):
                 sha1='f5fbd1897ef61b69f071e36295342571e81017b9').count()
         self.assertEqual(resource, 1)
         
-        # get resource
-        resource = Resource.objects.get(
-                sha1='f5fbd1897ef61b69f071e36295342571e81017b9')
-
-        # test set_previews_filename
-        filename = set_previews_filename(resource)
-        self.assertEqual(filename,
-                'f5fbd1897ef61b69f071e36295342571e81017b9.jpg')
-
-        # test set_previews_subdirs
-        subdirs = set_previews_subdirs(resource)
-        self.assertEqual(subdirs, 'f5/fb/')
-
-        # test pin creation with new resource
-        response = self.client.get('/pin/create/1/')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'pin/pin_create.html')
-        # assert no other users in board select
-        self.assertEqual(response.context['form'].fields['board']._queryset.count(), 1)
-        self.assertEqual(response.context['form'].fields['board']._queryset[0].pk, 1)
-
-        # assert ressource is in context
-        self.assertEqual(response.context['resource'], resource)
-
-        # test pin creation with not existing resource
-        response = self.client.get('/pin/create/22/')
-        self.assertEqual(response.status_code, 404)
-
-        # test pin creation
-        response = self.client.post('/pin/create/1/', {
-            'board': self.board.pk,
-            'description': 'Description of pin',
-            }, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'pin/pin_list.html')
-        # assert pin is in db
-        pins = Pin.objects.filter(resource=resource, board=self.board.pk,
-            description='Description of pin').count()
-        self.assertEqual(pins, 1)
-
-        # assert resource n_pins has been updated
-        resource = Resource.objects.get(pk=1)
-        self.assertEqual(resource.n_pins, 1)
-
-        # assert user n_pins has been updated
-        user = User.objects.get(pk=1)
-        self.assertEqual(user.n_pins, 1)
-
-        # assert board n_pins has been updated
-        board = Board.objects.get(pk=1)
-        self.assertEqual(board.n_pins, 1)
-
-        # test pin creation with a board which isn't user's one
-        response = self.client.post('/pin/create/1/', {
-            'board': self.board2.pk,
-            'description': 'Try to post a pin on a board which isn\'t mine',
-            }, follow=True)
-        # assert form is served again
-        self.assertEqual(response.templates[0].name, '404.html')
-        # assert no pin has been saved
-        pins = Pin.objects.all().count()
-        self.assertEqual(pins, 1)
-
-        # test pin creation with a resource which doesn't exists
-        response = self.client.post('/pin/create/2/', {
-            'board': self.board.pk,
-            'description': 'Try to post a pin with an inexisting resource.',
-            }, follow=True)
-        self.assertEqual(response.templates[0].name, '404.html')
-
-
-
         
         # remove files from MEDIA_ROOT
         os.remove(os.path.join(MEDIA_ROOT,
@@ -295,23 +302,127 @@ class ResourceTest(TestCase):
 
         # remove empty folders from MEDIA_ROOT, 'previews'
         path = os.path.join(MEDIA_ROOT, 'previews')
-
-        def remove_empty_folders(path):
-            # remove empty subfolders
-            files = os.listdir(path)
-            if len(files):
-                for f in files:
-                    fullpath = os.path.join(path, f)
-                    if os.path.isdir(fullpath):
-                        remove_empty_folders(fullpath)
-
-            # if folder is empty, delete it
-            files = os.listdir(path)
-            if len(files) == 0:
-                print('Remove empty folder: {}'.format(path))
-                os.rmdir(path)
-
         remove_empty_folders(path)
+
+
+
+
+class PinCreationTest(TestCase):
+    """Pin creation test class."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # create boards
+        create_test_boards(self)
+        # create resources
+        create_test_resources(self)
+        # launch client
+        self.client = Client()
+
+
+
+    def test_urls(self):
+        urls = [
+            {
+                'url': '/pin/create/1/',
+                'status': 302,
+                'template': '404.html',
+            },
+            {
+                'url': '/pin/create/',
+                'status': 404,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+
+    def test_logged_in_urls(self):
+        # login with user
+        login(self, self.user)
+
+        urls = [
+            # test pin creation with existing resource
+            {
+                'url': '/pin/create/1/',
+                'status': 200,
+                'template': 'pin/pin_create.html',
+            },
+            # test pin creation with no resource
+            {
+                'url': '/pin/create/',
+                'status': 404,
+                'template': '404.html',
+            },
+            # test pin creation with not existing resource
+            {
+                'url': '/pin/create/22/',
+                'status': 404,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_pin_creation(self):
+        # login with user
+        login(self, self.user)
+
+
+        response = self.client.get('/pin/create/1/')
+        # assert no other users in board select
+        self.assertEqual(response.context['form'].fields['board']._queryset.count(), 1)
+        self.assertEqual(response.context['form'].fields['board']._queryset[0].pk, 1)
+
+        # assert ressource is in context
+        self.assertEqual(response.context['resource'], self.resource)
+
+        # test pin creation
+        response = self.client.post('/pin/create/1/', {
+            'board': self.board.pk,
+            'description': 'Description of pin',
+            }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'pin/pin_list.html')
+        # assert pin is in db
+        pins = Pin.objects.filter(resource=self.resource, board=self.board,
+            description='Description of pin').count()
+        self.assertEqual(pins, 1)
+
+        # assert resource n_pins has been updated
+        resource = Resource.objects.get(pk=1)
+        self.assertEqual(resource.n_pins, 1)
+
+        # assert user n_pins has been updated
+        user = User.objects.get(pk=1)
+        self.assertEqual(user.n_pins, 1)
+
+        # assert board n_pins has been updated
+        board = Board.objects.get(pk=1)
+        self.assertEqual(board.n_pins, 1)
+
+
+    def test_pin_creation_with_wrong_board(self):
+        response = self.client.post('/pin/create/1/', {
+            'board': self.board2.pk,
+            'description': 'Try to post a pin on a board which isn\'t mine',
+            }, follow=True)
+        # assert form is served again
+        self.assertEqual(response.templates[0].name, '404.html')
+        # assert no pin has been saved
+        pins = Pin.objects.all().count()
+        self.assertEqual(pins, 0)
+
+
+    def test_pin_creation_with_unexisting_resource(self):
+        response = self.client.post('/pin/create/2/', {
+            'board': self.board.pk,
+            'description': 'Try to post a pin with an inexisting resource.',
+            }, follow=True)
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.templates[0].name, '404.html')
 
 
 
