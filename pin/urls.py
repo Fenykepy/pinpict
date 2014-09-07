@@ -20,7 +20,7 @@ urlpatterns = patterns('',
             login_required(UploadPin.as_view()), name='pin_upload'),
 
         # select url
-        url(r'^pin-url/$',
+        url(r'^url/$',
             login_required(ChoosePinUrl.as_view()), name='choose_pin_url'),
 
         # select pin

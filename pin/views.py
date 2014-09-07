@@ -6,13 +6,14 @@ from django.views.generic import ListView, DetailView, \
 from django.core.urlresolvers import reverse_lazy
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
+from django.utils.http import urlquote_plus, urlunquote_plus
 
 #from pinpict.settings import LOGIN_URL !!!
 from board.views import AjaxableResponseMixin
 from user.models import User
 from pin.models import Pin, Resource
 from board.models import Board
-from pin.forms import PinForm, UploadPinForm
+from pin.forms import PinForm, UploadPinForm, PinUrlForm
 from pin.utils import get_sha1_hexdigest, generate_previews
 
 
@@ -271,10 +272,24 @@ class UploadPin(CreateView, AjaxableResponseMixin):
 
 class ChoosePinUrl(FormView, AjaxableResponseMixin):
     """View to choose pin origin url."""
-    pass
+    form_class = PinUrlForm
+    template_name = 'board/board_forms.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ChoosePinUrl, self).get_context_data(**kwargs)
+        context['title'] = 'Add a pin from a website'
+        context['button'] = 'Next'
+
+        return context
+
+    def form_valid(self, form):
+        """If form is valid, redirect to find page."""
+        url = form.cleaned_data['url']
+        return redirect(reverse_lazy('find_pin') + '?url={}'.format(
+            urlquote_plus(url)))
 
 
 
-class FindPin(ListView):
+class FindPin(TemplateView):
     """View to choose image to pin from given url."""
-    pass
+    template_name = 'board/board_forms.html'

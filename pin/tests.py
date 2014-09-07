@@ -893,6 +893,80 @@ class PinList(TestCase):
         self.assertEqual(response.context['board'].slug, 'user-board')
 
 
+class PinChooseUrlTest(TestCase):
+    """Pin choose Url Test class."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # launch client
+        self.client = Client()
+
+
+    def test_urls(self):
+        urls = [
+            {
+                'url': '/pin/url/',
+                'status': 302,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_logged_in_urls(self):
+        # login with user
+        login(self, self.user)
+
+        urls = [
+            {
+                'url': '/pin/url/',
+                'status': 200,
+                'template': 'board/board_forms.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_unlogged_url_choice(self):
+
+        response = self.client.post('/pin/url/', {
+            'url': 'http://www.lavilotte-rolle.fr',
+            }
+        )
+        # should redirect to login page
+        self.assertEqual(response.status_code, 302)
+
+        response = self.client.post('/pin/url/', {
+            'url': 'http://www.lavilotte-rolle.fr',
+            }, follow=True
+        )
+        self.assertEqual(response.templates[0].name,
+                '404.html')
+
+
+    def test_logged_in_url_choice(self):
+        # login with user
+        login(self, self.user)
+
+        response = self.client.post('/pin/url/', {
+            'url': 'http://www.lavilotte-rolle.fr',
+            }
+        )
+        # should redirect to find page
+        self.assertEqual(response.status_code, 302)
+
+        response = self.client.post('/pin/url/', {
+            'url': 'http://www.lavilotte-rolle.fr',
+            }, follow=True
+        )
+        # should redirect to pin_find page with url as parameter
+        self.assertEqual(response.request['PATH_INFO'], '/pin/find/')
+        self.assertEqual(response.request['QUERY_STRING'],
+                'url=http%3A%2F%2Fwww.lavilotte-rolle.fr')
+
+
+
 
 
 
