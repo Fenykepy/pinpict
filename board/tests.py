@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 
 from user.models import User
+from user.tests import create_test_users, login, test_urls
 from board.models import Board
 
 
@@ -39,234 +40,187 @@ def create_test_private_boards(instance):
 
 
 
-class BoardTest(TestCase):
+class BoardCreationTest(TestCase):
     """Board app tests."""
 
     def setUp(self):
-        # create first user
-        self.user = User.objects.create_user(
-                username='flr',
-                email='pro@lavilotte-rolle.fr',
-                password='top_secret'
-        )
-        self.user.website = 'http://lavilotte-rolle.fr'
-        self.user.save()
-        
-        # create a second user
-        self.user2 = User.objects.create_user(
-                username='toto',
-                email='toto@lavilotte-rolle.fr',
-                password='top_secret'
-        )
-
-
-        # create a public board
-        board = Board()
-        board.title = 'Paolo Roversi'
-        board.description = 'Photographies de Paolo Roversi.'
-        board.policy = 1
-        board.user = self.user
-        board.save()
- 
-        # create a private board
-        board = Board()
-        board.title = 'My private board'
-        board.description = 'Private board'
-        board.policy = 0
-        board.user = self.user
-        board.save()
-               
+        # create users
+        create_test_users(self)
         # start client
         self.client = Client()
 
 
-
-    def login(self, user):
-        """Login with given user, assert it's ok"""
-        login = self.client.login(username=user.username,
-                password='top_secret')
-        self.assertEqual(login, True)
-
-
-
     def test_urls(self):
-        """Test urls and their templates."""
         urls = [
-            {
-                'url': '/flr/',
-                'status': 200,
-                'template': 'board/board_list.html',
-            },
-            {
-                'url': '/flr/paolo-roversi/',
-                'status': 200,
-                'template': 'pin/pin_list.html',
-            },
-            # unknown user should return 404
-            {
-                'url': '/tom/',
-                'status': 404,
-                'template': '404.html',
-            },
-            # unknown user with known board should return 404
-            {
-                'url': '/tom/paolo-roversi/',
-                'status': 404,
-                'template': '404.html',
-            },
-            # unknown user with unknown board should return 404
-            {
-                'url': '/tom/tom-board/',
-                'status': 404,
-                'template': '404.html',
-            },
-            # known user with unknown board should return 404
-            {
-                'url': '/flr/tom-board/',
-                'status': 404,
-                'template': '404.html',
-            },
-            # known user with known board which doesn't belong to him
-            # should return 404
-            {
-                'url': '/toto/paolo-roversi/',
-                'status': 404,
-                'template': '404.html',
-            },
+            # create public board
             {
                 'url': '/board/create/',
                 'status': 302,
                 'template': '404.html',
             },
+            # create private board
             {
                 'url': '/board/create/private/',
                 'status': 302,
                 'template': '404.html',
             },
-            {
-               'url': '/flr/paolo-roversi/edit/',
-               'status': 302,
-               'template': '404.html',
-            },
-            {
-               'url': '/flr/paolo-roversi/delete/',
-               'status': 302,
-               'template': '404.html',
-            },
-            
         ]
-
-        for elem in urls:
-            response = self.client.get(elem['url'])
-            self.assertEqual(response.status_code, elem['status'])
-            response = self.client.get(elem['url'], follow=True)
-            self.assertEqual(response.templates[0].name, elem['template'])
+        test_urls(self, urls)
 
 
-    def test_board_list_with_standard_user(self):
-        """Test board list context."""
-        # login with not owner user
-        self.login(self.user2)
+    def test_logged_in_urls(self):
+        # login with user
+        login(self, self.user)
 
-        # go to board list page
-        response = self.client.get('/flr/')
-        self.assertEqual(response.status_code, 200)
-        # assert we have public boards
-        self.assertEqual(len(response.context['boards']), 1)
-        self.assertEqual(response.context['boards'][0].title, 'Paolo Roversi')
-        # assert we don't have private boards
-        self.assertEqual(hasattr(response.context, 'private_boards'), False)
-
-
-
-    def test_board_list_with_owner_user(self):
-        """Test board list context."""
-        # login with not owner user
-        self.login(self.user)
-
-        # go to board list page
-        response = self.client.get('/flr/')
-        self.assertEqual(response.status_code, 200)
-        # assert we have public boards
-        self.assertEqual(len(response.context['boards']), 1)
-        self.assertEqual(response.context['boards'][0].title, 'Paolo Roversi')
-
-        # assert we have private boards
-        self.assertEqual(len(response.context['private_boards']), 1)
-        self.assertEqual(response.context['private_boards'][0].title,
-                'My private board')
-
+        urls = [
+            # create public board
+            {
+                'url': '/board/create/',
+                'status': 200,
+                'template': 'board/board_forms.html',
+            },
+            # create private board
+            {
+                'url': '/board/create/private/',
+                'status': 200,
+                'template': 'board/board_forms.html',
+            },
+        ]
 
 
     def test_public_board_creation(self):
-        """Test new board creation."""
-        # login
-        self.login(self.user)
+        # login with user
+        login(self, self.user)
 
-        # send form
         response = self.client.post('/board/create/', {
             'title': 'Richard Avedon',
-            'description': 'Photographies de Richard Avedon',
+            'description': 'Photographs of Richard Avedon',
             }, follow=True
         )
-        # assert redirection is ok
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.templates[0].name,
                 'board/board_list.html'
         )
+
         # assert board has been saved in db
-        new_board = Board.publics.get(slug='richard-avedon')
-        # assert user is the good one
-        self.assertEqual(new_board.user.username, 'flr')
+        board = Board.publics.get(slug='richard-avedon')
+        # assert user is good one
+        self.assertEqual(board.user.username, 'flr')
         # assert policy is good one
-        self.assertEqual(new_board.policy, 1)
-        # assert it doesn't appears in private boards list
+        self.assertEqual(board.policy, 1)
+        # assert it doesn't appear in private boards
         board = Board.privates.filter(slug='richard-avedon').count()
         self.assertEqual(board, 0)
-        # assert user n_boards has been updated
+        # assert user n_boars has been updated
         user = User.objects.get(username='flr')
-        self.assertEqual(user.n_boards, 3)
-
+        self.assertEqual(user.n_boards, 1)
 
 
     def test_private_board_creation(self):
-        """Test new private board creation."""
-        # login
-        self.login(self.user)
+        # login with user
+        login(self, self.user)
 
-        # send form
         response = self.client.post('/board/create/private/', {
             'title': 'Richard Avedon',
-            'description': 'photographies de Richard Avedon',
+            'description': 'Photographs of Richard Avedon',
             }, follow=True
         )
-        # assert redirection is ok
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.templates[0].name,
                 'board/board_list.html'
         )
+
         # assert board has been saved in db
-        new_board = Board.privates.get(slug='richard-avedon')
-        # assert user is the good one
-        self.assertEqual(new_board.user.username, 'flr')
+        board = Board.privates.get(slug='richard-avedon')
+        # assert user is good one
+        self.assertEqual(board.user.username, 'flr')
         # assert policy is good one
-        self.assertEqual(new_board.policy, 0)
-        # assert it doesn't appears in public boards list
+        self.assertEqual(board.policy, 0)
+        # assert it doesn't appear in private boards
         board = Board.publics.filter(slug='richard-avedon').count()
         self.assertEqual(board, 0)
+        # assert user n_boars has been updated
+        user = User.objects.get(username='flr')
+        self.assertEqual(user.n_boards, 1)
 
 
+
+
+            
+
+
+class BoardUpdateTest(TestCase):
+    """Board app tests."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # create boards
+        create_test_boards(self)
+        # create private boards
+        create_test_private_boards(self)
+        # start client
+        self.client = Client()
+
+
+    def test_urls(self):
+        urls = [
+            # try to update existing user and board
+            {
+                'url': '/flr/user-board/edit/',
+                'status': 302,
+                'template': '404.html',
+            },
+            # try to update existing user and board with wrong user
+            {
+                'url': '/toto/user-board/edit/',
+                'status': 302,
+                'template': '404.html',
+            },
+            # try to update existing user and unexisting board
+            {
+                'url': '/toto/my-beautiful-board/',
+                'status': 404,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_logged_in_urls(self):
+        # login with user
+        login(self, self.user)
+
+        urls = [
+            # try to update existing user and board
+            {
+                'url': '/flr/user-board/edit/',
+                'status': 200,
+                'template': 'board/board_forms.html',
+            },
+            # try to update existing user and board with wrong user
+            {
+                'url': '/toto/user-board/edit/',
+                'status': 404,
+                'template': '404.html',
+            },
+            # try to update existing user and unexisting board
+            {
+                'url': '/toto/my-beautiful-board/',
+                'status': 404,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
 
 
     def test_board_update(self):
-        """Test board update."""
-        # login
-        self.login(self.user)
+        # login with user
+        login(self, self.user)
 
-        # send form
-        response = self.client.post('/flr/paolo-roversi/edit/', {
+        response = self.client.post('/flr/user-board/edit/', {
             'title': 'Paolo Roversi',
-            'description': 'Photographies de Paolo Roversi :)',
+            'description': 'Photographs of Paolo Roversi',
             'policy': 1,
             }, follow=True
         )
@@ -276,158 +230,93 @@ class BoardTest(TestCase):
         self.assertEqual(response.templates[0].name,
                 'board/board_list.html'
         )
-        # assert board has been saved in db
-        new_board = Board.objects.get(slug='paolo-roversi')
-        # assert description is new one
-        self.assertEqual(new_board.description, 'Photographies de Paolo Roversi :)')
+        # assert update has been saved in db
+        board = Board.objects.get(slug='paolo-roversi')
+        # assert description is ok
+        self.assertEqual(board.description, 'Photographs of Paolo Roversi')
 
-        ## try to change policy in two directions
+        ## try to change policys
         # assert board is public
+        self.assertEqual(board.policy, 1)
         board = Board.publics.filter(slug='paolo-roversi').count()
         self.assertEqual(board, 1)
 
-        ## send form
+        # change board policy
         response = self.client.post('/flr/paolo-roversi/edit/', {
             'title': 'Paolo Roversi',
-            'description': 'Photographies de Paolo Roversi :)',
+            'description': 'Photographs of Paolo Roversi',
             'policy': 0,
             }, follow=True
         )
 
         # assert redirection is ok
         self.assertEqual(response.status_code, 200)
-        
-        # assert board is private 
-        public_board = Board.publics.filter(slug='paolo-roversi').count()
-        self.assertEqual(public_board, 0)
-        private_board = Board.privates.filter(slug='paolo-roversi').count()
-        self.assertEqual(private_board, 1)
-
-
-        ## send form
-        response = self.client.post('/flr/paolo-roversi/edit/', {
-            'title': 'Paolo Roversi',
-            'description': 'Photographies de Paolo Roversi :)',
-            'policy': 1,
-            }, follow=True
-        )
-
-        # assert redirection is ok
-        self.assertEqual(response.status_code, 200)
-        
-        # assert board is private 
-        public_board = Board.publics.filter(slug='paolo-roversi').count()
-        self.assertEqual(public_board, 1)
-        private_board = Board.privates.filter(slug='paolo-roversi').count()
-        self.assertEqual(private_board, 0)
-
-
-
-
-
-    def test_board_update_with_wrong_user(self):
-        """Test board update with a user which is not owner of board."""
-        # login with user 2
-        self.login(self.user2)
-        
-        # get form
-        response = self.client.get('/flr/palo-roversi/edit/')
-        # assert user has been redirected to home page
-        self.assertEqual(response.status_code, 404)
-        # get form and follow redirection
-        response = self.client.get('/flr/palo-roversi/edit/', follow=True)
-        self.assertEqual(response.templates[0].name,
-                '404.html'
-        )
-
-        # try to send form
-        response = self.client.post('/flr/paolo-roversi/edit/', {
-            'title': 'Paolo Roversi',
-            'description': "Je n'ai pas à éditer ce tableau",
-            'policy': 1,
-            },
-        )
-        # assert user has been redirected to home page
-        self.assertEqual(response.status_code, 404)
-
-        # try to submit form and follow redirection
-        response = self.client.post('/flr/paolo-roversi/edit/', {
-            'title': 'Paolo Roversi',
-            'description': "Je n'ai pas à éditer ce tableau",
-            'policy': 1,
-            }, follow=True,
-        )
-        self.assertEqual(response.templates[0].name,
-                '404.html'
-        )
-
-        # assert changes haven't been save in db
-        new_board = Board.objects.get(slug='paolo-roversi')
-        # assert description is new one
-        self.assertEqual(new_board.description, 'Photographies de Paolo Roversi.')
-
-    
-
-    def test_board_delete(self):
-        """Test board deletion."""
-        # login
-        self.login(self.user)
-
-        # send form
-        response = self.client.post('/flr/paolo-roversi/delete/',
-                follow=True
-        )
-
-        # assert redirection is ok
-        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.templates[0].name,
                 'board/board_list.html'
         )
-        # assert board has been deleted from db
-        old_board = Board.objects.filter(slug='paolo-roversi').count()
-        # assert no result
-        self.assertEqual(old_board, 0)
 
-
-
-    def test_board_delete_with_wrong_user(self):
-        """Test deletion of a board with a user which is not
-        it's owner."""
-
-        # login with user 2
-        self.login(self.user2)
-
-        # get form
-        response = self.client.get('/flr/paolo-roversi/delete/')
-
-        # assert user has a 404 page
-        self.assertEqual(response.status_code, 404)
-        # get form and follow redirection
-        response = self.client.get('/flr/paolo-roversi/delete/',
-                follow=True
-        )
-        self.assertEqual(response.templates[0].name,
-                '404.html'
-        )
-
-        # try to submit form
-        response = self.client.post('/flr/paolo-roversi/delete/')
-        # assert user has been redirected
-        self.assertEqual(response.status_code, 404)
-
-        # try to send form and follow redirection
-        response = self.client.post('/flr/paolo-roversi/delete/',
-                follow=True
-        )
-
-        self.assertEqual(response.templates[0].name,
-                '404.html'
-        )
-
-        # assert board hasn't been deleted from db
-        board = Board.objects.filter(slug='paolo-roversi').count()
+        # assert board is now private
+        board = Board.publics.filter(slug='paolo-roversi').count()
+        self.assertEqual(board, 0)
+        board = Board.privates.filter(slug='paolo-roversi').count()
         self.assertEqual(board, 1)
-            
 
+
+    def test_board_update_with_wrong_user(self):
+        # login with user2
+        login(self, self.user2)
+
+        response = self.client.post('/flr/user-board/edit/', {
+            'title': 'New Title',
+            'description': 'New description',
+            'policy': 1,
+            }
+        )
+        self.assertEqual(response.status_code, 404)
+
+        # assert changes haven't been save in db
+        board = Board.objects.filter(title='New Title').count()
+        self.assertEqual(board, 0)
+        # assert old board still exists
+        board = Board.objects.filter(title='user board').count()
+        self.assertEqual(board, 1)
+
+
+
+
+
+
+
+
+
+
+
+class BoardDeleteTest(TestCase):
+    """Board app tests."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # create boards
+        create_test_boards(self)
+        # create private boards
+        create_test_private_boards(self)
+        # start client
+        self.client = Client()
+
+
+
+class BoardViewTest(TestCase):
+    """Board app tests."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # create boards
+        create_test_boards(self)
+        # create private boards
+        create_test_private_boards(self)
+        # start client
+        self.client = Client()
 
 

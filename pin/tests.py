@@ -9,7 +9,7 @@ from pinpict.settings import BASE_DIR, MEDIA_ROOT, PREVIEWS_WIDTH, \
         PREVIEWS_CROP, PREVIEWS_ROOT
 
 from user.models import User
-from user.tests import create_test_users, login
+from user.tests import create_test_users, login, test_urls
 from board.models import Board
 from board.tests import create_test_boards, create_test_private_boards
 from pin.models import Pin, Resource
@@ -72,17 +72,6 @@ def create_test_private_pins(instance):
             description = 'Second test private pin'
     )
     instance.privatePin2.save()
-
-
-
-def test_urls(instance, urls):
-    """Test urls."""
-    for elem in urls:
-        response = instance.client.get(elem['url'])
-        instance.assertEqual(response.status_code, elem['status'])
-        response = instance.client.get(elem['url'], follow=True)
-        instance.assertEqual(response.templates[0].name, elem['template'])
-
 
 
 
@@ -637,7 +626,7 @@ class PinDeleteTest(TestCase):
         self.assertEqual(response.status_code, 404)
 
 
-class PinView(TestCase):
+class PinViewTest(TestCase):
     """Pin view test class."""
 
     def setUp(self):

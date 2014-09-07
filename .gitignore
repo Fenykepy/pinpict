@@ -28,8 +28,11 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# vim files
 *.swp
 *.swo
+*.swn
 
 # Installer logs
 pip-log.txt
