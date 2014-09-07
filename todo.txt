@@ -21,6 +21,8 @@
 #        - return 404 instead of redirection when wrong user try to update or delete
 #        - return 404 when user is not found (for list views)
 #        - test that unknown user in url returns 404
+        - update user.n_boards after deletion
+        - delete associated pins
     - pin creation form
 #        - list only user's boards in form
 #        - raise 404 in case of wrong resource or board 

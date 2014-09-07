@@ -134,7 +134,7 @@ class UpdateBoard(UpdateView, AjaxableResponseMixin):
 
     def get_object(self, queryset=None):
         self.user = get_object_or_404(User, slug=self.kwargs['user'])
-        return Board.objects.get(user=self.user, slug=self.kwargs['board'])
+        return get_object_or_404(Board, user=self.user, slug=self.kwargs['board'])
 
 
 
@@ -154,10 +154,9 @@ class DeleteBoard(DeleteView, AjaxableResponseMixin):
 
     def get_object(self, queryset=None):
         self.user = get_object_or_404(User, slug=self.kwargs['user'])
-        return Board.objects.get(user=self.user, slug=self.kwargs['board'])
+        return get_object_or_404(Board, user=self.user, slug=self.kwargs['board'])
 
     def get_success_url(self):
-        print('deleted')
         return reverse_lazy('boards_list',
                 kwargs={'user': self.request.user.slug})
 

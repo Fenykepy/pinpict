@@ -283,14 +283,6 @@ class BoardUpdateTest(TestCase):
 
 
 
-
-
-
-
-
-
-
-
 class BoardDeleteTest(TestCase):
     """Board app tests."""
 
@@ -305,8 +297,101 @@ class BoardDeleteTest(TestCase):
         self.client = Client()
 
 
+    def test_urls(self):
+        urls = [
+            # try to delete existing board
+            {
+                'url': '/flr/user-board/delete/',
+                'status': 302,
+                'template': '404.html',
+            },
+            # try to delete unexisting board
+            {
+                'url': '/toto/user-board/delete/',
+                'status': 302,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
 
-class BoardViewTest(TestCase):
+
+    def test_logged_in_urls(self):
+        # login with user
+        login(self, self.user)
+
+        urls = [
+            # try to delete existing board
+            {
+                'url': '/flr/user-board/delete/',
+                'status': 200,
+                'template': 'board/board_delete.html',
+            },
+            # try to delete unexisting board with unexisting user
+            {
+                'url': '/tartempion/false-board/delete/',
+                'status': 404,
+                'template': '404.html',
+            },
+            # try to delete wrong board with wrong user
+            {
+                'url': '/toto/user-board/delete/',
+                'status': 404,
+                'template': '404.html',
+            },
+            # try to delete board of another user
+            {
+                'url': '/flr/user2-board/delete/',
+                'status': 404,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_board_delete(self):
+        # login with user
+        login(self, self.user)
+
+        response = self.client.post('/flr/user-board/delete/',
+                follow=True
+        )
+
+        # assert redirection is ok
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name,
+                'board/board_list.html'
+        )
+        # assert board has been deleted from db
+        old_board = Board.objects.filter(slug='user-board').count()
+        # assert no result
+        self.assertEqual(old_board, 0)
+        # assert user n_boards has been updated !!!
+        #user = User.objects.get(username='flr')
+        #self.assertEqual(user.n_boards, 0)
+        # assert board pins have been deleted !!!
+
+
+    def test_board_delete_with_wrong_user(self):
+        # login with user2
+        login(self, self.user2)
+
+        response = self.client.post('/flr/user-board/delete/',
+                follow=True
+        )
+
+        # assert redirection is ok
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.templates[0].name,
+                '404.html'
+        )
+
+        # assert board hasn't been deleted from db
+        board = Board.objects.filter(slug='user-board').count()
+        self.assertEqual(board, 1)
+
+
+
+class BoardListTest(TestCase):
     """Board app tests."""
 
     def setUp(self):
@@ -318,5 +403,50 @@ class BoardViewTest(TestCase):
         create_test_private_boards(self)
         # start client
         self.client = Client()
+
+
+    def test_urls(self):
+        urls = [
+            {
+                'url': '/flr/',
+                'status': 200,
+                'template': 'board/board_list.html',
+            },
+            # unknown user should return 404
+            {
+                'url': '/tom/',
+                'status': 404,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_board_list_with_standard_user(self):
+        # login with user2
+        login(self, self.user2)
+
+        response = self.client.get('/flr/')
+        self.assertEqual(response.status_code, 200)
+        # assert we have public boards
+        self.assertEqual(len(response.context['boards']), 1)
+        self.assertEqual(response.context['boards'][0].title, 'user board')
+        # assert we don't have private boards
+        self.assertEqual(hasattr(response.context, 'private_boards'), False)
+
+
+    def test_board_list_with_owner_user(self):
+        # login with user
+        login(self, self.user)
+
+        response = self.client.get('/flr/')
+        self.assertEqual(response.status_code, 200)
+        # assert we have public boards
+        self.assertEqual(len(response.context['boards']), 1)
+        self.assertEqual(response.context['boards'][0].title, 'user board')
+        # assert we have private boards
+        self.assertEqual(len(response.context['private_boards']), 1)
+        self.assertEqual(response.context['private_boards'][0].title,
+                'private board')
 
 
