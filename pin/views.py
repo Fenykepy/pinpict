@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 
+#from pinpict.settings import LOGIN_URL !!!
 from board.views import AjaxableResponseMixin
 from user.models import User
 from pin.models import Pin, Resource
@@ -25,6 +26,15 @@ class ListPins(ListView):
         self.user = get_object_or_404(User, slug=self.kwargs['user'])
         self.board = get_object_or_404(Board, slug=self.kwargs['board'],
                 user=self.user)
+        # if board is private
+        if self.board.policy == 0:
+            # if user isn't logged in, redirect to login page
+            if not self.request.user.is_authenticated():
+                #redirect(LOGIN_URL)!!!
+                raise Http404
+            # if user isn't board owner, raise 404
+            elif self.board.user != self.request.user:
+                raise Http404
         return self.board.pin_set.all()
 
     def get_context_data(self, **kwargs):

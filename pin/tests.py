@@ -64,6 +64,7 @@ def create_test_boards(instance):
     instance.board2.save()
 
 
+
 def create_test_private_boards(instance):
     """Create one test private board for first user.
     run create_test_users first.
@@ -783,7 +784,7 @@ class PinView(TestCase):
         login(self, self.user2)
 
         urls = [
-            # private pin of other user
+            # private pin of other user should raise 404
             {
                 'url': '/pin/3/',
                 'status': 404,
@@ -838,10 +839,87 @@ class PinList(TestCase):
         self.client = Client()
 
 
-    # context shows good board,
-    # context shows good private board to its owner
-    # context raise 404 if another user ask for a private board
-    pass
+    def test_urls(self):
+        urls = [
+            # public board's pins list
+            {
+                'url': '/flr/user-board/',
+                'status': 200,
+                'template': 'pin/pin_list.html',
+            },
+            # private board's pins list !!! to change after creating login page !!!
+            {
+                'url': '/flr/private-board/',
+                'status': 404,
+                'template': '404.html',
+            },
+            # not existing board and user
+            {
+                'url': '/tartempion/board54/',
+                'status': 404,
+                'template': '404.html',
+            },
+            # not existing board with existing user
+            {
+                'url': '/flr/unexisting-board/',
+                'status': 404,
+                'template': '404.html',
+            },
+            # not existing user with existing board
+            {
+                'url': '/tartempion/user-board/',
+                'status': 404,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_logged_in_urls(self):
+        # login with user
+        login(self, self.user)
+
+        urls = [
+            # public board of user
+            {
+                'url': '/flr/user-board/',
+                'status': 200,
+                'template': 'pin/pin_list.html',
+            },
+            # public board of other user
+            {
+                'url': '/toto/user2-board/',
+                'status': 200,
+                'template': 'pin/pin_list.html',
+            },
+            # private board of user
+            {
+                'url': '/flr/private-board/',
+                'status': 200,
+                'template': 'pin/pin_list.html',
+            },
+        ]
+        test_urls(self, urls)
+        
+        # login with user2
+        login(self, self.user2)
+
+        urls = [
+            # private board of other user
+            {
+                'url': '/flr/private-board/',
+                'status': 404,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_pin_list_context(self):
+        """Assert context shows good pins."""
+        response = self.client.get('/flr/user-board/')
+        self.assertEqual(response.context['board'].slug, 'user-board')
+
 
 
 
