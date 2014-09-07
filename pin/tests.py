@@ -64,6 +64,18 @@ def create_test_boards(instance):
     instance.board2.save()
 
 
+def create_test_private_boards(instance):
+    """Create one test private board for first user.
+    run create_test_users first.
+    """
+    instance.privateBoard = Board(
+            title='private board',
+            description='user private board for tests',
+            policy=0,
+            user = instance.user)
+    instance.privateBoard.save()
+
+
 
 def create_test_resources(instance):
     """Create two resources for tests."""
@@ -100,6 +112,26 @@ def create_test_pins(instance):
             description = 'Test pin for second board'
     )
     instance.pin2.save()
+
+
+
+def create_test_private_pins(instance):
+    """Create two private pins for tests.
+    run create_test_private_boards and create_test_resources first.
+    """
+    instance.privatePin = Pin(
+            resource = instance.resource,
+            board = instance.privateBoard,
+            description = 'Test private pin'
+    )
+    instance.privatePin.save()
+
+    instance.privatePin2 = Pin(
+            resource = instance.resource2,
+            board = instance.privateBoard,
+            description = 'Second test private pin'
+    )
+    instance.privatePin2.save()
 
 
 
@@ -666,6 +698,149 @@ class PinDeleteTest(TestCase):
 
 
 class PinView(TestCase):
+    """Pin view test class."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # create resources
+        create_test_resources(self)
+        # create boards
+        create_test_boards(self)
+        # create private boards
+        create_test_private_boards(self)
+        # create pins
+        create_test_pins(self)
+        # create private pins
+        create_test_private_pins(self)
+        # launch client
+        self.client = Client()
+
+
+    def test_urls(self):
+        urls = [
+            # public pin of user one
+            {
+                'url': '/pin/1/',
+                'status': 200,
+                'template': 'pin/pin_view.html',
+            },
+            # public pin of user two
+            {
+                'url': '/pin/2/',
+                'status': 200,
+                'template': 'pin/pin_view.html',
+            },
+            # private pin should raise 404
+            {
+                'url': '/pin/3/',
+                'status': 404,
+                'template': '404.html',
+            },
+            # not existing pin should raise 404
+            {
+                'url': '/pin/389/',
+                'status': 404,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_logged_in_urls(self):
+        # login with user
+        login(self, self.user)
+
+        urls = [
+            # public pin of user one
+            {
+                'url': '/pin/1/',
+                'status': 200,
+                'template': 'pin/pin_view.html',
+            },
+            # public pin of user two
+            {
+                'url': '/pin/2/',
+                'status': 200,
+                'template': 'pin/pin_view.html',
+            },
+            # private pin of user
+            {
+                'url': '/pin/3/',
+                'status': 200,
+                'template': 'pin/pin_view.html',
+            },
+            # not existing pin should raise 404
+            {
+                'url': '/pin/389/',
+                'status': 404,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+        # login with user2
+        login(self, self.user2)
+
+        urls = [
+            # private pin of other user
+            {
+                'url': '/pin/3/',
+                'status': 404,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_unlogged_pin_view(self):
+        """Assert context shows good pin."""
+        response = self.client.get('/pin/1/')
+        self.assertEqual(response.context['pin'].pk, 1)
+
+
+    def test_logged_in_pin_view(self):
+        """Assert context shows good pin to logged in user."""
+        # login with user
+        login(self, self.user)
+        # try to see user2 pin
+        response = self.client.get('/pin/2/')
+        self.assertEqual(response.context['pin'].pk, 2)
+
+
+    def test_logged_in_private_pin_view(self):
+        """Assert context shows good private pin to its owner."""
+        # login with user
+        login(self, self.user)
+        # try to see private pin
+        response = self.client.get('/pin/3/')
+        self.assertEqual(response.context['pin'].pk, 3)
+
+
+
+class PinList(TestCase):
+    """Pin list test class."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # create resources
+        create_test_resources(self)
+        # create boards
+        create_test_boards(self)
+        # create private boards
+        create_test_private_boards(self)
+        # create pins
+        create_test_pins(self)
+        # create private pins
+        create_test_private_pins(self)
+        # launch client
+        self.client = Client()
+
+
+    # context shows good board,
+    # context shows good private board to its owner
+    # context raise 404 if another user ask for a private board
     pass
 
 

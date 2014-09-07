@@ -23,7 +23,8 @@ class ListPins(ListView):
 
     def get_queryset(self):
         self.user = get_object_or_404(User, slug=self.kwargs['user'])
-        self.board = get_object_or_404(Board, slug=self.kwargs['board'], user=self.user)
+        self.board = get_object_or_404(Board, slug=self.kwargs['board'],
+                user=self.user)
         return self.board.pin_set.all()
 
     def get_context_data(self, **kwargs):
@@ -40,6 +41,17 @@ class PinView(DetailView):
     model = Pin
     context_object_name = 'pin'
     template_name = 'pin/pin_view.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if (self.object.board.policy == 0 
+            and self.object.board.user != self.request.user):
+                raise Http404
+
+
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
 
 
 
