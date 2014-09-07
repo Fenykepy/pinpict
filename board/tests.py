@@ -4,6 +4,41 @@ from user.models import User
 from board.models import Board
 
 
+
+def create_test_boards(instance):
+    """Create one test board for each user.
+    run create_test_users first.
+    """
+    instance.board = Board(
+            title='user board',
+            description='user board for tests',
+            policy=1,
+            user = instance.user)
+    instance.board.save()
+
+    instance.board2 = Board(
+            title='user2 board',
+            description='user2 board for tests',
+            policy=1,
+            user = instance.user2)
+    instance.board2.save()
+
+
+
+def create_test_private_boards(instance):
+    """Create one test private board for first user.
+    run create_test_users first.
+    """
+    instance.privateBoard = Board(
+            title='private board',
+            description='user private board for tests',
+            policy=0,
+            user = instance.user)
+    instance.privateBoard.save()
+
+
+
+
 class BoardTest(TestCase):
     """Board app tests."""
 

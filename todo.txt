@@ -24,6 +24,8 @@
     - pin creation form
 #        - list only user's boards in form
 #        - raise 404 in case of wrong resource or board 
+        - test remove empty folder
+        - create login page and update test and pin.views
         - pass resource pk in a hidden field instead of url parameter
         - show warning if a pin exists on same board with same resource
         - remove '------' in the board select

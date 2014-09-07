@@ -7,74 +7,13 @@ from django.core.files import File
 
 from pinpict.settings import BASE_DIR, MEDIA_ROOT, PREVIEWS_WIDTH, \
         PREVIEWS_CROP, PREVIEWS_ROOT
+
 from user.models import User
+from user.tests import create_test_users, login
 from board.models import Board
+from board.tests import create_test_boards, create_test_private_boards
 from pin.models import Pin, Resource
 from pin.utils import *
-
-
-
-# to move to user.tests
-def create_test_users(instance):
-    """Create two users for running tests."""
-    # create first user (staff)
-    instance.user = User.objects.create_user(
-            username='flr',
-            email='pro@lavilotte-rolle.fr',
-            password='top_secret'
-    )
-    instance.user.is_staff = True
-    instance.user.save()
-
-    # create second user (normal)
-    instance.user2 = User.objects.create_user(
-            username='toto',
-            email='toto@lavilotte-rolle.fr',
-            password='top_secret'
-    )
-
-
-
-# to move to user.tests
-def login(instance, user):
-    """Login with given user, assert it's ok"""
-    login = instance.client.login(username=user.username,
-            password='top_secret')
-    instance.assertEqual(login, True)
-
-
-
-# to move to board.tests
-def create_test_boards(instance):
-    """Create one test board for each user.
-    run create_test_users first.
-    """
-    instance.board = Board(
-            title='user board',
-            description='user board for tests',
-            policy=1,
-            user = instance.user)
-    instance.board.save()
-
-    instance.board2 = Board(
-            title='user2 board',
-            description='user2 board for tests',
-            policy=1,
-            user = instance.user2)
-    instance.board2.save()
-
-
-
-def create_test_private_boards(instance):
-    """Create one test private board for first user.
-    run create_test_users first.
-    """
-    instance.privateBoard = Board(
-            title='private board',
-            description='user private board for tests',
-            policy=0,
-            user = instance.user)
-    instance.privateBoard.save()
 
 
 
