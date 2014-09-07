@@ -21,12 +21,12 @@
 #        - return 404 instead of redirection when wrong user try to update or delete
 #        - return 404 when user is not found (for list views)
 #        - test that unknown user in url returns 404
-        - update user.n_boards after deletion
-        - delete associated pins
+#        - update user.n_boards after deletion
+#        - delete associated pins
     - pin creation form
 #        - list only user's boards in form
 #        - raise 404 in case of wrong resource or board 
-        - test remove empty folder
+#        - test remove empty folder
         - create login page and update test and pin.views
         - pass resource pk in a hidden field instead of url parameter
         - show warning if a pin exists on same board with same resource
@@ -37,8 +37,8 @@
 #        - previews generation functions
 #            - previews generation tests
 #        - pin itself creation form
-    - pin update form
-    - pin delete form
+#    - pin update form
+#    - pin delete form
 #    - test board n_pins counter
 #    - test user n_boards counter
 #    - test user n_pins counter

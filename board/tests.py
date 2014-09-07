@@ -3,6 +3,7 @@ from django.test import TestCase, Client
 from user.models import User
 from user.tests import create_test_users, login, test_urls
 from board.models import Board
+from pin.models import Pin, Resource
 
 
 
@@ -291,8 +292,6 @@ class BoardDeleteTest(TestCase):
         create_test_users(self)
         # create boards
         create_test_boards(self)
-        # create private boards
-        create_test_private_boards(self)
         # start client
         self.client = Client()
 
@@ -352,6 +351,41 @@ class BoardDeleteTest(TestCase):
         # login with user
         login(self, self.user)
 
+        # get board
+        board = Board.objects.get(slug='user-board')
+        # create test resource
+        resource = Resource(
+                sha1 = 'toto',
+                source_file = 'toto.jpg',
+        )
+        resource.save()
+
+        # create 3 test pins for the board
+        pin = Pin(
+                resource = resource,
+                board = board,
+                description = 'pin1'
+        )
+        pin.save()
+
+        pin2 = Pin(
+                resource = resource,
+                board = board,
+                description = 'pin2'
+        )
+        pin2.save()
+
+        pin3 = Pin(
+                resource = resource,
+                board = board,
+                description = 'pin3'
+        )
+        pin3.save()
+        
+        # assert pins have been created
+        n_pins = Pin.objects.all().count()
+        self.assertEqual(n_pins, 3)
+
         response = self.client.post('/flr/user-board/delete/',
                 follow=True
         )
@@ -365,10 +399,14 @@ class BoardDeleteTest(TestCase):
         old_board = Board.objects.filter(slug='user-board').count()
         # assert no result
         self.assertEqual(old_board, 0)
-        # assert user n_boards has been updated !!!
-        #user = User.objects.get(username='flr')
-        #self.assertEqual(user.n_boards, 0)
-        # assert board pins have been deleted !!!
+        # assert user n_boards has been updated
+        user = User.objects.get(username='flr')
+        self.assertEqual(user.n_boards, 0)
+        # assert board pins have been deleted
+        n_pins = Pin.objects.all().count()
+        self.assertEqual(n_pins, 0)
+
+
 
 
     def test_board_delete_with_wrong_user(self):

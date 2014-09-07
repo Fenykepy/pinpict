@@ -128,6 +128,50 @@ class UtilsTest(TestCase):
         self.assertEqual(subdirs, '4a/52/')
 
 
+    def test_remove_empty_folders(self):
+        # mkdirs for test
+        test_dir = os.path.join(BASE_DIR, 'pin', 'test_files', 'test_dir')
+        os.makedirs(test_dir)
+        hierarchy1 = os.path.join(
+            test_dir, 'folder1', 'subfolder1', 'subsubfolder1')
+        os.makedirs(hierarchy1)
+        hierarchy2 = os.path.join(
+            test_dir, 'folder2', 'subfolder2', 'subsubfolder2')
+        os.makedirs(hierarchy2)
+        hierarchy3 = os.path.join(
+            test_dir, 'folder3', 'subfolder3', 'subsubfolder3')
+        os.makedirs(hierarchy3)
+        # create a file for tests
+        with open(os.path.join(test_dir, 'folder2', 'subfolder2', 'test.txt'),
+            encoding='utf-8', mode='w') as a_file:
+            a_file.write('test_file')
+        # remove empty folders
+        remove_empty_folders(test_dir)
+        
+        # assert file hasn't been removed
+        file_path = os.path.join(
+            test_dir, 'folder2', 'subfolder2', 'test.txt')
+        self.assertEqual(os.path.exists(file_path), True)
+        
+        # assert empty folders have been removed
+        self.assertEqual(os.path.exists(hierarchy1), False)
+        self.assertEqual(os.path.exists(hierarchy2), False)
+        self.assertEqual(os.path.exists(hierarchy3), False)
+
+        # remove remaning files and dirs
+        os.remove(file_path)
+        os.rmdir(os.path.join(test_dir, 'folder2', 'subfolder2'))
+        os.rmdir(os.path.join(test_dir, 'folder2'))
+        os.rmdir(test_dir)
+
+
+
+
+
+
+
+
+
 
 
 class ResourceTest(TestCase):
