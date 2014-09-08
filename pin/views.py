@@ -14,7 +14,8 @@ from user.models import User
 from pin.models import Pin, Resource
 from board.models import Board
 from pin.forms import PinForm, UploadPinForm, PinUrlForm
-from pin.utils import get_sha1_hexdigest, generate_previews
+from pin.utils import get_sha1_hexdigest, generate_previews, \
+        scan_html_for_picts
 
 
 class ListPins(ListView):
@@ -292,4 +293,11 @@ class ChoosePinUrl(FormView, AjaxableResponseMixin):
 
 class FindPin(TemplateView):
     """View to choose image to pin from given url."""
-    template_name = 'board/board_forms.html'
+    template_name = 'pin/pin_find.html'
+
+    def get_context_data(self, **kwargs):
+        url = urlunquote_plus(self.request.GET.get('url'))
+        context = super(FindPin, self).get_context_data(**kwargs)
+        context['picts'] = scan_html_for_picts(url)
+
+        return context

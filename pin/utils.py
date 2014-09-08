@@ -199,7 +199,7 @@ class PictureHTMLParser(HTMLParser):
     protocol = ''
     url_path = ''
 
-    IMAGES = ('png', 'jpg', 'svg', 'jpeg')
+    IMAGES = ('jpg', 'svg', 'jpeg')
 
     def url_is_image(self, url):
         extention = url.split('.').pop().lower()
@@ -245,7 +245,8 @@ class PictureHTMLParser(HTMLParser):
                     img['alt'] = attr[1]
                 if attr[0] == 'title':
                     img['title'] = attr[1]
-            self.pictures.append(img)
+            if img['href'] and self.url_is_image(img['href']):
+                self.pictures.append(img)
 
 
 
@@ -271,6 +272,7 @@ def scan_html_for_picts(url):
     split = url.split('//')
     # parse html
     parser = PictureHTMLParser(convert_charrefs=True)
+    parser.pictures = []
     parser.url = url
     parser.protocol = split[0] + '//'
     parser.url_path = split[1]

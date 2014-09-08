@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}
+Pick a pin on Pinpict
+{% endblock %}
+
+{% block body %}
+
+
+<header>
+    <h1>Pick a picture</h1>
+</header>
+{% for pict in picts %}
+<article class="pin">
+    <a href="{{ pict.href }}"><img src="{{ pict.href }}" alt="{{ pict.alt }}" width="236px"/></a>
+</article>
+{% endfor %}
+{% endblock body %}
