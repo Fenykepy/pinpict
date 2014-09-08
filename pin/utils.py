@@ -1,5 +1,9 @@
 import hashlib
 import os
+import re
+import httplib2
+
+from html.parser import HTMLParser
 
 from PIL import Image, ImageFile
 
@@ -187,6 +191,94 @@ def generate_previews(resource):
         save_preview(img, destination, quality)
 
 
+class PictureHTMLParser(HTMLParser):
+    """Scan for <a> and <img> tags."""
+    pictures = []
+    url = ''
+    root_url = ''
+    protocol = ''
+    url_path = ''
+
+    IMAGES = ('png', 'jpg', 'svg', 'jpeg')
+
+    def url_is_image(self, url):
+        extention = url.split('.').pop().lower()
+        if extention and extention in self.IMAGES:
+            return True
+        return False
+
+    def build_absolute_url(self, url):
+        # if url starts with 'http', it's absolute
+        if url[:4] == 'http':
+            return url
+        # if url is relative from root, add root_url
+        if url[:1] == '/':
+            return self.root_url + url
+        # if url is relative to current
+            # to implement later !!!
+
+    def handle_starttag(self, tag, attrs):
+        if tag == 'a':
+            a = {
+                'href': '',
+                'alt': '',
+                'title': '',
+            }
+            for attr in attrs:
+                if attr[0] == 'href':
+                    a['href'] = self.build_absolute_url(attr[1])
+                if attr[0] == 'title':
+                    a['title'] = attr[1]
+            if a['href'] and self.url_is_image(a['href']):
+                self.pictures.append(a)
+
+        if tag == 'img':
+            img = {
+                'href': '',
+                'alt': '',
+                'title': '',
+            }
+            for attr in attrs:
+                if attr[0] == 'src':
+                    img['href'] = self.build_absolute_url(attr[1])
+                if attr[0] == 'alt':
+                    img['alt'] = attr[1]
+                if attr[0] == 'title':
+                    img['title'] = attr[1]
+            self.pictures.append(img)
+
+
+
+def scan_html_for_picts(url):
+    """Get resource from given url, scan it to find pictures
+    (in <img> and <a> tags, return a list of found pictures.
+    """
+    # get resource from url
+    h = httplib2.Http('.cache')
+    response, content = h.request(url)
+    # return in case of fail
+    if response['status'] != '200':
+        return []
+    # if resource itself is an image return its url
+    if response['content-type'][:5] == 'image':
+        return [{'url': url},]
+    charset = re.sub(r".*charset=(?P<charset>\w+)",
+            r"\g<charset>", response['content-type'])
+    # if charset in known charset… else charset = 'utf-8'
+    
+    decoded = content.decode(charset)
+
+    split = url.split('//')
+    # parse html
+    parser = PictureHTMLParser(convert_charrefs=True)
+    parser.url = url
+    parser.protocol = split[0] + '//'
+    parser.url_path = split[1]
+    parser.root_url = parser.protocol + parser.url_path.split('/')[0]
+    parser.feed(decoded)
+    
+    # return pictures list
+    return parser.pictures
 
 
 
