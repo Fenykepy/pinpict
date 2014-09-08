@@ -13,7 +13,7 @@ from board.views import AjaxableResponseMixin
 from user.models import User
 from pin.models import Pin, Resource
 from board.models import Board
-from pin.forms import PinForm, UploadPinForm, PinUrlForm
+from pin.forms import PinForm, UploadPinForm, PinUrlForm, DownloadPinForm
 from pin.utils import get_sha1_hexdigest, generate_previews, \
         scan_html_for_picts
 
@@ -223,8 +223,9 @@ class DeletePin(DeleteView, AjaxableResponseMixin):
 
 
 
+
 class UploadPin(CreateView, AjaxableResponseMixin):
-    """View to upload a pin file."""
+    """View to upload a pin resource."""
     model = Resource
     template_name = 'board/board_forms.html'
     form_class = UploadPinForm
@@ -271,6 +272,12 @@ class UploadPin(CreateView, AjaxableResponseMixin):
 
 
 
+class DownloadPin(FormView, AjaxableResponseMixin):
+    """View to download a pin resource from a webpage."""
+    
+
+
+
 class ChoosePinUrl(FormView, AjaxableResponseMixin):
     """View to choose pin origin url."""
     form_class = PinUrlForm
@@ -299,5 +306,10 @@ class FindPin(TemplateView):
         url = urlunquote_plus(self.request.GET.get('url'))
         context = super(FindPin, self).get_context_data(**kwargs)
         context['picts'] = scan_html_for_picts(url)
+        context['url'] = url
+        context['form'] = DownloadPinForm()
+
 
         return context
+
+

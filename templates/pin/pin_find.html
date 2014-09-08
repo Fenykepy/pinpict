@@ -11,6 +11,12 @@ Pick a pin on Pinpict
 </header>
 {% for pict in picts %}
 <article class="pin">
+    <form method="post" action="{% url "pin_download" %}">
+        {% csrf_token %}
+        {{ login_form.username }}
+        {{ login_form.password }}
+        <input type="submit" value="Pin it" />
+    </form>
     <a href="{{ pict.href }}"><img src="{{ pict.href }}" alt="{{ pict.alt }}" width="236px"/></a>
 </article>
 {% endfor %}

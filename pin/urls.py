@@ -19,6 +19,10 @@ urlpatterns = patterns('',
         url(r'^upload/$',
             login_required(UploadPin.as_view()), name='pin_upload'),
 
+        # download pin from web page
+        url(r'^download/$',
+            login_required(DownloadPin.as_view()), name='pin_download'),
+
         # select url
         url(r'^url/$',
             login_required(ChoosePinUrl.as_view()), name='choose_pin_url'),
