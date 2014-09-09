@@ -8,7 +8,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.http import urlquote_plus, urlunquote_plus
 from django.contrib.auth.decorators import login_required
-
+from django.core.files.images import ImageFile
 
 #from pinpict.settings import LOGIN_URL !!!
 from board.views import AjaxableResponseMixin
@@ -17,7 +17,7 @@ from pin.models import Pin, Resource
 from board.models import Board
 from pin.forms import PinForm, UploadPinForm, PinUrlForm, DownloadPinForm
 from pin.utils import get_sha1_hexdigest, generate_previews, \
-        scan_html_for_picts
+        scan_html_for_picts, get_pict_over_http
 
 
 class ListPins(ListView):
@@ -310,11 +310,45 @@ def download_pin(request):
             # add alt to session
             request.session['resource_description'] = form.cleaned_data['alt']
             # create resource from href
+            tmp_name = get_pict_over_http(form.cleaned_data['href'])
+            if not tmp_name:
+                # file is not image, raise 404
+                raise Http404
+            # open file
+            file = ImageFile(open(tmp_name, 'rb'))
+            # compute file sha1
+            sha1 = get_sha1_hexdigest(file)
 
+
+            # search resource with same hash
+            clone = Resource.objects.filter(sha1=sha1)
+            # if we have another resource with same hash
+            # returns create_pin view with it's ID, and don't save anything
+            if clone:
+                # add resource ID to session
+                self.request.session['resource'] = clone.pk
+                # redirect to create pin view
+                return redirect(reverse_lazy('create_pin'))
+
+
+            # else create new resource
+            resource = Resource()
+            resource.source_file = file
+            resource.sha1 = sha1
+            resource.size = resource.source_file.size
+            resource.width = resource.source_file.width
+            resource.height = resource.source_file.height
+            resource.source_file_url = form.cleaned_data['href']
+            basename, ext = os.path.splitext(resource.source_file.name)
+            resource.type = ext.lower().lstrip('.')
+            
+            resource.save()
 
             # add resource ID to session
-            #request.session['resource'] = resource.pk
-            request.session['resource'] = 1
+            request.session['resource'] = resource.pk
+
+            # create previews
+            generate_previews(resource)
 
             return redirect(reverse_lazy('create_pin'))
         else:

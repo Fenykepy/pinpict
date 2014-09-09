@@ -2,6 +2,7 @@ import hashlib
 import os
 import re
 import httplib2
+import urllib.request
 
 from html.parser import HTMLParser
 
@@ -9,6 +10,15 @@ from PIL import Image, ImageFile
 
 from pinpict.settings import PREVIEWS_WIDTH, PREVIEWS_CROP,\
         PREVIEWS_ROOT, MEDIA_ROOT
+
+
+ALLOWED_MIME_TYPE = (
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/tiff',
+        'image/svg+xml',
+)
 
 
 def get_sha1_hexdigest(file):
@@ -203,8 +213,8 @@ class PictureHTMLParser(HTMLParser):
     IMAGES = ('jpg', 'svg', 'jpeg')
 
     def url_is_image(self, url):
-        extention = url.split('.').pop().lower()
-        if extention and extention in self.IMAGES:
+        extension = url.split('.').pop().lower()
+        if extension and extension in self.IMAGES:
             return True
         return False
 
@@ -284,7 +294,33 @@ def scan_html_for_picts(url):
 
 
 
+def get_pict_over_http(url):
+    """Retrieve an image over http.
+    return False if url is not image
+    return temporary path if everything is ok.
+    """
+    # get file in temp dir
+    local_filename, headers = urllib.request.urlretrieve(url)
+    # if file is not an image return
+    if not headers['Content-Type'] in ALLOWED_MIME_TYPE:
+        return False
+    # get file extension (because it's used by
+    # filestorage rename function)
+    extension = headers['Content-Type'][6:]
+    if extension == 'jpeg':
+        extension = 'jpg'
+    # rename temp file with extension
+    tmp_name = local_filename + '.' + extension
+    os.rename(local_filename, tmp_name)
 
+    return tmp_name
+
+
+
+
+
+
+        
 
 
 
