@@ -330,12 +330,12 @@ class PinCreationTest(TestCase):
     def test_urls(self):
         urls = [
             {
-                'url': '/pin/create/1/',
+                'url': '/pin/create/',
                 'status': 302,
                 'template': '404.html',
             },
             {
-                'url': '/pin/create/',
+                'url': '/pin/create/1/',
                 'status': 404,
                 'template': '404.html',
             },
@@ -347,17 +347,21 @@ class PinCreationTest(TestCase):
     def test_logged_in_urls(self):
         # login with user
         login(self, self.user)
+        # set session
+        session = self.client.session
+        session['resource'] = 1
+        session.save()
 
         urls = [
             # test pin creation with existing resource
             {
-                'url': '/pin/create/1/',
+                'url': '/pin/create/',
                 'status': 200,
                 'template': 'pin/pin_create.html',
             },
             # test pin creation with no resource
             {
-                'url': '/pin/create/',
+                'url': '/pin/create/1',
                 'status': 404,
                 'template': '404.html',
             },
@@ -374,9 +378,13 @@ class PinCreationTest(TestCase):
     def test_pin_creation(self):
         # login with user
         login(self, self.user)
+        # set session
+        session = self.client.session
+        session['resource'] = 1
+        session.save()
 
 
-        response = self.client.get('/pin/create/1/')
+        response = self.client.get('/pin/create/')
         # assert no other users' boards are in select
         self.assertEqual(response.context['form'].fields['board']._queryset.count(), 1)
         self.assertEqual(response.context['form'].fields['board']._queryset[0].pk, 1)
@@ -385,7 +393,7 @@ class PinCreationTest(TestCase):
         self.assertEqual(response.context['resource'], self.resource)
 
         # test pin creation
-        response = self.client.post('/pin/create/1/', {
+        response = self.client.post('/pin/create/', {
             'board': self.board.pk,
             'description': 'Description of pin',
             }, follow=True)
@@ -410,7 +418,13 @@ class PinCreationTest(TestCase):
 
 
     def test_pin_creation_with_wrong_board(self):
-        response = self.client.post('/pin/create/1/', {
+        # login with user
+        login(self, self.user)
+        # set session
+        session = self.client.session
+        session['resource'] = 1
+        session.save()
+        response = self.client.post('/pin/create/', {
             'board': self.board2.pk,
             'description': 'Try to post a pin on a board which isn\'t mine',
             }, follow=True)
@@ -422,7 +436,14 @@ class PinCreationTest(TestCase):
 
 
     def test_pin_creation_with_unexisting_resource(self):
-        response = self.client.post('/pin/create/2/', {
+        # login with user
+        login(self, self.user)
+        # set session
+        session = self.client.session
+        session['resource'] = 3
+        session.save()
+
+        response = self.client.post('/pin/create/', {
             'board': self.board.pk,
             'description': 'Try to post a pin with an inexisting resource.',
             }, follow=True)

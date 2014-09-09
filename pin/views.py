@@ -85,7 +85,6 @@ class CreatePin(CreateView, AjaxableResponseMixin):
     template_name = 'pin/pin_create.html'
 
     def dispatch(self, request, *args, **kwargs):
-        print(self.request.session.get('resource'))
         # get resource from session or raise 404
         if not self.request.session.get('resource'):
             raise Http404
@@ -268,7 +267,10 @@ class UploadPin(CreateView, AjaxableResponseMixin):
         self.object.sha1 = get_sha1_hexdigest(self.object.source_file)
 
         # search resource with same hash
-        clone = Resource.objects.filter(sha1=self.object.sha1)
+        try:
+            clone = Resource.objects.get(sha1=self.object.sha1)
+        except:
+            clone = False
 
         # if we have another resource with same hash
         # returns create_pin view with it's ID, and don't save anything
@@ -321,7 +323,10 @@ def download_pin(request):
 
 
             # search resource with same hash
-            clone = Resource.objects.filter(sha1=sha1)
+            try:
+                clone = Resource.objects.get(sha1=sha1)
+            except:
+                clone = False
             # if we have another resource with same hash
             # returns create_pin view with it's ID, and don't save anything
             if clone:

@@ -11,6 +11,15 @@ from pin.views import ListPins
 
 admin.autodiscover()
 
+RESERVED_NAMES = (
+        'admin',
+        'board',
+        'pin',
+        'login',
+        'logout',
+        'profil',
+)
+
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'pinpict.views.home', name='home'),
