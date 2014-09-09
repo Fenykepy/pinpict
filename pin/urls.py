@@ -7,7 +7,7 @@ urlpatterns = patterns('',
 
         ## pin creation
         # create pin itself
-        url(r'^create/(?P<resource>\d+)/$',
+        url(r'^create/$',
             login_required(CreatePin.as_view()), name='create_pin'),
 
         # choose pin file origin
@@ -20,8 +20,7 @@ urlpatterns = patterns('',
             login_required(UploadPin.as_view()), name='pin_upload'),
 
         # download pin from web page
-        url(r'^download/$',
-            login_required(DownloadPin.as_view()), name='pin_download'),
+        url(r'^download/$', 'pin.views.download_pin', name='pin_download'),
 
         # select url
         url(r'^url/$',

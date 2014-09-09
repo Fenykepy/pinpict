@@ -28,12 +28,13 @@
 #        - raise 404 in case of wrong resource or board 
 #        - test remove empty folder
         - create login page and update test and pin.views
-        - pass resource pk in a hidden field instead of url parameter
+#        - pass resource pk in session variable instead of url parameter
+#        - pass last visited board in session variable and put it as default in board select
         - show warning if a pin exists on same board with same resource
         - remove '------' in the board select
 #        - pin file upload form
-        - pin source url form
-        - pin find image in url page
+#        - pin source url form
+#        - pin find image in url page
 #        - previews generation functions
 #            - previews generation tests
 #        - pin itself creation form

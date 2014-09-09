@@ -7,6 +7,8 @@ from django.core.urlresolvers import reverse_lazy
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.http import urlquote_plus, urlunquote_plus
+from django.contrib.auth.decorators import login_required
+
 
 #from pinpict.settings import LOGIN_URL !!!
 from board.views import AjaxableResponseMixin
@@ -28,6 +30,8 @@ class ListPins(ListView):
         self.user = get_object_or_404(User, slug=self.kwargs['user'])
         self.board = get_object_or_404(Board, slug=self.kwargs['board'],
                 user=self.user)
+        # add session variable to store last visited board
+        self.request.session['last_visited_board'] = self.board.pk
         # if board is private
         if self.board.policy == 0:
             # if user isn't logged in, redirect to login page
@@ -81,8 +85,11 @@ class CreatePin(CreateView, AjaxableResponseMixin):
     template_name = 'pin/pin_create.html'
 
     def dispatch(self, request, *args, **kwargs):
-        # get resource from url parameter or raise 404
-        self.resource = get_object_or_404(Resource, pk=self.kwargs['resource'])
+        print(self.request.session.get('resource'))
+        # get resource from session or raise 404
+        if not self.request.session.get('resource'):
+            raise Http404
+        self.resource = get_object_or_404(Resource, pk=self.request.session['resource'])
         return super(CreateView, self).dispatch(request, *args, **kwargs)
 
 
@@ -101,6 +108,14 @@ class CreatePin(CreateView, AjaxableResponseMixin):
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)
+
+        # set initial data
+        form.initial = {}
+        if self.request.session.get('last_visited_board'):
+            form.initial['board'] = self.request.session['last_visited_board']
+        if self.request.session.get('resource_description'):
+            form.initial['description'] = self.request.session['resource_description']
+
         # ensure that only user's boards are listed
         form.fields["board"].queryset = Board.objects.filter(user=request.user)
         return self.render_to_response(self.get_context_data(form=form))
@@ -114,8 +129,17 @@ class CreatePin(CreateView, AjaxableResponseMixin):
         if self.object.board.user != self.request.user:
             raise Http404
         self.object.resource = self.resource
+
+        # if object has been downloaded
+        if self.request.session.get('resource_source'):
+            self.object.source = self.request.session['resource_source']
+            del self.request.session['resource_source']
         # save object
         self.object.save()
+        # del session variables
+        del self.request.session['resource']
+        if self.request.session.get('resource_description'):
+            del self.request.session['resource_description']
 
         # redirect to board
         return redirect(reverse_lazy('board_view',
@@ -223,7 +247,6 @@ class DeletePin(DeleteView, AjaxableResponseMixin):
 
 
 
-
 class UploadPin(CreateView, AjaxableResponseMixin):
     """View to upload a pin resource."""
     model = Resource
@@ -250,9 +273,10 @@ class UploadPin(CreateView, AjaxableResponseMixin):
         # if we have another resource with same hash
         # returns create_pin view with it's ID, and don't save anything
         if clone:
-            print('clone')
-            return redirect(reverse_lazy('create_pin',
-                kwargs={'resource': clone[0].pk}))
+            # add resource ID to session
+            self.request.session['resource'] = clone.pk
+            # redirect to create pin view
+            return redirect(reverse_lazy('create_pin'))
 
         self.object.width = self.object.source_file.width
         self.object.height = self.object.source_file.height
@@ -263,17 +287,43 @@ class UploadPin(CreateView, AjaxableResponseMixin):
         # save object
         self.object.save()
 
+        # add resource ID to session
+        self.request.session['resource'] = self.object.pk
+
         # create previews
         generate_previews(self.object)
 
         # redirect to create_pin view
-        return redirect(reverse_lazy('create_pin',
-            kwargs={'resource': self.object.pk}))
+        return redirect(reverse_lazy('create_pin'))
 
 
 
-class DownloadPin(FormView, AjaxableResponseMixin):
+@login_required
+def download_pin(request):
     """View to download a pin resource from a webpage."""
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = DownloadPinForm(request.POST)
+        if form.is_valid():
+            # add url to session
+            request.session['resource_source'] = form.cleaned_data['url']
+            # add alt to session
+            request.session['resource_description'] = form.cleaned_data['alt']
+            # create resource from href
+
+
+            # add resource ID to session
+            #request.session['resource'] = resource.pk
+            request.session['resource'] = 1
+
+            return redirect(reverse_lazy('create_pin'))
+        else:
+            # form is invalid, raise 404
+            raise Http404
+
+    else:
+        # form is build in pin_find view, no get here.
+        raise Http404
     
 
 

@@ -24,11 +24,11 @@ class UploadPinForm(ModelForm):
 class DownloadPinForm(Form):
     """Pin Resource download form."""
     # image url
-    href = forms.HiddenInput()
+    href = forms.URLField()
     # image source page url
-    url = forms.HiddenInput()
+    url = forms.URLField()
     # image alt
-    alt = forms.HiddenInput()
+    alt = forms.CharField(required=False)
 
 
 
