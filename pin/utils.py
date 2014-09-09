@@ -191,6 +191,7 @@ def generate_previews(resource):
         save_preview(img, destination, quality)
 
 
+
 class PictureHTMLParser(HTMLParser):
     """Scan for <a> and <img> tags."""
     pictures = []
@@ -222,13 +223,12 @@ class PictureHTMLParser(HTMLParser):
             a = {
                 'href': '',
                 'alt': '',
-                'title': '',
             }
             for attr in attrs:
                 if attr[0] == 'href':
                     a['href'] = self.build_absolute_url(attr[1])
                 if attr[0] == 'title':
-                    a['title'] = attr[1]
+                    a['alt'] = attr[1]
             if a['href'] and self.url_is_image(a['href']):
                 self.pictures.append(a)
 
@@ -236,15 +236,15 @@ class PictureHTMLParser(HTMLParser):
             img = {
                 'href': '',
                 'alt': '',
-                'title': '',
             }
             for attr in attrs:
                 if attr[0] == 'src':
                     img['href'] = self.build_absolute_url(attr[1])
                 if attr[0] == 'alt':
+                    if attr[1] != '':
+                        img['alt'] = attr[1]
+                if attr[0] == 'title' and img['alt'] == '':
                     img['alt'] = attr[1]
-                if attr[0] == 'title':
-                    img['title'] = attr[1]
             if img['href'] and self.url_is_image(img['href']):
                 self.pictures.append(img)
 
