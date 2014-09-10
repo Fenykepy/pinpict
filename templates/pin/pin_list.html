@@ -4,8 +4,8 @@
 {% endblock %}
 
 {% block body %}
-
-
+{% spaceless %}
+<section id="pins">
 <header>
     <h1>{{ board.title }}</h1>
     {{ board.n_pins }}
@@ -16,7 +16,7 @@
 </article>
 
 {% if user.is_authenticated and user == owner %}
-<article id="add-pin">
+<article id="create-pin">
     <a href="{% url "choose_origin_pin" %}">
     <h1>Add a pin</h1>
     </a>
@@ -38,4 +38,6 @@
     </footer>
 </article>
 {% endfor %}
+{% endspaceless %}
+</section>
 {% endblock body %}

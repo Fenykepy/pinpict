@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
 {% with owner=pin.board.user %}
+<section id="pin">
 <article>
 <header>
     {% if pin.source %}
@@ -27,5 +28,6 @@ Uploaded to Pinpict
 <article class="pin-description">
 {{ pin.description }}
 </article>
+</section>
 {% endwith %}
 {% endblock %}

@@ -1,0 +1,119 @@
+// Boards css
+
+
+/*
+ * Calcul des largeurs de page
+ * n * (236+14) 
+ *
+ */
+
+
+section#boards, section#private-boards, section#pins {
+    vertical-align: top;
+    position: relative;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 14px;
+    width: 750px;
+}
+
+@media screen and (min-width: 1030px) {
+    section#boards, section#private-boards, section#pins {
+        width: 1000px;
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    section#boards, section#private-boards, section#pins {
+        width: 1250px;
+    }
+}
+
+article.board, article#create-board, article#user {
+    position: relative;
+    display: inline-block;
+    margin: 14px 7px 0px 7px;
+    width: 236px;
+    height: 284px;
+    background-color: @articles-bg;
+    border-radius: 6px;
+    box-sizing: border-box;
+    vertical-align: top;
+
+    h1 {
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 20px;
+        color: @00;
+        margin:  0 3px 6px 3px;
+        font-family: sans-serif;
+    }
+    div.board-n-pins {
+        position: absolute;
+        bottom: 106px;
+        right: 14px;
+        color: @FF;
+        font-weight: bold;
+        font-size: 12px;
+        font-family: sans-serif;
+        background-color: rgba(34, 34, 34, 0.8); //@22
+        border-radius: 3px;
+        padding: 3px 6px;
+    }
+
+    a.board-previews {
+        padding: 10px;
+        display: block;
+    }
+
+    img.board-main-preview {
+        width: 214px;
+        height: 144px;
+        border: 1px solid @58;
+        border-radius: 3px;
+    }
+
+    li {
+        display: inline-block;
+        margin-right: 4px;
+        width: 49px;
+        height: 49px;
+        border: 1px solid @58;
+        border-radius: 3px;
+        img {
+            height: 49px;
+            width: 49px;
+            border-radius: 3px;
+        }
+    }
+    li:last-child {
+        margin-right: 0;
+    }
+}
+article#create-board {
+    border: 2px dashed @articles-bg;
+    line-height: 284px;
+    text-align: center;
+    vertical-align: middle;
+    background-color: @board-create-bg;
+}
+article.board {
+    button {
+        width: 216px;
+        height: 31px;
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        padding: 8px 14px 7px;
+        font-weight: bold;
+        box-sizing: border-box;
+    }
+}
+article#user {
+    display: block;
+    width: auto;
+    margin-bottom: 2px;
+    height: 226px;
+}
+
+

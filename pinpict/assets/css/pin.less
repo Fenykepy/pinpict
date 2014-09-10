@@ -1,0 +1,43 @@
+// pin css
+section#pin {
+    width: 736px;
+    margin-right: auto;
+    margin-left: auto;
+
+    article {
+        border-radius: 6px;
+        background-color: @articles-bg;
+        margin: 14px 0;
+
+        header {
+            height: 56px;
+        }
+        img {
+            display: block;
+            margin-right: auto;
+            margin-left: auto;
+        }
+    }
+}
+
+article.pin, article#create-pin {
+    position: relative;
+    display: inline-block;
+    margin: 14px 7px 0px 7px;
+    width: 236px;
+    background-color: @articles-bg;
+    border-radius: 6px;
+    box-sizing: border-box;
+    vertical-align: top;
+    img {
+        border-radius: 6px 6px 0px 0px;
+    }
+}
+article#create-pin {
+    border: 2px dashed @articles-bg;
+    height: 284px;
+    line-height: 284px;
+    text-align: center;
+    vertical-align: middle;
+    background-color: @board-create-bg;
+}
