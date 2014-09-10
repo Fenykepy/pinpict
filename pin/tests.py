@@ -219,17 +219,6 @@ class UtilsTest(TestCase):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 class ResourceTest(TestCase):
     """Resource model and views tests."""
 
@@ -1050,4 +1039,93 @@ class PinChooseUrlTest(TestCase):
 
 
         
+class DownloadPinTest(TestCase):
+    """download_pin Test class."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # launch client
+        self.client = Client()
+
+
+    def test_urls(self):
+        urls = [
+            # user should be connected
+            {
+                'url': '/pin/download/',
+                'status': 302,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_logged_in_urls(self):
+        # login with user
+        login(self, self.user)
+
+        urls = [
+            # shouldn't accept get method
+            {
+                'url': '/pin/download/',
+                'status': 404,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+    def test_post(self):
+        # login with user
+        login(self, self.user)
+
+
+
+class FindPinTest(TestCase):
+    """Find pin Test class."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # launch client
+        self.client = Client()
+
+
+    def test_urls(self):
+        urls = [
+            # user should be connected
+            {
+                'url': '/pin/find/?url=http%3A%2F%2Flavilotte-rolle.fr' +
+                    '%2Fcontact%2F',
+                'status': 302,
+                'template': '404.html',
+            },
+            {
+                'url': '/pin/find/',
+                'status': 302,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_logged_in_urls(self):
+        # login with user
+        login(self, self.user)
+
+        urls = [
+            {
+                'url': '/pin/find/?url=http%3A%2F%2Flavilotte-rolle.fr' +
+                    '%2Fcontact%2F',
+                'status': 200,
+                'template': 'pin/pin_find.html',
+            },
+            {
+                'url': '/pin/find/',
+                'status': 404,
+                'template': '404.html',
+            },
+          
+        ]
+        test_urls(self, urls)
 

@@ -391,11 +391,20 @@ class FindPin(TemplateView):
     """View to choose image to pin from given url."""
     template_name = 'pin/pin_find.html'
 
+    def get(self, request, *args, **kwargs):
+        self.url = urlunquote_plus(self.request.GET.get('url'))
+        # if url is not an absolute url
+        if self.url[:4] != 'http':
+            raise Http404        
+
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
+
+
     def get_context_data(self, **kwargs):
-        url = urlunquote_plus(self.request.GET.get('url'))
         context = super(FindPin, self).get_context_data(**kwargs)
-        context['picts'] = scan_html_for_picts(url)
-        context['url'] = url
+        context['picts'] = scan_html_for_picts(self.url)
+        context['url'] = self.url
         context['form'] = DownloadPinForm()
 
 
