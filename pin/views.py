@@ -331,7 +331,7 @@ def download_pin(request):
             # returns create_pin view with it's ID, and don't save anything
             if clone:
                 # add resource ID to session
-                self.request.session['resource'] = clone.pk
+                request.session['resource'] = clone.pk
                 # redirect to create pin view
                 return redirect(reverse_lazy('create_pin'))
 

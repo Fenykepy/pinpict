@@ -300,7 +300,10 @@ def get_pict_over_http(url):
     return temporary path if everything is ok.
     """
     # get file in temp dir
-    local_filename, headers = urllib.request.urlretrieve(url)
+    try:
+        local_filename, headers = urllib.request.urlretrieve(url)
+    except:
+        return False
     # if file is not an image return
     if not headers['Content-Type'] in ALLOWED_MIME_TYPE:
         return False
