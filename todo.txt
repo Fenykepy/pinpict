@@ -24,6 +24,11 @@
 #        - update user.n_boards after deletion
 #        - delete associated pins
     - pin creation form
+        - add support for:
+            ../
+            ../../
+            ../../../ 
+            to PictureHtmlParser
 #        - list only user's boards in form
 #        - raise 404 in case of wrong resource or board 
 #        - test remove empty folder

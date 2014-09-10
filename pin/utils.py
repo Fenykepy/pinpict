@@ -225,7 +225,10 @@ class PictureHTMLParser(HTMLParser):
         # if url is relative from root, add root_url
         if url[:1] == '/':
             return self.root_url + url
-        # if url is relative to current
+        # if url is relative from current directory, add it to full url
+        if url[:1] != '..':
+            return self.url + url
+        # if url is relative to previous directorys
             # to implement later !!!
 
     def handle_starttag(self, tag, attrs):

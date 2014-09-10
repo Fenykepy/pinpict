@@ -176,6 +176,7 @@ class UtilsTest(TestCase):
         <a href="/data/1.jpg" title="">link</a>
         <a href="http://data/1.jpg" title="my link picture">link</a>
         <a href="https://data/1.jpg" title="my link picture">link</a>
+        <a href="999.jpg" titlle="">link</a>
         """
 
         result = [
@@ -202,6 +203,10 @@ class UtilsTest(TestCase):
             {
                 'href': 'https://data/1.jpg',
                 'alt': 'my link picture',
+            },
+            {
+                'href': 'http://www.lavilotte-rolle.fr/portfolio/999.jpg',
+                'alt': '',
             },
         ]
 
@@ -1246,5 +1251,14 @@ class FindPinTest(TestCase):
         test_urls(self, urls)
 
     def test_find_pin_context(self):
-        pass
+        # login with user
+        login(self, self.user)
+        
+        response = self.client.get(
+                '/pin/find/?url=http%3A%2F%2Flavilotte-rolle.fr%2Ftmp%2Fpinpict_tests%2F')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'pin/pin_find.html')
+        self.assertEqual(response.context['picts'], 
+                [{'alt': '', 'href': 'http://lavilotte-rolle.fr/tmp/pinpict_tests/999.jpg'}])
+        self.assertEqual(response.context['url'], 'http://lavilotte-rolle.fr/tmp/pinpict_tests/')
 
