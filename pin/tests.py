@@ -165,6 +165,62 @@ class UtilsTest(TestCase):
         os.rmdir(test_dir)
 
 
+    def test_picture_html_parser(self):
+        # make some html for test
+        html = """
+        <h1>My beautiful title</h1>
+        <img src="/data/1.jpg" alt="" />
+        <img src="http://lavilotte-rolle.fr/data/1.jpg" alt="http" />
+        <img src="https://lavilotte-rolle.fr/data/1.jpg" alt="https" />
+        <strong>some noise</strong>
+        <a href="/data/1.jpg" title="">link</a>
+        <a href="http://data/1.jpg" title="my link picture">link</a>
+        <a href="https://data/1.jpg" title="my link picture">link</a>
+        """
+
+        result = [
+            {
+                'href': 'http://www.lavilotte-rolle.fr/data/1.jpg',
+                'alt': '',
+            },
+            {
+                'href': 'http://lavilotte-rolle.fr/data/1.jpg',
+                'alt': 'http',
+            },
+            {
+                'href': 'https://lavilotte-rolle.fr/data/1.jpg',
+                'alt': 'https',
+            },
+            {
+                'href': 'http://www.lavilotte-rolle.fr/data/1.jpg',
+                'alt': '',
+            },
+            {
+                'href': 'http://data/1.jpg',
+                'alt': 'my link picture',
+            },
+            {
+                'href': 'https://data/1.jpg',
+                'alt': 'my link picture',
+            },
+        ]
+
+
+        
+        parser = PictureHTMLParser(convert_charrefs=True)
+        parser.pictures = []
+        parser.url = 'http://www.lavilotte-rolle.fr/portfolio/'
+        parser.protocol = 'http://'
+        parser.url_path = 'www.lavilotte-rolle.fr/portfolio/'
+        parser.root_url = 'http://www.lavilotte-rolle.fr'
+        parser.feed(html)
+
+        self.assertEqual(parser.pictures, result)
+
+
+
+
+
 
 
 
