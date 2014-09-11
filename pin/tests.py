@@ -239,12 +239,12 @@ class ResourceTest(TestCase):
             {
                 'url': '/pin/choose-origin/',
                 'status': 302,
-                'template': '404.html',
+                'template': 'user/user_login.html',
             },
             {
                 'url': '/pin/upload/',
                 'status': 302,
-                'template': '404.html',
+                'template': 'user/user_login.html',
             },
         ]
         test_urls(self, urls)
@@ -382,7 +382,7 @@ class PinCreationTest(TestCase):
             {
                 'url': '/pin/create/',
                 'status': 302,
-                'template': '404.html',
+                'template': 'user/user_login.html',
             },
             {
                 'url': '/pin/create/1/',
@@ -523,12 +523,12 @@ class PinUpdateTest(TestCase):
             {
                 'url': '/pin/1/edit/',
                 'status': 302,
-                'template': '404.html',
+                'template': 'user/user_login.html',
             },
             {
                 'url': '/pin/302/edit/',
                 'status': 302,
-                'template': '404.html',
+                'template': 'user/user_login.html',
             },
             {
                 'url': '/pin/edit/',
@@ -644,12 +644,12 @@ class PinDeleteTest(TestCase):
             {
                 'url': '/pin/1/delete/',
                 'status': 302,
-                'template': '404.html',
+                'template': 'user/user_login.html',
             },
             {
                 'url': '/pin/372/delete/',
                 'status': 302,
-                'template': '404.html',
+                'template': 'user/user_login.html',
             },
             {
                 'url': '/pin/delete/',
@@ -979,7 +979,7 @@ class PinChooseUrlTest(TestCase):
             {
                 'url': '/pin/url/',
                 'status': 302,
-                'template': '404.html',
+                'template': 'user/user_login.html',
             },
         ]
         test_urls(self, urls)
@@ -1013,7 +1013,7 @@ class PinChooseUrlTest(TestCase):
             }, follow=True
         )
         self.assertEqual(response.templates[0].name,
-                '404.html')
+                'user/user_login.html')
 
 
     def test_logged_in_url_choice(self):
@@ -1054,7 +1054,7 @@ class DownloadPinTest(TestCase):
             {
                 'url': '/pin/download/',
                 'status': 302,
-                'template': '404.html',
+                'template': 'user/user_login.html',
             },
         ]
         test_urls(self, urls)
@@ -1219,12 +1219,12 @@ class FindPinTest(TestCase):
                 'url': '/pin/find/?url=http%3A%2F%2Flavilotte-rolle.fr' +
                     '%2Fcontact%2F',
                 'status': 302,
-                'template': '404.html',
+                'template': 'user/user_login.html',
             },
             {
                 'url': '/pin/find/',
                 'status': 302,
-                'template': '404.html',
+                'template': 'user/user_login.html',
             },
         ]
         test_urls(self, urls)

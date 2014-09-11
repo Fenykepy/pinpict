@@ -1,3 +1,34 @@
-from django.shortcuts import render
+from django.contrib.auth import authenticate, login, logout
+from django.views.generic import FormView, UpdateView
+from django.core.urlresolvers import reverse_lazy
+from django.shortcuts import redirect
 
-# Create your views here.
+from user.models import User
+from user.forms import *
+
+
+class LoginView(FormView):
+    """Class to login a user."""
+    form_class = LoginForm
+    template_name = 'user/user_login.html'
+
+    def form_valid(self, form):
+        login(self.request, form.get_user()) # connect user
+        
+        url = self.request.GET.get('next', False)
+        print(url)
+        if url:
+            return redirect(url)
+        else:
+            return redirect(reverse_lazy('boards_list',
+                kwargs={
+                    'user': self.request.user.slug,
+                }))
+
+
+def logout_view(request):
+    """View to log user out."""
+    logout(request)
+    return redirect(reverse_lazy('user_login'))
+
+

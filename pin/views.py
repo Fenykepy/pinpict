@@ -392,7 +392,7 @@ class FindPin(TemplateView):
     template_name = 'pin/pin_find.html'
 
     def get(self, request, *args, **kwargs):
-        self.url = urlunquote_plus(self.request.GET.get('url'))
+        self.url = urlunquote_plus(self.request.GET.get('url', ''))
         # if url is not an absolute url
         if self.url[:4] != 'http':
             raise Http404        

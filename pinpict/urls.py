@@ -7,6 +7,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
 
 from board.views import *
+from user.views import LoginView
 from pin.views import ListPins
 
 admin.autodiscover()
@@ -27,6 +28,16 @@ urlpatterns = patterns('',
 
     ## administration
     url(r'^admin/', include(admin.site.urls)),
+
+    ## user management
+    ## login
+    url(r'^login/$', LoginView.as_view(), name='user_login'),
+
+    ## logout
+    url(r'^logout/$', 'user.views.logout_view', name='user_logout'),
+
+    ## registration
+
 
     ## home page
     url(r'^$', 'pinpict.views.home', name='home'),

@@ -79,40 +79,6 @@
             - On your computer
                 - load a form to enter a file
                     - pin board and description form
-=== Find Page ===
-    https://github.com/jcgregorio/httplib2
-    http://www.diveinto.org/python3/http-web-services.html
-    https://docs.python.org/3/library/html.parser.html
-    https://docs.python.org/3.4/howto/urllib2.html
-
-    import urllib.request
-    response = urllib.request.urlopen('http://lavilotte-rolle.fr')
-    html = response.read() -> html is in bytes
-
-    ou
-    
-    pip3 install httplib2
-
-    import httplib2
-    import re
-    
-    h = httplib2.Http('.cache')
-    response, content = h.request('http://lavilotte-rolle.fr')  -> content is in bytes
-    status = response['status']
-    charset = re.sub(r".*charset=(?P<charset>\w+)", r"\g<charset>", response['content-type'])
-    decoded = content.decode(charset)
-
-
-    from html.parser import HTMLParser
-
-    parser = HTMLParser()
-    parser.feed(decoded)
-
-    il est nécessaire de faire sa propre sous-classe du parseur (récupérer les hrefs des <a> et les src des <img>
-
-
-
-
 
 
     
@@ -134,7 +100,7 @@ user : connected user if any
 owner : user who owns current page (the on who's username is in url)
 ===== Présentation =====
 
-La présentation est copiée sur celle de pinterest (some toute pas si mal),
+La présentation est copiée sur celle de pinterest (somme toute pas si mal),
 peut-être en reprenant les couleurs de LR.
 
 board_list :

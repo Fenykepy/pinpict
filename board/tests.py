@@ -57,13 +57,13 @@ class BoardCreationTest(TestCase):
             {
                 'url': '/board/create/',
                 'status': 302,
-                'template': '404.html',
+                'template': 'user/user_login.html',
             },
             # create private board
             {
                 'url': '/board/create/private/',
                 'status': 302,
-                'template': '404.html',
+                'template': 'user/user_login.html',
             },
         ]
         test_urls(self, urls)
@@ -170,13 +170,13 @@ class BoardUpdateTest(TestCase):
             {
                 'url': '/flr/user-board/edit/',
                 'status': 302,
-                'template': '404.html',
+                'template': 'user/user_login.html',
             },
             # try to update existing user and board with wrong user
             {
                 'url': '/toto/user-board/edit/',
                 'status': 302,
-                'template': '404.html',
+                'template': 'user/user_login.html',
             },
             # try to update existing user and unexisting board
             {
@@ -302,13 +302,13 @@ class BoardDeleteTest(TestCase):
             {
                 'url': '/flr/user-board/delete/',
                 'status': 302,
-                'template': '404.html',
+                'template': 'user/user_login.html',
             },
             # try to delete unexisting board
             {
                 'url': '/toto/user-board/delete/',
                 'status': 302,
-                'template': '404.html',
+                'template': 'user/user_login.html',
             },
         ]
         test_urls(self, urls)
