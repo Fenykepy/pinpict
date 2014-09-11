@@ -3,3 +3,88 @@
 body {
     background-color: @BG;
 }
+
+a, a:visited {
+    color: @00;
+    &:hover {
+        color: @FF;
+    }
+}
+
+#banner-header {
+    height: 60px;
+    background-color: @header-bg;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 500;
+
+    h1, h1 a {
+        color: @FF;
+        height: 45px;
+        line-height: 45px;
+        text-align: center;
+        font-size: 1.2em;
+        font-style: italic;
+
+    }
+    hr {
+        height: 1px;
+        border: none;
+        color: @44;
+        margin: 8px 0 0;
+        background-color: @44;
+    }
+}
+#header-wrapper {
+    height: 45px;
+    position: relative;
+}
+#user-bar, #login-button {
+    width: 200px;
+    border-radius: 3px;
+    padding: 3px 6px 3px 50px;
+    position: absolute;
+    top: 11px;
+    right: 20px;
+    background-color: @66;
+    height: 32px;
+    line-height: 32px;
+    vertical-align: middle;
+    box-sizing: border-box;
+    
+    img {
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        top: 5px;
+        left: 7px;
+    }
+}
+
+#home-link {
+    position: absolute;
+    display: block;
+    top: 11px;
+    left: 20px;
+    width: 32px;
+    height: 32px;
+    background-color: @66;
+    box-sizing: border-box;
+    border-radius: 3px;
+    padding: 3px 6px;
+    line-height: 32px;
+}
+
+#user-menu {
+    position: relative;
+    display: none;
+    z-index: 100;
+    background: @66;
+    border-radius: 0px 3px 0px 3px;
+
+}
+#user-bar:hover > #user-menu {
+    display: block;
+}
+

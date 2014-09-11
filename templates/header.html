@@ -1,0 +1,27 @@
+<header>
+    {% spaceless %}
+    <a id="home_link" href="{% url "home" %}">
+        <span class="accessibility-text">home</span>
+    </a>
+
+    {# place search bar here :D #}
+    <h1>Pinpict</h1>
+    
+    {% if user.is_authenticated %}
+    <div><img src="{{ MEDIA_URL }}{{ user.avatar }}" height="60px" width="60px" />{{ user.username }}</div>
+    <ul id="user-menu">
+        <li><a href="{% url "boards_list" user.slug %}">My boards</a></li>
+        {#<li><a href="{% url "user_profil" %}">Profil</a></li>#}
+        <li><a href="{% url "user_logout" %}">Logout</a></li>
+    </ul>
+
+    {% else %}
+    {# place language select here #}
+    <a href="/login/?next={{request.path}}">
+        <button>
+            Login
+        </button>
+    </a>
+    {% endif %}
+    {% endspaceless %}
+</header>

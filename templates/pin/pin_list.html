@@ -12,7 +12,7 @@
 </header>
 
 <article id="user-compact">
-    <a href="{% url "boards_list" owner.username %}">{{ owner.avatar }}{{ owner.username }}</a>
+    <a href="{% url "boards_list" owner.username %}"><img src="{{ MEDIA_URL }}{{ owner.avatar }}" />{{ owner.username }}</a>
 </article>
 
 {% if user.is_authenticated and user == owner %}

@@ -53,7 +53,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar', # comment for prod
+    #'debug_toolbar', # comment for prod
     'user',
     'board',
     'pin',
@@ -66,7 +66,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware', # comment for prod
+    #'debug_toolbar.middleware.DebugToolbarMiddleware', # comment for prod
 )
 
 ROOT_URLCONF = 'pinpict.urls'

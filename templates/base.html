@@ -14,6 +14,39 @@
     <link rel="stylesheet/less" href="{% static 'css/controller.less' %}" />{# DEVEL #}
 </head>
 <body>
+{% block header %}
+<header id="banner-header" role="banner">
+    <div id="header-wrapper">
+    {% spaceless %}
+    <a id="home-link" href="{% url "home" %}">
+        <span class="accessibility-text">home</span>
+    </a>
+
+    {# place search bar here :D #}
+    <h1><a href="{% url "home" %}">Pinpict</a></h1>
+    
+    {% if user.is_authenticated %}
+    <div id="user-bar"><img src="{{ MEDIA_URL }}{{ user.avatar }}" height="22px" width="22px" />{{ user.username }}
+    <ul id="user-menu">
+        <li><a href="{% url "boards_list" user.slug %}">My boards</a></li>
+        {#<li><a href="{% url "user_profil" %}">Profil</a></li>#}
+        <li><a href="{% url "user_logout" %}">Logout</a></li>
+    </ul>
+    </div>
+
+    {% else %}
+    {# place language select here #}
+    <a href="/login/?next={{request.path}}">
+        <button id="login-button">
+            Login
+        </button>
+    </a>
+    {% endif %}
+    {% endspaceless %}
+     </div>
+     <hr />
+</header>
+{% endblock %}
 {% block body %}
 {% endblock %}
 {# DEVEL less compilation client side #}
