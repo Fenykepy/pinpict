@@ -1,0 +1,322 @@
+/**
+* Phiroom
+*
+* Copyright 2013 Lavilotte-Rolle Frédéric
+*
+* @contact <phiroom@lavilotte-rolle.fr>
+*
+*    This file is part of Phiroom.
+*
+*   Phiroom is free software: you can redistribute it and/or modify
+*   it under the terms of the GNU General Public License as published by
+*   the Free Software Foundation, either version 3 of the License, or
+*   (at your option) any later version.
+*
+*   Phiroom is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with Phiroom in COPYING file.
+*   If not, see <http://www.gnu.org/licenses/>.
+*
+*/
+
+
+// invalid forms
+:invalid:hover, :invalid:focus {
+    box-shadow: 0 0 3px @red;
+}
+form:invalid, form:invalid:hover, form:invalid:focus, :invalid {
+    box-shadow: none;
+}
+input, textarea, select, option, :invalid, :valid {
+    outline: none;
+    display: block;
+}
+
+// default forms elements
+div.field_wrapper {
+    margin-bottom: 25px;
+}
+
+
+header#form {
+    max-width: 650px;
+}
+form {
+    max-width: 650px;
+    margin-top: 2em;
+    margin-bottom: 1em;
+    
+    span.help_text {
+        display: block;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        color: @22;
+    }
+}
+input, option, select, button, textarea, ul.errorlist li {
+    width: 100%;
+    border-radius: 4px;
+    background: @58;
+    border: 1px solid @31;
+    font-size: 14px;
+    color: @00;
+    text-align: left;
+    padding: 6px 12px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+textarea {
+    resize: vertical;
+    line-height: 20px; 
+}
+select {
+    .degrade(@66, @50, @58);
+}
+
+input, option, select, button {
+    height: 34px;
+}
+
+input[type="checkbox"] {
+    height: 13px;
+    width: 13px;
+    margin: 3px 8px 0 0;
+    float: left;
+}
+
+label {
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.checkbox label {
+    font-weight: normal;
+}
+
+
+// progress logo
+div.progress {
+    margin-right: auto;
+    margin-left: auto;
+    width: 40px;
+    height: 40px;
+    border: 1px solid @22;
+    box-shadow: 1px 1px 0 @66 + 20, inset 1px 1px @66 + 20;
+    border-radius: 4px;
+    background: url("@{base-image}loading.gif") center center no-repeat;
+
+}
+// Tags checkboxes lists
+ul#id_tags {
+    width: 100%;
+    height: auto;
+    margin: 5px 0 0 0;
+    padding: 0;
+    max-width: 700px;
+
+    label {
+        font-weight: normal;
+    }
+}
+ul#id_tags::after {
+    content: "";
+    display: table;
+    clear: left;
+}
+ul#id_tags li {
+    display: block;
+    width: 33%;
+    height: 20px;
+    float: left;
+    clear: right;
+}
+ul#id_tags li[float="left"] + li {
+    float: none;
+}
+
+input:hover, input:focus, textarea:focus, textarea:hover, select:focus, select:hover {
+    box-shadow: 0 0 3px #000;
+}
+
+
+input[type="submit"], button {
+    display: inline-block;
+    .degrade(@40, @22, @44);
+    border: 1px solid @00;
+    border-radius: 2px;
+    box-shadow: 0 0 1px @00;
+    color: @CC;
+    height: 34px;
+    width: 150px;
+    margin-top: 5px;
+    margin-right: 2px;
+    margin-left: 2px;
+    text-align: center;
+    overflow: hidden;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    &.small_button {
+        height: 24px;
+        padding: 2px 6px 0px 6px;;
+    }
+    &.large-button {
+        width: auto;
+    }
+}
+
+input[type="submit"]:hover, input[type="submit"]:focus, button:hover, button:focus, a:hover button, a:focus button {
+    color: @FF;
+    box-shadow: 0 0 3px #000;
+}
+a button {
+    cursor: pointer;
+}
+
+
+// search area in left panel
+li#rechercher {
+    form {
+        height: 20px;
+        background: none;
+    }
+    input#search {
+        position: relative;
+        margin: 3px 8px 0 8px;
+        padding: 1px 7px 3px 22px;
+        width: 240px;
+        height: 14px;
+        background: @47;
+        border: 1px solid @31;
+        border-radius: 10px;
+        color: @91;
+        font-size: 100%;
+        box-sizing: content-box;
+        &:focus, &:hove { box-shadow: 0 0 1px @00; }
+    }
+    input[type="submit"] {
+        position: absolute;
+        top: 4px;
+        left: 11px;
+        height: 18px;
+        width: 20px;
+        background: url("@{base-image}loupe.png") center center no-repeat @47;
+        border: none;
+        border-radius: 9px;
+        &:hover { box-shadow: none; }
+    }   
+}
+// connection area in left panel
+ul#nav {
+    li.connect {
+        form {
+            height: 78px;
+            background: none;
+            margin: 0;
+            padding: 0;
+        }
+    }
+    input {
+        margin: 5px 8px 0px 8px;
+        border-radius: 0;
+        box-sizing: content-box;
+        padding: 1px 7px 1px 7px;
+        width: 255px;
+        height: 14px;
+        background: @47;
+        border: 1px solid #313131;
+        color: @91;
+        text-align: left;
+    }
+    input[type="submit"], button {
+        display: block;
+        .degrade(@5E, @44);
+        border: none;
+        box-shadow: 0 0 2px @00;
+        border-radius: 2px;
+        color: @CC;
+        text-align: center;
+        vertical-align: middle;
+        margin-right: auto;
+        margin-left: auto;
+        margin-top: 5px;
+        margin-bottom: 0;
+        width: 151px;
+        height: 20px;
+        &:hover, &:focus {
+            color: @FF;
+            box-shadow: 0 0 3px @00;
+        }
+    }
+    button {
+        margin-bottom: 5px;
+        padding: 2px;
+    }
+}
+
+// error lists
+
+form ul.errorlist
+{
+    & + div.input_group input, & + div.input_group select {
+        box-shadow: 0 0 3px @red;
+    }
+    li {
+        display: block;
+        margin-bottom: 15px;
+        border-color: @red;
+        color: @red;
+        height: 34px;
+        line-height: 20px;
+        .degrade(@red-background + 10, @red-background - 10, @red-background);
+        vertical-align: middle;
+    }
+}
+
+
+div.input_group {
+    display: table;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    border-collapse: separate;
+    width: 100%;
+    position: relative;
+    margin-top: 5px;
+
+    select {
+        margin: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        display: table-cell;
+    }
+    a {
+        box-sizing: border-box;
+        display: table-cell;
+        height: 100%;
+        width: 60px;
+        border-radius: 4px;
+        border: 1px solid @00;
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+        box-shadow: none;
+        .degrade(@40, @22, @22);
+        &:before {
+            top: 3px;
+            margin-right: auto;
+            margin-left: auto;
+            //.sprite-block(12, @line2, @grid2, 16px, 16px);
+        }
+        &:hover, &:focus {
+            &:before {
+                //.sprite-block(13, @line2, @grid2, 16px, 16px);
+            }
+            box-shadow: 0 0 3px #000;
+        }
+    }
+}
+.warning-message {
+    font-size: 1.7em
+}

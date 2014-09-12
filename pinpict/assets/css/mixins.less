@@ -1,0 +1,100 @@
+/**
+* Phiroom
+*
+* Copyright 2013 Lavilotte-Rolle Frédéric
+*
+* @contact <phiroom@lavilotte-rolle.fr>
+*
+*    This file is part of Phiroom.
+*
+*   Phiroom is free software: you can redistribute it and/or modify
+*   it under the terms of the GNU General Public License as published by
+*   the Free Software Foundation, either version 3 of the License, or
+*   (at your option) any later version.
+*
+*   Phiroom is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with Phiroom in COPYING file.
+*   If not, see <http://www.gnu.org/licenses/>.
+*
+*/
+
+
+// Mixins
+
+// Arrows
+.arrow {
+    content:"";
+    position: absolute;
+    height: 0;
+    width: 0;
+}
+.arrow-right(@color: @44, @height: 9px, @width: 11px) {
+    .arrow;
+    border-left: @width solid @color;
+    border-top: @height solid transparent;
+    border-bottom: @height solid transparent;
+}
+.arrow-left(@color: @44, @height: 9px, @width: 11px) {
+    .arrow;
+    border-right: @width solid @color;
+    border-top: @height solid transparent;
+    border-bottom: @height solid transparent;
+}
+.arrow-up(@color: @44, @height: 9px, @width: 11px) {
+    .arrow;
+    border-bottom: @width solid @color;
+    border-right: @height solid transparent;
+    border-left: @height solid transparent;
+}
+.arrow-down(@color: @44, @height: 9px, @width: 11px) {
+    .arrow;
+    border-top: @width solid @color;
+    border-right: @height solid transparent;
+    border-left: @height solid transparent;
+}
+
+
+// degraded
+.degrade(@colorstart: @44, @colorend: @22, @colorback: @22) {
+    background: @colorback;
+    background: -webkit-linear-gradient(@colorstart, @colorend);
+    background:    -moz-linear-gradient(@colorstart, @colorend);
+    background:     -ms-linear-gradient(@colorstart, @colorend);
+    background:      -o-linear-gradient(@colorstart, @colorend);
+    background:         linear-gradient(@colorstart, @colorend);
+}
+
+// transformations and transitions
+.transform(@transform) {
+    -webkit-transform: @transform;
+       -moz-transform: @transform;
+        -ms-transform: @transform;
+         -o-transform: @transform;
+            transform: @transform;
+}
+.transform-origin(@origin, @target) {
+    -webkit-transform-origin: @origin @target;
+       -moz-transform-origin: @origin @target;
+        -ms-transform-origin: @origin @target;
+         -o-transform-origin: @origin @target;
+            transform-origin: @origin @target;
+}
+.transition(@transition) {
+    -webkit-transition: @transition;
+       -moz-transition: @transition;
+        -ms-transition: @transition;
+         -o-transition: @transition;
+            transition: @transition;
+}
+
+// out screen text (for semantic, screen readers and bots)
+.out-screen{
+   text-indent: -999em;
+   letter-spacing: -999em;
+   overflow: hidden;
+}

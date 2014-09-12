@@ -271,11 +271,19 @@ def scan_html_for_picts(url):
     h = httplib2.Http('.cache')
     response, content = h.request(url)
     # return in case of fail
-    if response['status'] != '200':
+    if response['status'] not in ('200', '304'):
+        print('not 200 or 304 status code')
+        print(response['status'])
         return []
     # if resource itself is an image return its url
     if response['content-type'][:5] == 'image':
-        return [{'url': url},]
+        print('image content/type found')
+        return [
+                {
+                    'href': url,
+                    'alt': '',
+                }
+        ]
     charset = re.sub(r".*charset=(?P<charset>\w+)",
             r"\g<charset>", response['content-type'])
     # if charset in known charset… else charset = 'utf-8'

@@ -1,0 +1,181 @@
+/**
+* Phiroom
+*
+* Copyright 2013 Lavilotte-Rolle Frédéric
+*
+* @contact <phiroom@lavilotte-rolle.fr>
+*
+*    This file is part of Phiroom.
+*
+*   Phiroom is free software: you can redistribute it and/or modify
+*   it under the terms of the GNU General Public License as published by
+*   the Free Software Foundation, either version 3 of the License, or
+*   (at your option) any later version.
+*
+*   Phiroom is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with Phiroom in COPYING file.
+*   If not, see <http://www.gnu.org/licenses/>.
+*
+*/
+
+
+// droid serif
+// regular
+@font-face {
+    font-family: 'droid_serif';
+    src: url('@{base-font}droidserif-regular/DroidSerif-webfont.eot');
+    src: url('@{base-font}droidserif-regular/DroidSerif-webfont.eot?#iefix') format('embedded-opentype'),
+         url('@{base-font}droidserif-regular/DroidSerif-webfont.woff') format('woff'),
+         url('@{base-font}droidserif-regular/DroidSerif-webfont.ttf') format('truetype'),
+         url('@{base-font}droidserif-regular/DroidSerif-webfont.svg#droid_serifregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+// bold
+@font-face {
+    font-family: 'droid_serif';
+    src: url('@{base-font}droidserif-bold/DroidSerif-Bold-webfont.eot');
+    src: url('@{base-font}droidserif-bold/DroidSerif-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('@{base-font}droidserif-bold/DroidSerif-Bold-webfont.woff') format('woff'),
+         url('@{base-font}droidserif-bold/DroidSerif-Bold-webfont.ttf') format('truetype'),
+         url('@{base-font}droidserif-bold/DroidSerif-Bold-webfont.svg#droid_serifbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+
+}
+
+// italic
+@font-face {
+    font-family: 'droid_serif';
+    src: url('@{base-font}droidserif-italic/DroidSerif-Italic-webfont.eot');
+    src: url('@{base-font}droidserif-italic/DroidSerif-Italic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('@{base-font}droidserif-italic/DroidSerif-Italic-webfont.woff') format('woff'),
+         url('@{base-font}droidserif-italic/DroidSerif-Italic-webfont.ttf') format('truetype'),
+         url('@{base-font}droidserif-italic/DroidSerif-Italic-webfont.svg#droid_serifitalic') format('svg');
+    font-weight: normal;
+    font-style: italic;
+}
+
+
+// bolditalic
+@font-face {
+    font-family: 'droid_serif';
+    src: url('@{base-font}droidserif-bolditalic/DroidSerif-BoldItalic-webfont.eot');
+    src: url('@{base-font}droidserif-bolditalic/DroidSerif-BoldItalic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('@{base-font}droidserif-bolditalic/DroidSerif-BoldItalic-webfont.woff') format('woff'),
+         url('@{base-font}droidserif-bolditalic/DroidSerif-BoldItalic-webfont.ttf') format('truetype'),
+         url('@{base-font}droidserif-bolditalic/DroidSerif-BoldItalic-webfont.svg#droid_serifbold_italic') format('svg');
+    font-weight: bold;
+    font-style: italic;
+}
+
+
+// droid sans
+// bold
+@font-face {
+    font-family: 'droid_sans';
+    src: url('@{base-font}droidsans-bold/DroidSans-Bold-webfont.eot');
+    src: url('@{base-font}droidsans-bold/DroidSans-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('@{base-font}droidsans-bold/DroidSans-Bold-webfont.woff') format('woff'),
+         url('@{base-font}droidsans-bold/DroidSans-Bold-webfont.ttf') format('truetype'),
+         url('@{base-font}droidsans-bold/DroidSans-Bold-webfont.svg#droid_sansbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}
+// regular
+@font-face {
+    font-family: 'droid_sans';
+    src: url('@{base-font}droidsans-regular/DroidSans-webfont.eot');
+    src: url('@{base-font}droidsans-regular/DroidSans-webfont.eot?#iefix') format('embedded-opentype'),
+         url('@{base-font}droidsans-regular/DroidSans-webfont.woff') format('woff'),
+         url('@{base-font}droidsans-regular/DroidSans-webfont.ttf') format('truetype'),
+         url('@{base-font}droidsans-regular/DroidSans-webfont.svg#droid_sansregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+// droid sans mono
+// regular
+@font-face {
+    font-family: 'droid_sans_mono';
+    src: url('@{base-font}droidsansmono-regular/DroidSansMono-webfont.eot');
+    src: url('@{base-font}droidsansmono-regular/DroidSansMono-webfont.eot?#iefix') format('embedded-opentype'),
+         url('@{base-font}droidsansmono-regular/DroidSansMono-webfont.woff') format('woff'),
+         url('@{base-font}droidsansmono-regular/DroidSansMono-webfont.ttf') format('truetype'),
+         url('@{base-font}droidsansmono-regular/DroidSansMono-webfont.svg#droid_sans_monoregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+// Fonts
+@serif: droid_serif, Georgia, "DejaVu Serif", Norasi, serif;
+@sans: droid_sans, Verdana, Helvetica, sans-serif;
+@mono: droid_sans_mono, "Lucida Console", Monaco, monospace;
+
+
+// Sizes, weight and styles
+body {
+    // default settings
+    font-family: @sans;
+    font-size: 16px;
+    strong, label, h1, h2, h3, h4, h5, h6 {
+        font-weight: bold;
+    }
+    em, h1, h2, h3, h4, h5, h6 {
+        font-style: italic;
+    }
+    p.date {
+        font-family: @serif;
+    }
+
+    // headings
+    h1 { font-size: 2.1em; }
+    h2 { font-size: 1.9em; }
+    h3 { font-size: 1.7em; }
+    h4 { font-size: 1.5em; }
+    h5 { font-size: 1.3em; }
+    h6 { font-size: 1.1em; }
+
+    h1, h2, h3, h4, h5, h6 { 
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+    }
+    h1 {
+        margin-top: 1em;
+    }
+
+    // Left panel menu variations
+    #nav .cadre2b {
+        input#seach {
+            font-size: 0.9em;
+        }
+        & li a, li.connected {
+            font-size: 0.8em;
+        }
+        & li.connected span.pseudo {
+            font-size: 1.5em;
+        }
+    }
+
+    // Error pages numbers
+    h1.error {
+        font-size: 10em;
+        font-family: @sans;
+        font-style: normal;
+        margin: 0;
+    }
+
+    // Small caps
+    .small_caps {
+        font-variant: small-caps;
+    }
+}

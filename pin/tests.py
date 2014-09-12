@@ -1037,6 +1037,8 @@ class PinChooseUrlTest(TestCase):
                 'url=http%3A%2F%2Fwww.lavilotte-rolle.fr')
 
 
+
+
         
 class DownloadPinTest(TestCase):
     """download_pin Test class."""
@@ -1250,7 +1252,8 @@ class FindPinTest(TestCase):
         ]
         test_urls(self, urls)
 
-    def test_find_pin_context(self):
+
+    def test_find_pin_context_with_html_resource(self):
         # login with user
         login(self, self.user)
         
@@ -1261,4 +1264,17 @@ class FindPinTest(TestCase):
         self.assertEqual(response.context['picts'], 
                 [{'alt': '', 'href': 'http://lavilotte-rolle.fr/tmp/pinpict_tests/999.jpg'}])
         self.assertEqual(response.context['url'], 'http://lavilotte-rolle.fr/tmp/pinpict_tests/')
+
+
+    def test_find_pin_context_with_image_resource(self):
+        # login with user
+        login(self, self.user)
+        
+        response = self.client.get(
+                '/pin/find/?url=http%3A%2F%2Flavilotte-rolle.fr%2Ftmp%2Fpinpict_tests%2F999.jpg')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'pin/pin_find.html')
+        self.assertEqual(response.context['picts'], 
+                [{'alt': '', 'href': 'http://lavilotte-rolle.fr/tmp/pinpict_tests/999.jpg'}])
+        self.assertEqual(response.context['url'], 'http://lavilotte-rolle.fr/tmp/pinpict_tests/999.jpg')
 
