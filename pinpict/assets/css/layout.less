@@ -25,6 +25,16 @@ a, a:visited {
     }
 }
 
+.accessibility-text {
+    left: -100000px;
+    position: absolute;
+    color: transparent;
+    height: 0;
+    width: 0;
+    display: block;
+
+}
+
 #banner-header {
     height: 60px;
     background-color: @header-bg;
@@ -33,14 +43,16 @@ a, a:visited {
     width: 100%;
     z-index: 500;
 
-    h1, h1 a {
-        color: @FF;
+    h1 {
         height: 45px;
-        line-height: 45px;
-        text-align: center;
-        font-size: 1.2em;
-        font-style: italic;
-
+        width: 138px;
+        margin-right: auto;
+        margin-left: auto;
+        a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
     }
     hr {
         height: 1px;
@@ -75,19 +87,8 @@ a, a:visited {
         left: 7px;
     }
 }
-
-#home-link {
-    position: absolute;
-    display: block;
-    top: 11px;
-    left: 20px;
-    width: 32px;
-    height: 32px;
-    background-color: @66;
-    box-sizing: border-box;
-    border-radius: 3px;
-    padding: 3px 6px;
-    line-height: 32px;
+#pinpict {
+    background: url("@{base-image}structure/pinpict.png") center bottom no-repeat;
 }
 
 #user-menu {

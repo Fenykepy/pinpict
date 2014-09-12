@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <title>{% block title %}Pinpict{% endblock %}</title>
     <meta charset="utf-8" />
 
@@ -18,12 +19,11 @@
 <header id="banner-header" role="banner">
     <div id="header-wrapper">
     {% spaceless %}
-    <a id="home-link" href="{% url "home" %}">
         <span class="accessibility-text">home</span>
     </a>
 
     {# place search bar here :D #}
-    <h1><a href="{% url "home" %}">Pinpict</a></h1>
+    <h1 id="pinpict"><a href="{% url "home" %}"><span class="accessibility-text">Pinpict</span></a></h1>
     
     {% if user.is_authenticated %}
     <div id="user-bar"><img src="{{ MEDIA_URL }}{{ user.avatar }}" height="22px" width="22px" />{{ user.username }}
