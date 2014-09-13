@@ -69,15 +69,17 @@ a, a:visited {
 #user-bar, #login-button {
     width: 200px;
     border-radius: 3px;
-    padding: 3px 6px 3px 50px;
+    padding: 3px 6px 3px 36px;
     position: absolute;
     top: 11px;
     right: 20px;
     background-color: @66;
+    color: @00;
     height: 32px;
-    line-height: 32px;
+    line-height: 26px;
     vertical-align: middle;
     box-sizing: border-box;
+    .degrade(@73, @40, @66);
     
     img {
         position: absolute;
@@ -85,7 +87,24 @@ a, a:visited {
         height: 22px;
         top: 5px;
         left: 7px;
+        margin-right: 7px;
     }
+
+    ul {
+        width: auto;
+        line-height: 30px;
+        border: 1px solid @22;
+        border-radius: 4px;
+        background-color: @articles-bg;
+        margin-top: 6px;
+        padding: 10px;
+
+    }
+}
+#login-button {
+    width: 90px;
+    padding: 3px 6px;
+    text-align:center;
 }
 #pinpict {
     background: url("@{base-image}structure/pinpict.png") center bottom no-repeat;

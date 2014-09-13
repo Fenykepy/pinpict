@@ -26,20 +26,25 @@
     <h1 id="pinpict"><a href="{% url "home" %}"><span class="accessibility-text">Pinpict</span></a></h1>
     
     {% if user.is_authenticated %}
-    <div id="user-bar"><img src="{{ MEDIA_URL }}{{ user.avatar }}" height="22px" width="22px" />{{ user.username }}
-    <ul id="user-menu">
-        <li><a href="{% url "boards_list" user.slug %}">My boards</a></li>
-        {#<li><a href="{% url "user_profil" %}">Profil</a></li>#}
-        <li><a href="{% url "user_logout" %}">Logout</a></li>
-    </ul>
+    <div id="user-bar"><img src="{{ MEDIA_URL }}{{ user.avatar }}" height="22px" width="22px" />
+        {% if user.first_name %}
+            {{ user.first_name }}
+        {% else %}
+            {{ user.username }}
+        {% endif %}
+        <ul id="user-menu">
+            <li><a href="{% url "boards_list" user.slug %}">My boards</a></li>
+            {#<li><a href="{% url "user_profil" %}">Profil</a></li>#}
+            <li><a href="{% url "user_logout" %}">Logout</a></li>
+        </ul>
     </div>
 
     {% else %}
     {# place language select here #}
     <a href="/login/?next={{request.path}}">
-        <button id="login-button">
+        <div id="login-button">
             Login
-        </button>
+        </div>
     </a>
     {% endif %}
     {% endspaceless %}

@@ -60,7 +60,6 @@ article.board, article.create-board, article#user {
         line-height: 20px;
         color: @00;
         margin:  0 3px 6px 3px;
-        font-family: sans-serif;
     }
     div.board-n-pins {
         position: absolute;
@@ -69,7 +68,6 @@ article.board, article.create-board, article#user {
         color: @FF;
         font-weight: bold;
         font-size: 12px;
-        font-family: sans-serif;
         background-color: rgba(34, 34, 34, 0.8); //@22
         border-radius: 3px;
         box-shadow: 0px 0px 2px @00 inset;
@@ -124,11 +122,32 @@ article.create-board {
         height: 100%;
 
         div.plus {
-            width: 50px;
-            height: 50px;
+            position: relative;
+            width: 40px;
+            height: 40px;
             margin: 90px auto 10px; 
             border: 1px solid @22;
-            border-radius: 8px;
+            border-radius: 20px;
+            background-color: @50;
+            box-shadow: 0 0 10px @31 inset;
+            &:after, &:before {
+                content: "";
+                display: block;
+                position: absolute;
+                background-color: @22;
+            }
+            &:after {
+                height: 22px;
+                width: 6px;
+                top: 9px;
+                right: 17px;
+            }
+            &:before {
+                height: 6px;
+                width: 22px;
+                top: 17px;
+                right: 9px;
+            }
 
         }
 
