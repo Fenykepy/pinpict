@@ -42,7 +42,7 @@ section#private-boards {
     }
 }
 
-article.board, article#create-board, article#user {
+article.board, article.create-board, article#user {
     position: relative;
     display: inline-block;
     margin: 14px 7px 0px 7px;
@@ -79,6 +79,12 @@ article.board, article#create-board, article#user {
     a.board-previews {
         padding: 10px;
         display: block;
+
+        &:hover, &:focus, &:active {
+            img {
+                -webkit-filter: brightness(110%);
+            }
+        }
     }
 
     img.board-main-preview {
@@ -106,12 +112,34 @@ article.board, article#create-board, article#user {
         margin-right: 0;
     }
 }
-article#create-board {
-    border: 2px dashed @articles-bg;
-    line-height: 284px;
+article.create-board {
     text-align: center;
-    vertical-align: middle;
-    background-color: @board-create-bg;
+
+    a {
+        background-color: @board-create-bg;
+        box-sizing: border-box;
+        border-radius: 4px;
+        border: 2px dashed @articles-bg;
+        display: block;
+        height: 100%;
+
+        div.plus {
+            width: 50px;
+            height: 50px;
+            margin: 90px auto 10px; 
+            border: 1px solid @22;
+            border-radius: 8px;
+
+        }
+
+        &:hover, &:focus, &:active {
+            background-color: @50;
+            border: 2px dashed @91;
+
+        }
+    }
+
+
 }
 article.board {
     button {
@@ -131,12 +159,12 @@ article#user {
     display: block;
     width: auto;
     margin-bottom: 2px;
-    height: 120px;
+    height: 142px;
     overflow: hidden;
     img {
-        width: 60px;
-        height: 60px;
-        margin: 10px 10px 8px 10px;
+        width: 80px;
+        height: 80px;
+        margin: 10px;
         border-radius: 2px;
         box-shadow: 0 0 6px @00;
         float: left;

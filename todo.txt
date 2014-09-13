@@ -8,6 +8,9 @@
 #        - pin_list
 #    - login page
 #    - logout page
+    - user facebook, flickr, pinterest, vk, twitter, google+ links on user models
+    - user avatar auto renaming and resizing
+    - user list_pins
     - profil page
     - header with:
         - user info

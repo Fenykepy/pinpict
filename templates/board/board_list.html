@@ -25,8 +25,9 @@
 </article>
 {% spaceless %}
 {% if user.is_authenticated and user == owner %}
-<article id="create-board">
+<article class="create-board">
     <a href="{% url "board_create" %}">
+    <div class="plus"></div>
     <h1>Create a board</h1>
     </a>
 </article>
@@ -92,8 +93,9 @@
 <div id="private-boards-wrapper">
 <section id="private-boards">
     <h2>Private boards</h2>
-<article id="create-board">
+<article class="create-board">
     <a href="{% url "private_board_create" %}">
+    <div class="plus"></div>
     <h1>Create a private board</h1>
     </a>
 </article>
