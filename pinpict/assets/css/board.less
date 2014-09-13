@@ -131,11 +131,12 @@ article#user {
     display: block;
     width: auto;
     margin-bottom: 2px;
-    height: 80px;
+    height: 120px;
+    overflow: hidden;
     img {
         width: 60px;
         height: 60px;
-        margin: 10px;
+        margin: 10px 10px 8px 10px;
         border-radius: 2px;
         box-shadow: 0 0 6px @00;
         float: left;
@@ -150,13 +151,60 @@ article#user {
         margin: 0 15px 8px 10px;
         height: 0;
         border: none;
-        border-top: 1px solid #313131;
+        border-top: 1px solid @31;
         border-bottom: 1px solid #7a7a7a;
     }
     .user-website {
         font-size: 0.8em;
         vertical-align: top;
     }
+    ul {
+        clear: both;
+        border-top: 1px solid @47;
+
+    }
+    li {
+        display: inline-block;
+        width: 50%;
+        height: 41px;
+        margin: 0;
+        border: none;
+        border-right: 1px solid @47;
+        border-radius: 0;
+        box-sizing: border-box;
+        text-align: center;
+        &.selected {
+            background: @50;
+            a {
+                color: @00;
+            }
+            a:hover, a:focus, a:active {
+                background: @50;
+            }
+        }
+        span.number {
+            font-weight: bold;
+        }
+        span.title, span.number {
+            font-size: 0.9em;
+        }
+        a {
+            display: block;
+            box-sizing: border-box;
+            padding: 3px 5px;
+            height: 100%;
+            width: 100%;
+            color: @22;
+            &:hover, &:focus, &:active {
+                background: @58;
+                color: @00;
+            }
+        }
+    }
+    li:last-child {
+        border: none;
+    }
+    
 }
 
 
