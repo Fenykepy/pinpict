@@ -51,12 +51,13 @@
 #    - test resource n_pins counter
 
     - JS
+        - extend private boards section until bottom of page in board_list
         - find_pin image width and height in footer
         - sort of pins by drag and drop
         - sort of boards by drag and drop
         - ajax forms
         - add a new board text input in board select of PinForm to add a new board on the go
-        - replace unfound previews with color image
+#        - replace unfound previews with color image -> done in html / css
 
     - CSS
 #        - inline block for all article.pin

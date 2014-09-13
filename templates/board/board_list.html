@@ -7,9 +7,14 @@
 <section id="boards">
 <article id="user">
     <img src="{{ MEDIA_URL }}{{ owner.avatar }}" alt="{{ owner.username }}" />
-    <h1>{{ owner.username }}</h1>
+    {% if owner.first_name or owner.last_name %}
+        <h1>{{ owner.first_name }} {{ owner.last_name }}</h1>
+    {% else %}
+        <h1>{{ owner.username }}</h1>
+    {% endif %}
+    <hr />
     {% if owner.website %}
-    <div class="user-website">{{ owner.website }}</div>
+    <div class="user-website"><a href="{{ owner.website }}" target="_blank">{{ owner.website }}</a></div>
     {% endif %}
 </article>
 {% spaceless %}
