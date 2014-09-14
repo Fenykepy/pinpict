@@ -8,7 +8,9 @@
 <section id="pins">
 <header>
     <h1>{{ board.title }}</h1>
-    <p id="description">{{ board.description }}</p>
+    {% if board.description %}
+        <p id="description">{{ board.description }}</p>
+    {% endif %}
     <p id="n-pins">{{ board.n_pins }} pin{{ board.n_pins|pluralize }}</p>
     {% if board.policy == 0 %}
     <p id="private">This board is private</p>
@@ -41,16 +43,24 @@
 {% endif %}
 {% for pin in board.pin_set.all %}
 <article class="pin">
+    <div class="buttons-wrapper">
+    {% if owner == user %}
+        <a href="{% url 'update_pin' pin.pk %}" title="Edit pin"><button class="edit">Edit</button></a>
+    {% endif %}
+    <a href="{% url "board_update" owner.slug board.slug %}" title="Pin it"><button class="pinit">Pin it</button></a>
     <a href="{% url "pin_view" pin.pk %}"><img src="{{ MEDIA_URL }}previews/236/{{ pin.resource.previews_path }}" alt="" /></a>
+    </div>
+    <p class="pin-description">
     {{ pin.description }}
+    </p>
     <footer>
     {% if pin.source_domain %}
-     <a href="{{ pin.source }}">
-        Pinned from<br />
+     <a href="{{ pin.source }}" target="_blank">
+         <span>Pinned from</span><br />
        {{ pin.source_domain }}
     </a>
     {% else %}
-        Uploaded to Pinpict
+    <a href=""><span>Uploaded to Pin Pict</span></a>
     {% endif %}
     </footer>
 </article>

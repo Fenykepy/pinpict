@@ -22,9 +22,55 @@ section#pins {
 }
 
 article.pin {
+    position: relative;
     height: auto;
+    overflow: hidden;
+    div.buttons-wrapper:hover button {
+        display: block;
+    }
     img {
-        border-radius: 4px 4px 0px 0px;
+        border-bottom: 1px solid @50;
+    }
+    button {
+        position: absolute;
+        display: none;
+        width: auto;
+        top: 8px;
+        margin: 0;
+        height: 30px;
+    }
+    button.pinit {
+        right: 8px
+    }
+    button.edit {
+        left: 8px;
+        //width: 30px; !!! to change with a logo
+        color: @00;
+        border: none;
+        .degrade(@F7, @CC, @F7)
+    }
+    p.pin-description {
+        padding: 7px 14px;
+        font-size: 0.9em;
+    }
+    footer {
+        border-top: 1px solid @50;
+        font-size: 0.8em;
+        span {
+            font-weight: bold;
+            color: @00;
+        }
+        a {
+            padding: 7px 14px;
+            display: block;
+            height: 100%;
+            color: @22;
+            line-height: 17px;
+            &:hover, &:focus, &:hover {
+                background-color: @58;
+                color: @22;
+            }
+        }
     }
 }
 

@@ -18,8 +18,8 @@
     {% endif %}
     {% spaceless %}
     <ul>
-        <li class="selected"><a href=""><span class="number">{{ owner.n_boards }}</span></br><span class="title">Boards</span></a></li>
-        <li><a href=""><span class="number">{{ owner.n_pins }}</span></br><span class="title">Pins</span></a></li>
+        <li class="selected"><a href=""><span class="number">{{ owner.n_boards }}</span></br><span class="title">Board{{ owner.n_boards|pluralize }}</span></a></li>
+        <li><a href=""><span class="number">{{ owner.n_pins }}</span></br><span class="title">Pin{{ owner.n_pins|pluralize }}</span></a></li>
     </ul>
     {% endspaceless %}
 </article>
