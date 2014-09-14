@@ -21,6 +21,7 @@ section#pins {
     }
 }
 
+
 article.pin {
     position: relative;
     height: auto;
@@ -30,6 +31,11 @@ article.pin {
     }
     img {
         border-bottom: 1px solid @50;
+    }
+    a.pin-link:hover, a.pin-link:active, a.pin-link:focus {
+        img {
+            -webkit-filter: brightness(110%);
+        }
     }
     button {
         position: absolute;
@@ -91,5 +97,23 @@ article.pin {
         float: right;
         margin: 13px 10px;
         width: auto;
+    }
+}
+
+
+// pin view css
+section#pin {
+    article {
+        background: @articles-bg;
+        box-shadow: 0 0 8px #000;
+        border: 1px solid @22;
+        border-radius: 4px;
+        width: 736px;
+        margin: 50px auto;
+
+        header {
+            height: 60px;
+            border-bottom: 1px solid @50;
+        }
     }
 }

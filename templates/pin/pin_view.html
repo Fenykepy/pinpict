@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block header %}{% endblock %}
 {% block body %}
 {% with owner=pin.board.user %}
 <section id="pin">
@@ -14,6 +15,7 @@
     <button type="button">Edit</button>
     </a>
     {% endif %}
+    <a href="" title="Pin it"><button type="button">Pin it</button></a>
 </header>
 {# !!! look to add a lightbox link here, or a link to full image, in template or not #}
 <img src="{{ MEDIA_URL }}previews/736/{{ pin.resource.previews_path }}" alt="{{ pin.description }}" />
