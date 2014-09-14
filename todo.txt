@@ -11,6 +11,7 @@
     - user facebook, flickr, pinterest, vk, twitter, google+ links on user models
     - user avatar auto renaming and resizing
     - user list_pins
+    - default user avatar « PP »
     - profil page
     - header with:
         - user info

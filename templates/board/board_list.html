@@ -33,7 +33,7 @@
 </article>
 {% endif %}
 {% for board in boards %}
-<article class="board">
+<article class="board" id="{{ board.id }}">
     <a class="board-previews" href="{% url "board_view" board.user.slug board.slug %}" title="More from {{ board.title }}">
     <header>
         <h1>{{ board.title }}</h1>
@@ -100,7 +100,7 @@
     </a>
 </article>
 {% for board in private_boards %}
-<article class="board">
+<article class="board" id="{{ board.id }}">
     <a class="board-previews" href="{% url "board_view" board.user.slug board.slug %}" title="More from {{ board.title }}">
     <header>
         <h1>{{ board.title }}</h1>

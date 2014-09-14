@@ -1,43 +1,49 @@
 // pin css
-section#pin {
-    width: 736px;
-    margin-right: auto;
-    margin-left: auto;
-
-    article {
-        border-radius: 6px;
-        background-color: @articles-bg;
-        margin: 14px 0;
-
-        header {
-            height: 56px;
+section#pins {
+    header {
+        padding: 1px 10px 10px;
+        text-align: center;
+        h1 {
+            font-weight: bold;
+            font-size: 2.2em;
+            margin: 1em 0 0.4em;
         }
-        img {
-            display: block;
-            margin-right: auto;
-            margin-left: auto;
+        p#private, p#n-pins {
+            font-size: 0.9em;
+            margin: 5px;
+        }
+        p#n-pins {
+            font-weight: bold;
+        }
+        p#description {
+            margin: 25px;
         }
     }
 }
 
-article.pin, article#create-pin {
-    position: relative;
-    display: inline-block;
-    margin: 14px 7px 0px 7px;
-    width: 236px;
-    background-color: @articles-bg;
-    border-radius: 6px;
-    box-sizing: border-box;
-    vertical-align: top;
+article.pin {
+    height: auto;
     img {
-        border-radius: 6px 6px 0px 0px;
+        border-radius: 4px 4px 0px 0px;
     }
 }
-article#create-pin {
-    border: 2px dashed @articles-bg;
-    height: 284px;
-    line-height: 284px;
-    text-align: center;
-    vertical-align: middle;
-    background-color: @board-create-bg;
+
+#user-compact {
+    height: 60px;
+    img {
+        width: 40px;
+        height: 40px;
+    }
+    h2 {
+        font-size: 1.1em;
+        font-weight: bold;
+        a:hover, a:focus, a:active {
+            color: @22;
+        }
+    }
+    button {
+        float: right;
+        margin: 13px 10px;
+        width: auto;
+    }
 }

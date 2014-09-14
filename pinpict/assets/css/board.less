@@ -42,7 +42,8 @@ section#private-boards {
     }
 }
 
-article.board, article.create-board, article#user {
+article.board, article.create-board, article#user, 
+article.pin, article#create-pin, #user-compact {
     position: relative;
     display: inline-block;
     margin: 14px 7px 0px 7px;
@@ -110,7 +111,7 @@ article.board, article.create-board, article#user {
         margin-right: 0;
     }
 }
-article.create-board {
+article.create-board, article#create-pin {
     text-align: center;
 
     a {
@@ -157,8 +158,6 @@ article.create-board {
 
         }
     }
-
-
 }
 article.board {
     button {
@@ -174,7 +173,7 @@ article.board {
         box-sizing: border-box;
     }
 }
-article#user {
+article#user, #user-compact {
     display: block;
     width: auto;
     margin-bottom: 2px;
@@ -188,7 +187,7 @@ article#user {
         box-shadow: 0 0 6px @00;
         float: left;
     }
-    h1 {
+    h1, h2 {
         display: inline-block;
         vertical-align: top;
         margin-top: 12px;
