@@ -293,7 +293,6 @@ class UploadPin(CreateView, AjaxableResponseMixin):
         self.request.session['resource'] = self.object.pk
 
         # create previews
-        print('generate-preview')
         generate_previews(self.object)
 
         # redirect to create_pin view

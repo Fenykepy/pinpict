@@ -11,7 +11,8 @@ db.sqlite3
 # data files
 pinpict/data/previews/*/
 pinpict/data/previews/*
-
+pinpict/data/images/avatars/*/
+pinpict/data/images/avatars**
 # Distribution / packaging
 .Python
 env/

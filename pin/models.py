@@ -5,6 +5,7 @@ from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
+from user.models import User
 from board.models import Board
 from pin.utils import extract_domain_name, get_sha1_hexdigest
 
@@ -58,6 +59,7 @@ class Resource(models.Model):
     order = models.PositiveIntegerField(default=100000)
     previews_path = models.CharField(max_length=254,
         blank=True, null=True)
+    user = models.ForeignKey(User, blank=True, null=True)
             
 
     class Meta:

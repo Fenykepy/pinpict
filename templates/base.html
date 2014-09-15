@@ -26,7 +26,12 @@
     <h1 id="pinpict"><a href="{% url "home" %}"><span class="accessibility-text">Pinpict</span></a></h1>
     
     {% if user.is_authenticated %}
-    <div id="user-bar"><img src="{{ MEDIA_URL }}{{ user.avatar }}" height="22px" width="22px" />
+    <div id="user-bar">
+    {% if user.avatar %}
+        <img src="{{ MEDIA_URL }}{{ user.avatar }}" height="22px" width="22px" />
+    {% else %}
+        <img src="{% static 'images/structure/default_avatar.png' %}" height="22px" width="22px" />
+    {% endif %}
         {% if user.first_name %}
             {{ user.first_name }}
         {% else %}

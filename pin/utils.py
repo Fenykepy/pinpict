@@ -60,7 +60,6 @@ def remove_empty_folders(path):
     # if folder is empty, delete it
     files = os.listdir(path)
     if len(files) == 0:
-        #print('Remove empty folder: {}'.format(path))
         os.rmdir(path)
 
 
@@ -272,12 +271,9 @@ def scan_html_for_picts(url):
     response, content = h.request(url)
     # return in case of fail
     if response['status'] not in ('200', '304'):
-        print('not 200 or 304 status code')
-        print(response['status'])
         return []
     # if resource itself is an image return its url
     if response['content-type'][:5] == 'image':
-        print('image content/type found')
         return [
                 {
                     'href': url,

@@ -13,8 +13,8 @@
     - user list_pins
     - default user avatar « PP »
     - profil page
-    - header with:
-        - user info
+#    - header with:
+#        - user info
         - search bar
 #    - board creation form
         - add a field for a cover pin/resource
@@ -27,6 +27,7 @@
 #        - test that unknown user in url returns 404
 #        - update user.n_boards after deletion
 #        - delete associated pins
+#    - mv grey58.png to assets/images/structure instead of data/…
     - pin creation form
         - add suport for '/pin/create/1' and update "pinit" button in templates pin_list and pin_view 
         - add a FK to user in resource, fullfill it with user in case of upload.
@@ -69,6 +70,13 @@
 #        - inline block for all article.pin
 #        - hidden "Pin it" submit displayed on pin mouseover
         - media querys to extend pin and board section.
+        - add border arround avatars
+
+    - MEDIA
+        - create a lock logo for private boards
+        - create a new avatar with PP
+        - create a PP icon for pages footers
+        - create a Pin It button
 
 ==== Pin creation ====
     - click on "pin it" button
