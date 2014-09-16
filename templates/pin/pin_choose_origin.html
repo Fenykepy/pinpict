@@ -2,12 +2,17 @@
 {% block header %}{% endblock %}
 {% block body %}
 
-<article>
+<article id="form-pin-from">
+    <header>
     <h1>Add a pin from</h1>
+    </header>
+    {% spaceless %}
     <ul>
-        <a href="{% url "choose_pin_url" %}"><li>The web</li></a>
-        <a href="{% url "pin_upload" %}"><li>Your computer</li></a>
+        <li><a href="{% url "choose_pin_url" %}">The web</a></li>
+        <li><a href="{% url "pin_upload" %}">Your computer</a></li>
     </ul>
+    {% endspaceless %}
+
 </article>
 {% endblock %}
 

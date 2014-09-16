@@ -188,3 +188,66 @@ section#pin {
         }
     }
 }
+
+
+
+// forms
+article#form, article#form-pin-from {
+    background: @articles-bg;
+    box-shadow: 0 0 8px @00;
+    border: 1px solid @22;
+    border-radius: 4px;
+    width: 700px;
+    margin: 50px auto;
+    padding: 30px 60px;
+    overflow: hidden;
+    header {
+        max-width: 650px;
+        margin-right: auto;
+        margin-left: auto;
+    }
+    h1 {
+        font-weight: bold;
+        font-size: 1.6em;
+        margin-top: 1em;
+    }
+    p {
+        margin: 16px 0;
+    }
+}
+
+
+// form to choose pin origin
+article#form-pin-from {
+    padding: 20px 0 0;
+    header {
+        padding: 0 60px 15px;
+        border-bottom: 1px solid @31;
+        h1 {
+            margin: 0;
+        }
+    }
+    li {
+        box-sizing: border-box;
+        width: 50%;
+        height: 150px;
+        line-height: 150px;
+        display: inline-block;
+        border-right: 1px solid @31;
+        background-color: @58;
+        text-align: center;
+        vertical-align: middle;
+        font-weight: bold;
+        a {
+            display: block;
+            height: 100%;
+            &:hover, &:active, &:focus {
+                background: @66;
+                color: @00;
+            }
+        }
+    }
+    li:last-child {
+        border-right: none;
+    }
+}
