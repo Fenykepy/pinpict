@@ -32,11 +32,11 @@ article.pin {
     img {
         border-bottom: 1px solid @50;
     }
-    a.pin-link:hover, a.pin-link:active, a.pin-link:focus {
+    /*a.pin-link:hover, a.pin-link:active, a.pin-link:focus {
         img {
-            -webkit-filter: brightness(110%);
+            -webkit-filter: brightness(110%);// doen't work with buttons
         }
-    }
+    }*/
     button {
         position: absolute;
         display: none;
@@ -80,7 +80,7 @@ article.pin {
     }
 }
 
-#user-compact {
+#user-compact, .user-compact {
     height: 60px;
     img {
         width: 40px;
@@ -103,17 +103,88 @@ article.pin {
 
 // pin view css
 section#pin {
+    padding-bottom: 50px;
     article {
         background: @articles-bg;
-        box-shadow: 0 0 8px #000;
+        box-shadow: 0 0 8px @00;
         border: 1px solid @22;
         border-radius: 4px;
         width: 736px;
-        margin: 50px auto;
-
+        margin: 50px auto 14px;
+        overflow: hidden;
         header {
             height: 60px;
-            border-bottom: 1px solid @50;
+            padding: 0 8px;
+            border-bottom: 1px solid @31;
+            button {
+                width: 80px; 
+                margin-top: 10px;
+                height: 40px;
+            }
+            button#pinit {
+                float: right;
+            }
+        }
+        a:hover, a:focus, a:active {
+            div#image-wrapper {
+                background-color: @58;
+            }
+        }
+        div#image-wrapper {
+            border-bottom: 1px solid @31;
+            background-color: @47;
+        }
+        img {
+            margin: 8px 5px;
+            max-width: 726px;
+        }
+        p.pin-description {
+            padding: 18px;
+        }
+        footer {
+            border-top: 1px solid @50;
+            font-size: 0.95em;
+            span {
+                font-weight: bold;
+                color: @00;
+            }
+            a {
+                display: block;
+                height: 100%;
+                padding: 15px 25px;;
+                color: @22;
+                &:hover, &:focus, &:hover {
+                    background-color: @58;
+                    color: @22;
+                }
+            }
+        }
+    }
+    article.user-compact {
+        margin-top: 25px;
+        height: auto;
+        padding: 15px;
+        h2 {
+            margin-top: 18px
+        }
+        img {
+            height: 60px;
+            width: 60px;
+            margin: 0 15px 0 0;
+
+        }
+        p {
+            line-height: 1.4em;
+            vertical-align: middle;
+        }
+        span {
+            font-size: 0.9em;
+        }
+        span.date {
+            color: @22;
+        }
+        a:hover, a:focus, a:active {
+            color: @00;
         }
     }
 }

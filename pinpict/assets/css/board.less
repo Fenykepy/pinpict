@@ -43,7 +43,7 @@ section#private-boards {
 }
 
 article.board, article.create-board, article#user, 
-article.pin, article#create-pin, #user-compact {
+article.pin, article#create-pin, #user-compact, .user-compact {
     position: relative;
     display: inline-block;
     margin: 14px 7px 0px 7px;
@@ -173,7 +173,7 @@ article.board {
         box-sizing: border-box;
     }
 }
-article#user, #user-compact {
+article#user, #user-compact, .user-compact {
     display: block;
     width: auto;
     margin-bottom: 2px;
@@ -186,6 +186,9 @@ article#user, #user-compact {
         border-radius: 2px;
         box-shadow: 0 0 6px @00;
         float: left;
+    }
+    a:hover img {
+        box-shadow: 0 0 10px @00;
     }
     h1, h2 {
         display: inline-block;

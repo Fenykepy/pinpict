@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load static %}
+{% load humanize %}
 {% block header %}{% endblock %}
 {% block body %}
 {% with owner=pin.board.user %}
@@ -6,29 +8,61 @@
 <article>
 <header>
     {% if pin.source %}
-    <a href="{{ pin.source }}">
+    <a href="{{ pin.source }}" target="_blank">
     <button type="button">Visit Site</button>
     </a>
     {% endif %}
+    <a href="{{ MEDIA_URL }}previews/full/{{ pin.resource.previews_path }}" target="_blank">
+    <button type="button">Image</button>
+    </a>
     {% if user.is_authenticated and user == owner %}
     <a href="{% url 'update_pin' pin.pk %}">
     <button type="button">Edit</button>
     </a>
     {% endif %}
-    <a href="" title="Pin it"><button type="button">Pin it</button></a>
+    <a href="" title="Pin it"><button type="button" id="pinit">Pin it</button></a>
 </header>
 {# !!! look to add a lightbox link here, or a link to full image, in template or not #}
+{% if pin.source %}
+    <a href="{{ pin.source }}" target="_blank">
+{% else %}
+    <a href="{{ pin.source }}" target="_blank">
+{% endif %}
+<div id="image-wrapper">
 <img src="{{ MEDIA_URL }}previews/736/{{ pin.resource.previews_path }}" alt="{{ pin.description }}" />
+</div>
+</a>
+<p class="pin-description">
+{{ pin.description }}
+</p>
 <footer>
 {% if pin.source %}
-<a href="{{ pin.source }}">Found on {{ pin.source_domain }}</a>
+<a href="{{ pin.source }}" target="_blank"><span>Found on</span> {{ pin.source_domain }}</a>
 {% else %}
-Uploaded to Pinpict
+{% with resource_user=pin.resource.user %}
+<a href="{#{% url "boards_list" resource_user.slug %}#}" target="_blank"><span>Uploaded to Pinpict by</span> {% if resource_user.first_name or resource.user.last_name %}{{ resource_user.first_name }} {{ resource_user.last_name }}{% else %}{{ resource_user.username }}{% endif %}</a>
+{% endwith %}
 {% endif %}
 </footer>
 </article>
-<article class="pin-description">
-{{ pin.description }}
+
+
+
+<article class="user-compact">
+    {% if owner.avatar %}
+        <a href="{% url "boards_list" owner.username %}"><img src="{{ MEDIA_URL }}{{ owner.avatar }}" /></a>
+    {% else %}
+        <a href="{% url "boards_list" owner.username %}"><img src="{% static 'images/structure/default_avatar.png' %}" /></a>
+    {% endif %}
+    <p><a href="{% url "boards_list" owner.username %}">
+        <span>Added by</span><br /><strong>
+        {% if owner.first_name or owner.last_name %}
+        {{ owner.first_name }} {{ owner.last_name }}
+        {% else %}
+        {{ owner.username }}
+        {% endif %}</strong></a> <span class="date">&#149; {{ pin.date_created|naturaltime }}</span></p>
+    
+
 </article>
 </section>
 {% endwith %}
