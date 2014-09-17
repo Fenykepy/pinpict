@@ -30,6 +30,13 @@
 #        - delete associated pins
 #    - mv grey58.png to assets/images/structure instead of data/…
     - pin creation form
+        - add some kind of rich pin description
+        - change pin creation from session variable to hidden post fields
+            - fields :
+                - url of website
+                - url of picture itself
+                - description of picture
+                - added via (link to user it has been pin from)
         - add suport for '/pin/create/1' and update "pinit" button in templates pin_list and pin_view 
         - add a FK to user in resource, fullfill it with user in case of upload and download
         - add support for:
@@ -72,6 +79,13 @@
 #        - hidden "Pin it" submit displayed on pin mouseover
         - media querys to extend pin and board section.
 #        - add border arround avatars
+#        - css for pin find page
+        - css for forms with images
+        - change css of forms header (no margin and padding auto)
+        - add some fioriture at the end of forms
+        - add some margin between fields and submits
+        - reduce shadow arround user-bar avatar
+        - add "*:required fields" where it misses
 
     - MEDIA
         - create a lock logo for private boards

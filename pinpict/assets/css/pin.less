@@ -3,10 +3,14 @@ section#pins {
     header {
         padding: 1px 10px 10px;
         text-align: center;
-        h1 {
+        h1, h2{
             font-weight: bold;
             font-size: 2.2em;
             margin: 1em 0 0.4em;
+        }
+        h2 {
+            font-size: 1.4em;
+            color: @98;
         }
         p#private, p#n-pins {
             font-size: 0.9em;
@@ -26,18 +30,27 @@ article.pin {
     position: relative;
     height: auto;
     overflow: hidden;
-    div.buttons-wrapper:hover button {
+    div.buttons-wrapper {
+        a {
+            display: block;
+        }
+    }
+    div.buttons-wrapper:hover button, div.buttons-wrapper:hover input[type="submit"] {
         display: block;
     }
     img {
-        border-bottom: 1px solid @50;
+        display: block;
+    }
+    form {
+        margin: 0;
+        padding: 0;
     }
     /*a.pin-link:hover, a.pin-link:active, a.pin-link:focus {
         img {
             -webkit-filter: brightness(110%);// doen't work with buttons
         }
     }*/
-    button {
+    button, input[type="submit"] {
         position: absolute;
         display: none;
         width: auto;
@@ -45,7 +58,7 @@ article.pin {
         margin: 0;
         height: 30px;
     }
-    button.pinit {
+    button.pinit, input.pinit {
         right: 8px
     }
     button.edit {
@@ -56,6 +69,7 @@ article.pin {
         .degrade(@F7, @CC, @F7)
     }
     p.pin-description {
+        border-top: 1px solid @50;
         padding: 7px 14px;
         font-size: 0.9em;
     }
@@ -65,6 +79,15 @@ article.pin {
         span {
             font-weight: bold;
             color: @00;
+        }
+        p.size {
+            padding: 7px 14px;
+            color: @22;
+            background-color: @58;
+            text-align: center;
+            span {
+                font-weight: normal;
+            }
         }
         a {
             padding: 7px 14px;
