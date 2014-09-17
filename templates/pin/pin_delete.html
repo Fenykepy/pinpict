@@ -14,7 +14,7 @@ Delete a pin
     <img src="{{ MEDIA_URL }}previews/236/{{ pin.resource.previews_path }}" alt="" />
     <p>{{ pin.description }}</p>
     {% spaceless %}
-    <p class="center-align">
+    <p class="center-align submit">
     <a href="{% url "boards_list" user.slug %}"><button type="button">Cancel</button></a>
     <input type="submit" name="delete" value="Delete pin" />
     </p>

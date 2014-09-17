@@ -11,7 +11,7 @@
     {% else %}
     <form method="post" action="{{ action }}">
     {% endif %}
-    <p><span id="red"><span class="red">*</span></span>: Required fields.</p>
+    <p><span id="red"><span class="red">*</span></span> Required fields</p>
     {% csrf_token %}
     {{ form.non_field_errors }}
     {% for field in form %}
@@ -22,7 +22,7 @@
     </div>
     {% endfor %}
     {% spaceless %}
-    <p class="center-align">
+    <p class="center-align submit">
     {% if delete %}
     <a href="{% url "board_delete" user.slug board.slug %}"><button type="button">{{ delete }}</button></a>
     {% endif %}

@@ -220,22 +220,27 @@ article#form, article#form-pin-from {
     box-shadow: 0 0 8px @00;
     border: 1px solid @22;
     border-radius: 4px;
-    width: 700px;
+    width: 770px;
     margin: 50px auto;
-    padding: 30px 60px;
+    padding: 20px 0 40px;
     overflow: hidden;
     header {
+        border-bottom: 1px solid @31;
+        padding: 0 60px 15px;
         max-width: 650px;
         margin-right: auto;
         margin-left: auto;
     }
     h1 {
+        margin-top: 0.4em;
         font-weight: bold;
         font-size: 1.6em;
-        margin-top: 1em;
     }
     p {
         margin: 16px 0;
+    }
+    p.submit {
+        margin-top: 40px;
     }
 }
 
@@ -243,13 +248,6 @@ article#form, article#form-pin-from {
 // form to choose pin origin
 article#form-pin-from {
     padding: 20px 0 0;
-    header {
-        padding: 0 60px 15px;
-        border-bottom: 1px solid @31;
-        h1 {
-            margin: 0;
-        }
-    }
     li {
         box-sizing: border-box;
         width: 50%;

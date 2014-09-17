@@ -6,13 +6,15 @@ Delete a board
 {% block body %}
 
 <article id="form">
+    <header>
     <h1>Delete this board ?</h1>
+    </header>
     <form method="post" action="{{ action }}">
     {% csrf_token %}
     {{ form.non_field_errors }}
-    <p>Are you sure you want to permanently delete "{{ board.title }}" board ?</p>
+    <p>Are you sure you want to permanently delete <em>"{{ board.title }}"</em> board ?</p>
     {% spaceless %}
-    <p class="center-align">
+    <p class="center-align submit">
     <a href="{% url "boards_list" user.slug %}"><button type="button">Cancel</button></a>
     <input type="submit" name="delete" value="Delete board" />
     </p>

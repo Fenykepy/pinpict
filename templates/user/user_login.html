@@ -1,9 +1,12 @@
 {% extends "base.html" %}
+{% block header %}{% endblock %}
 {% block body %}
-<article>
-    <h1>Login</h1>
+<article id="form">
+    <header>
+        <h1>Login</h1>
+    </header>
 <form method="post" action="">
-<p><span id="red"><span class="red">*</span></span> : Champs obligatoires.</p>
+<p><span id="red"><span class="red">*</span></span> Required fields</p>
     {% csrf_token %}
     {{ form.non_field_errors }}
     {% for field in form %}
@@ -14,7 +17,7 @@
     <input type="hidden" name="next" value="{{ next }}" />
 </div>
 {% endfor %}
-    <p class="center-align">
+    <p class="center-align submit">
     <input type="submit" value="Login" />
     <a class="popup" href="{#{% url "user_registration" %}#}">
         <button type="button">Register</button>

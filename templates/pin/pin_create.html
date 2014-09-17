@@ -3,26 +3,29 @@
 {% block body %}
 
 <article id="form">
+    <header>
     <h1>Select a board</h1>
+    </header>
     <form method="post" action="">
+    <p><span id="red"><span class="red">*</span></span> Required fields</p>
         {% csrf_token %}
         {{ form.non_field_errors }}
 
         <div class="field_wrapper">
-            {{ form.board.label_tag }}
+            {{ form.board.label_tag }}<span class="red"> *</span>
             {{ form.board.errors }}
             {{ form.board }}
         </div>
 
         <div class="field_wrapper">
-            {{ form.description.label_tag }}
+            {{ form.description.label_tag }}<span class="red"> *</span>
             {{ form.description.errors }}
             {{ form.description }}
         </div>
         <img src="{{ MEDIA_URL }}previews/236/{{ resource.previews_path }}" alt="" />
 
         {% spaceless %}
-        <p class="center-align">
+        <p class="center-align submit">
         {% if delete %}
         <a href="{% url "pin_delete" pin.pk %}"><button type="button">{{ delete }}</button></a>
         {% endif %}
