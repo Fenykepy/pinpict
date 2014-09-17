@@ -79,7 +79,7 @@
     - CSS
 #        - inline block for all article.pin
 #        - hidden "Pin it" submit displayed on pin mouseover
-        - media querys to extend pin and board section.
+#        - media querys to extend pin and board section.
 #        - add border arround avatars
 #        - css for pin find page
 #        - css for forms with images
