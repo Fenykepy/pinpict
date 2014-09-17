@@ -10,19 +10,21 @@
     <p><span id="red"><span class="red">*</span></span> Required fields</p>
         {% csrf_token %}
         {{ form.non_field_errors }}
+        <div id="preview-wrapper">
+        <img class="preview" src="{{ MEDIA_URL }}previews/236/{{ resource.previews_path }}" alt="" />
+        </div>
 
-        <div class="field_wrapper">
+        <div class="field_wrapper img">
             {{ form.board.label_tag }}<span class="red"> *</span>
             {{ form.board.errors }}
             {{ form.board }}
         </div>
 
-        <div class="field_wrapper">
+        <div class="field_wrapper img">
             {{ form.description.label_tag }}<span class="red"> *</span>
             {{ form.description.errors }}
             {{ form.description }}
         </div>
-        <img src="{{ MEDIA_URL }}previews/236/{{ resource.previews_path }}" alt="" />
 
         {% spaceless %}
         <p class="center-align submit">

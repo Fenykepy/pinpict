@@ -35,7 +35,10 @@ class DownloadPinForm(Form):
 class PinUrlForm(Form):
     """Pin origin url form."""
     # do not use URLField because it add a trailing '/' introducing bugs.
-    url = forms.CharField(widget=forms.URLInput(attrs={'required': 'required'}))
+    url = forms.CharField(widget=forms.URLInput(attrs={
+        'required': 'required',
+        'placeholder': 'http://'
+    }))
 
 
 

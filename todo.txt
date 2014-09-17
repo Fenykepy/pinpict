@@ -35,6 +35,8 @@
             - fields :
                 - url of website
                 - url of picture itself
+                    - use it to fullfill form preview image
+                    - use tmp file to fullfill it in case of upload
                 - description of picture
                 - added via (link to user it has been pin from)
         - add suport for '/pin/create/1' and update "pinit" button in templates pin_list and pin_view 
@@ -80,7 +82,7 @@
         - media querys to extend pin and board section.
 #        - add border arround avatars
 #        - css for pin find page
-        - css for forms with images
+#        - css for forms with images
 #        - change css of forms header (no margin and padding auto)
         - add some fioriture at the end of forms
 #        - add some margin between fields and submits
