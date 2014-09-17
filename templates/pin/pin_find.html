@@ -11,7 +11,7 @@ Pick a pin on Pinpict
     <h2>Pick a picture from {{ url }}</h2>
 </header>
 {% for pict in picts %}
-<article class="pin">
+<article class="pin find">
     <div class="buttons-wrapper">
     <form method="post" action="{% url "pin_download" %}">
         {% csrf_token %}

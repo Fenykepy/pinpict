@@ -53,7 +53,7 @@
 #        - pass resource pk in session variable instead of url parameter
 #        - pass last visited board in session variable and put it as default in board select
         - show warning if a pin exists on same board with same resource
-        - remove '------' in the board select
+#        - remove '------' in the board select
 #        - pin file upload form
 #        - pin source url form
 #        - pin find image in url page
@@ -69,7 +69,7 @@
 
     - JS
         - extend private boards section until bottom of page in board_list
-        - find_pin image width and height in footer
+#        - find_pin image width and height in footer
         - sort of pins by drag and drop
         - sort of boards by drag and drop
         - ajax forms

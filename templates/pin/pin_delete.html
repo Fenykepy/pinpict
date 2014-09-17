@@ -6,14 +6,29 @@ Delete a pin
 {% block body %}
 
 <article id="form">
-    <h1>Delete this pin ?</h1>
+    <header>
+    <h1>Delete a pin</h1>
+    </header>
     <form method="post" action="{{ action }}">
     {% csrf_token %}
     {{ form.non_field_errors }}
-    <p>Are you sure you want to permanently delete this pin ?</p>
+    <article class="pin standalone">
     <img src="{{ MEDIA_URL }}previews/236/{{ pin.resource.previews_path }}" alt="" />
-    <p>{{ pin.description }}</p>
+    <p class="pin-description">{{ pin.description }}</p>
+    <footer>
+    {% if pin.source_domain %}
+     <a href="{{ pin.source }}" target="_blank">
+         <span>Pinned from</span><br />
+       {{ pin.source_domain }}
+    </a>
+    {% else %}
+    <a href=""><span>Uploaded to Pin Pict</span></a>
+    {% endif %}
+    </footer>
+    </article>
     {% spaceless %}
+    <p class="text-wrapper">Are you sure you want to permanently delete this pin ?</p>
+    <p class="center-align"><strong>(This operation can't be undone.)</strong></p>
     <p class="center-align submit">
     <a href="{% url "boards_list" user.slug %}"><button type="button">Cancel</button></a>
     <input type="submit" name="delete" value="Delete pin" />

@@ -7,6 +7,10 @@ from pin.models import Pin, Resource
 
 class PinForm(ModelForm):
     """Pin creation and edition form."""
+    def __init__(self, *args, **kwargs):
+        super(PinForm, self).__init__(*args, **kwargs)
+        self.fields['board'].empty_label = None
+
     class Meta:
         model = Pin
         fields = ('board', 'description')
