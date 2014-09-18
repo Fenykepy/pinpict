@@ -225,7 +225,7 @@ class PictureHTMLParser(HTMLParser):
         if url[:1] == '/':
             return self.root_url + url
         # if url is relative from current directory, add it to full url
-        if url[:1] != '..':
+        if url[:2] != '..':
             return self.url + url
         # if url is relative to previous directorys
             # to implement later !!!

@@ -21,6 +21,9 @@ $(document).ready(function () {
             + parseInt(pins.eq(0).css('margin-left'));
         // compute number of pins colons
         var n_colons = Math.floor(section_width / pin_full_width);
+        if (n_colons > pins.length) {
+            n_colons = pins.length;
+        }
         // store height margin
         var h_margin = parseInt(pins.eq(0).css('margin-top'))
             + parseInt(pins.eq(0).css('margin-bottom'));
