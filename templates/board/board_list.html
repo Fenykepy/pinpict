@@ -86,6 +86,8 @@
     </a>
 {% if user.is_authenticated and user == owner %}
 <a href="{% url "board_update" owner.slug board.slug %}" title="Edit board"><button type="button">Edit</button></a>
+{% else %}
+<a href="{% url "board_view" board.user.slug board.slug %}" title="View board"><button type="button">View</button></a>
 {% endif %}
 </article>
 {% endfor %}
