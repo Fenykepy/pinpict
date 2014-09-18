@@ -13,14 +13,17 @@ $(document).ready(function () {
 
         // get section#pins width
         var section_width = $('#pins').width();
+        // get pins
+        var pins = $('article.pin');
         // store pin width including margins (236 + 14)
-        var pin_full_width = 250;
+        var pin_full_width = pins.eq(0).width()
+            + parseInt(pins.eq(0).css('margin-right'))
+            + parseInt(pins.eq(0).css('margin-left'));
         // compute number of pins colons
         var n_colons = Math.floor(section_width / pin_full_width);
         // store height margin
-        var h_margin = 14;
-        // get pins
-        var pins = $('article.pin');
+        var h_margin = parseInt(pins.eq(0).css('margin-top'))
+            + parseInt(pins.eq(0).css('margin-bottom'));
 
         // create one height variable per colons
         var pos_colons = [];

@@ -1,6 +1,8 @@
 # vim: syntax=note
 ===== TODO =====
 
+
+==== Python ====
 #    - pin_view view
 #    - pin_view template
 #    - description du pin dans :
@@ -67,110 +69,38 @@
 #    - test user n_pins counter
 #    - test resource n_pins counter
 
-    - JS
-        - extend private boards section until bottom of page in board_list
-#        - find_pin image width and height in footer
-        - sort of pins by drag and drop
-        - sort of boards by drag and drop
-        - ajax forms
-        - add a new board text input in board select of PinForm to add a new board on the go
-#        - replace unfound previews with color image -> done in html / css
-#        - justify pins
-#            - justify again when window size changes
 
-    - CSS
-#        - inline block for all article.pin
-#        - hidden "Pin it" submit displayed on pin mouseover
-#        - add max-width and max-height for img in .pin
-#        - media querys to extend pin and board section.
-#        - add border arround avatars
-#        - css for pin find page
-#        - css for forms with images
-#        - change css of forms header (no margin and padding auto)
-        - add some fioriture at the end of forms
-#        - add some margin between fields and submits
-#        - reduce shadow arround user-bar avatar
-#        - add "*:required fields" where it misses
+==== JavaSripct ====
 
-    - MEDIA
-        - create a lock logo for private boards
-        - create a new avatar with PP
-        - create a PP icon for pages footers
-        - create a Pin It button
+    - extend private boards section until bottom of page in board_list
+#   - find_pin image width and height in footer
+    - sort of pins by drag and drop
+    - sort of boards by drag and drop
+    - ajax forms
+    - add a new board text input in board select of PinForm to add a new board on the go
+#   - replace unfound previews with color image -> done in html / css
+#   - justify pins
+#       - justify again when window size changes
 
-==== Pin creation ====
-    - click on "pin it" button
-        - pin board and description form
-    - click on "add a pin" button
-        - load page with links:
-            - On the web
-                - load a form to enter an url
-                    - load a "find" page with url in parameter and list of all
-                    given page picture.
-                        - first all <img> with scr attributes
-                        - second all <a> with href attribute ending by .jpg to get content of lightboxes.
-                    - choose picture
-                    - pin board and description form
-            - On your computer
-                - load a form to enter a file
-                    - pin board and description form
+==== CSS ====
+#   - inline block for all article.pin
+#   - hidden "Pin it" submit displayed on pin mouseover
+#   - add max-width and max-height for img in .pin
+#   - media querys to extend pin and board section.
+#   - add border arround avatars
+#   - css for pin find page
+#   - css for forms with images
+#   - change css of forms header (no margin and padding auto)
+    - add some fioriture at the end of forms
+#   - add some margin between fields and submits
+#   - reduce shadow arround user-bar avatar
+#   - add "*:required fields" where it misses
+
+==== Media creation ====
+    - create a lock logo for private boards
+    - create a new avatar with PP
+    - create a PP icon for pages footers
+    - create a Pin It button
+    - create a sprite
 
 
-    
-==== Architecture ====
-
-Les ressources sont communes, les boards et les pins appartiennent à un utilisateur particulier,
-Les boards peuvent être:
-    - publics
-    - privés
-    - réservés aux amis
-
-À l'ajout d'une url dans le form, wget récupère l'url au format html, scanne pour les fichiers jpegs, pngs, tiffs, et svg présents, les présente ordonnés par taille à l'utilisateur.
-L'utilisateur choisi l'image.
-L'utilisateur choisi le tableau, ou en crée un nouveau
-L'utilisateur choisi la description calqué sur l'attribut alt ou figcaption par défaut
-Le fichier est téléchargé dans un dossier temporaire <user>, renommé avec son uniqid, puis déplacé dans le dossier pins
-
-user : connected user if any
-owner : user who owns current page (the on who's username is in url)
-===== Présentation =====
-
-La présentation est copiée sur celle de pinterest (somme toute pas si mal),
-peut-être en reprenant les couleurs de LR.
-
-board_list :
-
-une liste div aux coins arrondis avec un petit padding autour
-    - l'image « titre » de 216px de large et 146px de haut (crop) (coins arrondis).
-    - les 4 premières images de 45px de côté, carrée, dessous (coins arrondis).
-    - un bouton « Edit » si l'user est l'owner
-    - le nombre de pins du tableau
-
-
-pin_list :
-    
-une liste de div aux coins arrondis, pas de padding
-    - l'image de 236px de large
-    - la description de l'image
-    - pinned from
-    - le domaine d'origine (en lien vers la page du site)
-
-pin_view :
-
-    - l'image à 736px de large
-    - found on "le domaine d'origine" (en lien vers la page du site)
-    - un lien « voir l'originale »
-
-
-==== Les aperçus ====
-
-Les images à l'import sont renommées avec un uuid
-l'image est déposées dans un sous-dossier correspondant à sa taille
-puis dans un sous dossier correspondant à ses 2 premiers bytes
-
-sous-dossiers :
-    45/
-    216-146/
-    236/
-    736/
-    full/
