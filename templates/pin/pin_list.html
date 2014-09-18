@@ -39,7 +39,7 @@
 </article>
 
 {% if user.is_authenticated and user == owner %}
-<article id="create-pin">
+<article id="create-pin" class="pin">
     <a href="{% url "choose_origin_pin" %}">
     <div class="plus"></div>
     <h1>Add a pin</h1>

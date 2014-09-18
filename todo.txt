@@ -75,10 +75,13 @@
         - ajax forms
         - add a new board text input in board select of PinForm to add a new board on the go
 #        - replace unfound previews with color image -> done in html / css
+#        - justify pins
+#            - justify again when window size changes
 
     - CSS
 #        - inline block for all article.pin
 #        - hidden "Pin it" submit displayed on pin mouseover
+#        - add max-width and max-height for img in .pin
 #        - media querys to extend pin and board section.
 #        - add border arround avatars
 #        - css for pin find page
