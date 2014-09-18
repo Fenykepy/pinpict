@@ -218,17 +218,44 @@ class PictureHTMLParser(HTMLParser):
         return False
 
     def build_absolute_url(self, url):
+        # url is href or src element url.
+        # self.url is url url comes from.
         # if url starts with 'http', it's absolute
         if url[:4] == 'http':
             return url
         # if url is relative from root, add root_url
         if url[:1] == '/':
             return self.root_url + url
+        # if url is relative to current, add url
+        if url[:2] == './':
+            return self.url + url[2:]
         # if url is relative from current directory, add it to full url
-        if url[:2] != '..':
+        # if nor '..' nor '/' nor './' it's in current directory
+        if url[:2] != '..': 
             return self.url + url
         # if url is relative to previous directorys
-            # to implement later !!!
+        else:
+            split = url.split('/')
+            parent = 0
+            for item in split:
+                if item == '..':
+                    parent += 1
+
+            list = self.url_path.rstrip('/').split('/')
+            if len(list) <= parent:
+                # error -> back way is longer than url
+                return None
+            # troncate list and split, get ['naiet', 'naiena']
+            list = list[:-parent]
+            split = split[parent:]
+            # join list, get 'naiet/naiena'
+            url_path = '/'.join(list)
+            url_end = '/'.join(split)
+            full_url_path = '/'.join([url_path, url_end])
+            return self.protocol + full_url_path
+
+
+
 
     def handle_starttag(self, tag, attrs):
         if tag == 'a':
@@ -291,8 +318,8 @@ def scan_html_for_picts(url):
     parser = PictureHTMLParser(convert_charrefs=True)
     parser.pictures = []
     parser.url = url
-    parser.protocol = split[0] + '//'
-    parser.url_path = split[1]
+    parser.protocol = split[0] + '//' # 'http' or 'https'
+    parser.url_path = split[1] # everything which follows 'http(s)://'
     parser.root_url = parser.protocol + parser.url_path.split('/')[0]
     parser.feed(decoded)
     

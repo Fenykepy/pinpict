@@ -177,6 +177,9 @@ class UtilsTest(TestCase):
         <a href="http://data/1.jpg" title="my link picture">link</a>
         <a href="https://data/1.jpg" title="my link picture">link</a>
         <a href="999.jpg" titlle="">link</a>
+        <a href="./999.jpg">tanie</a>
+        <a href="../7.jpg">naiet</a>
+        <a href="../../7.jpg">naiet</a>
         """
 
         result = [
@@ -208,8 +211,15 @@ class UtilsTest(TestCase):
                 'href': 'http://www.lavilotte-rolle.fr/portfolio/999.jpg',
                 'alt': '',
             },
+            {
+                'href': 'http://www.lavilotte-rolle.fr/portfolio/999.jpg',
+                'alt': '',
+            },
+            {
+                'href': 'http://www.lavilotte-rolle.fr/7.jpg',
+                'alt': '',
+            },
         ]
-
 
         
         parser = PictureHTMLParser(convert_charrefs=True)

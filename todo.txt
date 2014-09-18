@@ -45,11 +45,11 @@
                 - added via (link to user it has been pin from)
         - add suport for '/pin/create/1' and update "pinit" button in templates pin_list and pin_view 
         - add a FK to user in resource, fullfill it with user in case of upload and download
-        - add support for:
-            ../
-            ../../
-            ../../../ 
-            to PictureHtmlParser
+#        - add support for:
+#            ../
+#            ../../
+#            ../../../ 
+#            to PictureHtmlParser
 #        - list only user's boards in form
 #        - raise 404 in case of wrong resource or board 
 #        - test remove empty folder
