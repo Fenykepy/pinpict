@@ -3,7 +3,7 @@
 {% block body %}
 <article id="form">
     <header>
-        <h1>Login</h1>
+        <h1>Register</h1>
     </header>
 <form method="post" action="">
 <p><span id="red"><span class="red">*</span></span> Required fields</p>
@@ -18,10 +18,10 @@
 </div>
 {% endfor %}
     <p class="center-align submit">
-    <input type="submit" value="Login" />
-    <a class="popup" href="{% url "user_registration" %}">
-        <button type="button">Register</button>
+    <a class="popup" href="/">
+        <button type="button">Cancel</button>
     </a>
+    <input type="submit" value="Register" />
     </p>
 </form>
 </article>

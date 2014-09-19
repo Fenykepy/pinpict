@@ -7,19 +7,10 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
 
 from board.views import *
-from user.views import LoginView
+from user.views import LoginView, RegistrationView
 from pin.views import ListPins
 
 admin.autodiscover()
-
-RESERVED_NAMES = (
-        'admin',
-        'board',
-        'pin',
-        'login',
-        'logout',
-        'profil',
-)
 
 urlpatterns = patterns('',
     # Examples:
@@ -37,6 +28,7 @@ urlpatterns = patterns('',
     url(r'^logout/$', 'user.views.logout_view', name='user_logout'),
 
     ## registration
+    url(r'^register/$', RegistrationView.as_view(), name='user_registration'),
 
 
     ## home page

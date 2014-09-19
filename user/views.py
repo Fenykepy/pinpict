@@ -41,3 +41,22 @@ def logout_view(request):
     return redirect(reverse_lazy('user_login'))
 
 
+class RegistrationView(FormView):
+    """Class to register a user."""
+    form_class = RegistrationForm
+    template_name = 'user/user_registration.html'
+
+
+    def form_valid(self, form):
+        form.save()
+        username = form.cleaned_data["username"]
+        password = form.cleaned_data["password1"]
+
+        user = authenticate(username=username, password=password)
+
+        # send mail to admin and user here
+
+        return redirect(reverse_lazy('boards_list',
+            kwargs={
+                'user': user.slug,
+            }))

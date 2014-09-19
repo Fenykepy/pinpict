@@ -29,6 +29,18 @@ PREVIEWS_CROP = [
         (50, 50, '50', 70),
 ]
 
+# words that can't be used as username
+RESERVED_WORDS = (
+        'admin',
+        'board',
+        'pin',
+        'login',
+        'logout',
+        'profil',
+        'register',
+)
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 

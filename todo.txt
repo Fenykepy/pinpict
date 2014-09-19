@@ -94,6 +94,8 @@
 #   - css for forms with images
 #   - change css of forms header (no margin and padding auto)
     - add some fioriture at the end of forms
+    - add some fioriture at the end of pages
+    - correct bug of space on top of vertical pictures in pin_create
 #   - add some margin between fields and submits
 #   - reduce shadow arround user-bar avatar
 #   - add "*:required fields" where it misses

@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 
 from user.models import User
+from pinpict.settings import RESERVED_WORDS
 
 
 
@@ -198,4 +199,20 @@ class UserLogoutTest(TestCase):
                 'user/user_login.html')
 
 
+class UserRegistrationTest(TestCase):
+    """User registration test class."""
 
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # launch client
+        self.client = Client()
+
+    def test_urls(self):
+        urls = [
+            {
+                'url': '/register/',
+                'status': 200,
+                'template': 'user/user_registration.html'
+            },
+        ]

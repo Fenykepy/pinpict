@@ -10,9 +10,9 @@
     <p><span id="red"><span class="red">*</span></span> Required fields</p>
         {% csrf_token %}
         {{ form.non_field_errors }}
-        <div id="preview-wrapper">
-        <img class="preview" src="{{ MEDIA_URL }}previews/236/{{ resource.previews_path }}" alt="" />
-        </div>
+        {% spaceless %}
+        <div id="preview-wrapper"><img class="preview" src="{{ MEDIA_URL }}previews/236/{{ resource.previews_path }}" alt="" /></div>
+        {% endspaceless %}
 
         <div class="field_wrapper img">
             {{ form.board.label_tag }}<span class="red"> *</span>

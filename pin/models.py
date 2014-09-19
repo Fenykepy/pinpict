@@ -59,7 +59,9 @@ class Resource(models.Model):
     order = models.PositiveIntegerField(default=100000)
     previews_path = models.CharField(max_length=254,
         blank=True, null=True)
-    user = models.ForeignKey(User, blank=True, null=True)
+    user = models.ForeignKey(User, blank=True, null=True,
+            verbose_name="User who originaly uploaded or" +
+            " downloaded resource.""")
             
 
     class Meta:
@@ -85,6 +87,8 @@ class Pin(models.Model):
     description = models.TextField(verbose_name="Pin description")
     board = models.ForeignKey(Board)
     resource = models.ForeignKey(Resource)
+    added_via = models.ForeignKey(User, blank=True, null=True)
+    pin_user = models.ForeignKey(User, related_name="pin_user")
 
     def __str__(self):
         return "%s" % self.description
