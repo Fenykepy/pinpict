@@ -113,10 +113,12 @@ class UtilsTest(TestCase):
 
 
     def test_get_sha1_hexdigest(self):
-        to_hash = File(open(os.path.join(BASE_DIR, 'pin','test_files',
-            'test.txt'), 'rb'))
-        # get sha1 from file
-        sha1 = get_sha1_hexdigest(to_hash)
+        with open(os.path.join(BASE_DIR, 'pin', 'test_files',
+            'test.txt'), 'rb') as fb:
+            to_hash = File(fb)
+            # get sha1 from file
+            sha1 = get_sha1_hexdigest(to_hash)
+
         # assert everything is ok
         self.assertEqual(sha1, '368e0fcff6ac9f8eefc09e1ff59a8873566922d6')
         self.assertEqual(len(sha1), 40)
