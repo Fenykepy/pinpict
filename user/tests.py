@@ -6,7 +6,7 @@ from django.test import TestCase, Client
 from django.core.files import File
 
 from user.models import User
-from pinpict.settings import RESERVED_WORDS, BASE_DIR, MEDIA_ROOT
+from pinpict.settings import RESERVED_WORDS, BASE_DIR, MEDIA_ROOT, AVATAR_MAX_SIZE
 
 
 
@@ -488,7 +488,22 @@ class UserProfilTest(TestCase):
         self.assertEqual(avatar, True)
         # assert file has been created
         file = os.path.join(MEDIA_ROOT, user.avatar.name)
-        self.assertEqual(os.path.isfile(file), True)
+        basename, ext = os.path.splitext(user.avatar.name)
+        self.assertTrue(os.path.isfile(file))
+        
+        # assert avatar has been resized
+        img = Image.open(file)
+        self.assertTrue(img.size[0] > 1)
+        self.assertTrue(img.size[0] <= AVATAR_MAX_SIZE)
+        self.assertTrue(img.size[1] > 1)
+        self.assertTrue(img.size[1] <= AVATAR_MAX_SIZE)
+
+        # assert file equal to <user.id>.<file_format>
+        self.assertEqual(file, os.path.join(
+            MEDIA_ROOT,
+            "images/avatars",
+            "{}{}".format(user.id, ext.lower()
+        )))
 
         # remove file
         os.remove(file)

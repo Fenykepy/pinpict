@@ -89,6 +89,7 @@ class Pin(models.Model):
     resource = models.ForeignKey(Resource)
     added_via = models.ForeignKey(User, blank=True, null=True)
     pin_user = models.ForeignKey(User, related_name="pin_user")
+    policy = models.PositiveIntegerField(blank=True, null=True)
 
     def __str__(self):
         return "%s" % self.description

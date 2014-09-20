@@ -40,6 +40,10 @@ RESERVED_WORDS = (
         'register',
 )
 
+# max size for avatar img (side in px)
+# if uploaded file is bigger, it will be resized.
+AVATAR_MAX_SIZE = 150
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
