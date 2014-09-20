@@ -42,14 +42,16 @@ def create_test_pins(instance):
     instance.pin = Pin(
             resource = instance.resource,
             board = instance.board,
-            description = 'Test pin for first board'
+            description = 'Test pin for first board',
+            pin_user = instance.user,
     )
     instance.pin.save()
 
     instance.pin2 = Pin(
             resource = instance.resource2,
             board = instance.board2,
-            description = 'Test pin for second board'
+            description = 'Test pin for second board',
+            pin_user = instance.user,
     )
     instance.pin2.save()
 
@@ -62,14 +64,17 @@ def create_test_private_pins(instance):
     instance.privatePin = Pin(
             resource = instance.resource,
             board = instance.privateBoard,
-            description = 'Test private pin'
+            description = 'Test private pin',
+            pin_user = instance.user,
+
     )
     instance.privatePin.save()
 
     instance.privatePin2 = Pin(
             resource = instance.resource2,
             board = instance.privateBoard,
-            description = 'Second test private pin'
+            description = 'Second test private pin',
+            pin_user = instance.user,
     )
     instance.privatePin2.save()
 

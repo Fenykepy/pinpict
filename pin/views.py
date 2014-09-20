@@ -133,6 +133,8 @@ class CreatePin(CreateView, AjaxableResponseMixin):
         if self.request.session.get('resource_source'):
             self.object.source = self.request.session['resource_source']
             del self.request.session['resource_source']
+        # set pin user
+        self.object.pin_user = self.request.user
         # save object
         self.object.save()
         # del session variables

@@ -364,21 +364,24 @@ class BoardDeleteTest(TestCase):
         pin = Pin(
                 resource = resource,
                 board = board,
-                description = 'pin1'
+                description = 'pin1',
+                pin_user = self.user,
         )
         pin.save()
 
         pin2 = Pin(
                 resource = resource,
                 board = board,
-                description = 'pin2'
+                description = 'pin2',
+                pin_user = self.user,
         )
         pin2.save()
 
         pin3 = Pin(
                 resource = resource,
                 board = board,
-                description = 'pin3'
+                description = 'pin3',
+                pin_user = self.user,
         )
         pin3.save()
         
