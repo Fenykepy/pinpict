@@ -47,12 +47,24 @@ class RegistrationView(FormView):
     template_name = 'user/user_registration.html'
 
 
+    def dispatch(self, request, *args, **kwargs):
+        # if user is logged in, redirect to it's home page
+        if request.user.is_authenticated():
+            return redirect(reverse_lazy('boards_list',
+                kwargs={
+                    'user': request.user.slug,
+                }))
+        return super(RegistrationView, self).dispatch(request, *args, **kwargs)
+
+
     def form_valid(self, form):
         form.save()
         username = form.cleaned_data["username"]
         password = form.cleaned_data["password1"]
 
         user = authenticate(username=username, password=password)
+        # login user
+        login(self.request, user)
 
         # send mail to admin and user here
 

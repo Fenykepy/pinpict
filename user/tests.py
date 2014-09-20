@@ -102,8 +102,9 @@ class UserLoginTest(TestCase):
         # assert user is connected
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['user'].username, 'flr')
+        # user is redirected to his board page
         self.assertEqual(response.templates[0].name,
-                'base.html')
+                'board/board_list.html')
 
 
     def test_login_with_wrong_password(self):
@@ -208,6 +209,7 @@ class UserRegistrationTest(TestCase):
         # launch client
         self.client = Client()
 
+
     def test_urls(self):
         urls = [
             {
@@ -216,3 +218,145 @@ class UserRegistrationTest(TestCase):
                 'template': 'user/user_registration.html'
             },
         ]
+        test_urls(self, urls)
+
+
+    def test_logged_in_urls(self):
+        # login with user
+        login(self, self.user)
+
+        urls = [
+            {
+                'url': '/register/',
+                'status': 302,
+                'template': 'board/board_list.html',
+            }
+        ]
+        test_urls(self, urls)
+
+
+    def test_registration_normal(self):
+        # try to register with normal data
+        response = self.client.post('/register/', {
+            'username': 'john',
+            'password1': 'tom',
+            'password2': 'tom',
+            'email': 'john@john.com',
+            }, follow=True
+        )
+        # assert redirection is ok
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'board/board_list.html')
+        self.assertEqual(response.context['user'].username, 'john')
+
+        # assert user has been created
+        user = User.objects.get(username='john')
+        self.assertEqual(user.username, 'john')
+
+
+    def test_registration_different_passwords(self):
+        response = self.client.post('/register/', {
+            'username': 'john',
+            'password1': 'tom',
+            'password2': 'toms',
+            'email': 'john@john.com',
+            }, follow=True
+        )
+        # assert form is served again
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'user/user_registration.html')
+
+        # assert user hasn't been created
+        user = User.objects.filter(username='john').count()
+        self.assertEqual(user, 0)
+
+
+    def test_registration_without_mail(self):
+        response = self.client.post('/register/', {
+            'username': 'john',
+            'password1': 'tom',
+            'password2': 'tom',
+            }, follow=True
+        )
+        # assert form is served again
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'user/user_registration.html')
+
+        # assert user hasn't been created
+        user = User.objects.filter(username='john').count()
+        self.assertEqual(user, 0)
+
+
+    def test_registration_without_username(self):
+        response = self.client.post('/register/', {
+            'password1': 'tom',
+            'password2': 'tom',
+            'email': 'john@john.com',
+            }, follow=True
+        )
+        # assert form is served again
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'user/user_registration.html')
+
+        # assert user hasn't been created
+        user = User.objects.filter(email='john@john.com').count()
+        self.assertEqual(user, 0)
+
+
+    def test_registration_without_password_confirmation(self):
+        response = self.client.post('/register/', {
+            'username': 'john',
+            'password1': 'tom',
+            #'password2': 'tom',
+            'email': 'john@john.com',
+            }, follow=True
+        )
+        # assert form is served again
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'user/user_registration.html')
+
+        # assert user hasn't been created
+        user = User.objects.filter(username='john').count()
+        self.assertEqual(user, 0)
+
+
+    def test_registration_with_existing_user_name(self):
+        # try to register with existing user name
+        response = self.client.post('/register/', {
+            'username': 'flr',
+            'password1': 'tom',
+            'password2': 'tom',
+            'email': 'john@john.com',
+            }, follow=True
+        )
+        # assert form is served again
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'user/user_registration.html')
+
+        # assert user hasn't been created
+        user = User.objects.filter(username='flr').count()
+        self.assertEqual(user, 1)
+
+
+    def test_registration_with_reserved_words(self):
+        for word in RESERVED_WORDS:
+            response = self.client.post('/register/', {
+                'username': word,
+                'password1': 'tom',
+                'password2': 'tom',
+                'email': 'john@john.com',
+                }, follow=True
+            )
+            # assert form is served again
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.templates[0].name, 'user/user_registration.html')
+
+            # assert user hasn't been created
+            user = User.objects.filter(username=word).count()
+            self.assertEqual(user, 0)
+            user = User.objects.filter(email='john@john.com').count()
+            self.assertEqual(user, 0)
+
+
+
+
