@@ -110,4 +110,28 @@ class RegistrationForm(ModelForm):
         self.fields['email'].required = True
 
 
+class ProfilForm(ModelForm):
+    """Profil edition form."""
+
+    def __init__(self, *args, **kwargs):
+        super(ProfilForm, self).__init__(*args, **kwargs)
+        self.fields['email'].required = True
+
+
+    class Meta:
+        model = User
+        fields = (
+            'email',
+            'first_name',
+            'last_name',
+            'website',
+            'facebook_link',
+            'flickr_link',
+            'twitter_link',
+            'gplus_link',
+            'pinterest_link',
+            'vk_link',
+        )
+
+
 

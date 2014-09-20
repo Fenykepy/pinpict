@@ -13,10 +13,11 @@
     - user facebook, flickr, pinterest, vk, twitter, google+ links on user models
     - user avatar auto renaming and resizing
     - user list_pins
-    - registration form
-    - profil form
+#    - registration form
+#    - profil form
+        - avatar in profil form
     - default user avatar « PP »
-    - profil page
+#    - profil page
     - add link to navigate between pin views
 #    - header with:
 #        - user info

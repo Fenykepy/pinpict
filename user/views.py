@@ -72,3 +72,26 @@ class RegistrationView(FormView):
             kwargs={
                 'user': user.slug,
             }))
+
+
+class ProfilView(UpdateView):
+    """Class to update user profil."""
+    form_class = ProfilForm
+    model = User
+    template_name = 'board/board_forms.html'
+
+    def get_object(self, queryset=None):
+        """Returns object view is displaying."""
+        return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super(ProfilView, self).get_context_data(**kwargs)
+        context['title'] = 'Update my profil'
+        context['button'] = 'Save'
+
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('boards_list',
+                kwargs={'user': self.request.user.slug})
+

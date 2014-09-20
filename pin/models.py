@@ -101,6 +101,7 @@ class Pin(models.Model):
         super(Pin, self).save()
 
 
+
 @receiver(post_save, sender=Pin)
 @receiver(post_delete, sender=Pin)
 def update_n_pins(sender, instance, **kwargs):

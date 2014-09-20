@@ -39,7 +39,7 @@
         {% endif %}
         <ul id="user-menu">
             <li><a href="{% url "boards_list" user.slug %}">My boards</a></li>
-            {#<li><a href="{% url "user_profil" %}">Profil</a></li>#}
+            <li><a href="{% url "user_profil" %}">Profil</a></li>
             <li><a href="{% url "user_logout" %}">Logout</a></li>
         </ul>
     </div>

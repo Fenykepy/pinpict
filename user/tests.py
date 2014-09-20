@@ -358,5 +358,111 @@ class UserRegistrationTest(TestCase):
             self.assertEqual(user, 0)
 
 
+class UserProfilTest(TestCase):
+    """User profil test class."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # launch client
+        self.client = Client()
+
+
+    def test_urls(self):
+        urls = [
+            # if user is not logged in, redirect to login page
+            {
+                'url': '/profil/',
+                'status': 302,
+                'template': 'user/user_login.html'
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_logged_in_urls(self):
+        # login with user
+        login(self, self.user)
+
+        urls = [
+            {
+                'url': '/profil/',
+                'status': 200,
+                #'template': 'user/user_profil.html',
+                'template': 'board/board_forms.html',
+            },
+        ]
+        test_urls(self, urls)
+
+    
+    def test_update_user_profil(self):
+        # login with user
+        login(self, self.user)
+
+        response = self.client.post('/profil/', {
+            'email': 'new_mail@domain.com',
+            'first_name': 'Fred',
+            'last_name': 'Lavilotte-Rolle',
+            'website': 'http://lavilotte-rolle.fr',
+            'facebook_link': 'http://facebook.com',
+            'flickr_link': 'https://www.flickr.com/photos/lavilotte-rolle/',
+            'twitter_link': 'https://twitter.com/',
+            'gplus_link': 'https://plus.google.com/',
+            'pinterest_link': 'http://www.pinterest.com/fredericlavilot/',
+            'vk_link': 'https://vk.com/',
+            }, follow=True
+        )
+        # assert everything is ok
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'board/board_list.html')
+
+        user = User.objects.get(username=self.user.username)
+        self.assertEqual(user.email, 'new_mail@domain.com')
+        self.assertEqual(user.first_name, 'Fred')
+        self.assertEqual(user.last_name, 'Lavilotte-Rolle')
+        self.assertEqual(user.website, 'http://lavilotte-rolle.fr/')
+        self.assertEqual(user.facebook_link, 'http://facebook.com/')
+        self.assertEqual(user.flickr_link, 'https://www.flickr.com/photos/lavilotte-rolle/')
+        self.assertEqual(user.twitter_link, 'https://twitter.com/')
+        self.assertEqual(user.gplus_link, 'https://plus.google.com/')
+        self.assertEqual(user.pinterest_link, 'http://www.pinterest.com/fredericlavilot/')
+        self.assertEqual(user.vk_link, 'https://vk.com/')
+
+
+    def test_update_user_profil_without_email(self):
+        # login with user
+        login(self, self.user)
+
+        response = self.client.post('/profil/', {
+            #'email': 'new_mail@domain.com',
+            'first_name': 'Fred',
+            'last_name': 'Lavilotte-Rolle',
+            'website': 'http://lavilotte-rolle.fr',
+            'facebook_link': 'http://facebook.com',
+            'flickr_link': 'https://www.flickr.com/photos/lavilotte-rolle/',
+            'twitter_link': 'https://twitter.com/',
+            'gplus_link': 'https://plus.google.com/',
+            'pinterest_link': 'http://www.pinterest.com/fredericlavilot/',
+            'vk_link': 'https://vk.com/',
+            }, follow=True
+        )
+        # assert form is served again
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'board/board_forms.html')
+
+        # assert user still has mail
+        user = User.objects.get(username=self.user.username)
+        self.assertEqual(user.email, 'pro@lavilotte-rolle.fr')
+    
+
+
+    def test_upload_user_avatar(self):
+        pass
+
+
+
+
+
+
 
 
