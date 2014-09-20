@@ -1,7 +1,12 @@
+import os
+
+from PIL import Image
+
 from django.test import TestCase, Client
+from django.core.files import File
 
 from user.models import User
-from pinpict.settings import RESERVED_WORDS
+from pinpict.settings import RESERVED_WORDS, BASE_DIR, MEDIA_ROOT
 
 
 
@@ -457,7 +462,36 @@ class UserProfilTest(TestCase):
 
 
     def test_upload_user_avatar(self):
-        pass
+        # login with user
+        login(self, self.user)
+        
+        def post_avatar(follow):
+            # post avatar file
+            with open(os.path.join(BASE_DIR, 'user',
+                'test_files', 'test_avatar.png'), 'rb') as avatar:
+                return self.client.post('/profil/', {
+                    'email': 'pro@lavilotte-rolle.fr',
+                    'avatar': avatar, 
+                    }, follow=follow
+                )
+
+        response = post_avatar(True)
+        # assert everything is ok
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'board/board_list.html')
+
+        # assert user avatar has been store in db
+        user = User.objects.get(username=self.user.username)
+        avatar = False
+        if user.avatar:
+            avatar = True
+        self.assertEqual(avatar, True)
+        # assert file has been created
+        file = os.path.join(MEDIA_ROOT, user.avatar.name)
+        self.assertEqual(os.path.isfile(file), True)
+
+        # remove file
+        os.remove(file)
 
 
 

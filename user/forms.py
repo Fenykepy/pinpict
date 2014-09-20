@@ -124,6 +124,7 @@ class ProfilForm(ModelForm):
             'email',
             'first_name',
             'last_name',
+            'avatar',
             'website',
             'facebook_link',
             'flickr_link',
@@ -132,6 +133,5 @@ class ProfilForm(ModelForm):
             'pinterest_link',
             'vk_link',
         )
-
 
 
