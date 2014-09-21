@@ -236,6 +236,7 @@ class DeletePin(DeleteView, AjaxableResponseMixin):
 
         # ensure user is pin's owner
         self.check_user()
+        self.board = self.object.board
         self.object.delete()
 
         return redirect(self.get_success_url())
@@ -243,8 +244,11 @@ class DeletePin(DeleteView, AjaxableResponseMixin):
 
     # ensure that user is pin's owner !!!
     def get_success_url(self):
-        return reverse_lazy('boards_list',
-                kwargs={'user': self.request.user.slug})
+        return reverse_lazy('board_view',
+                kwargs={
+                    'user': self.request.user.slug,
+                    'board': self.board.slug,
+                })
 
 
 

@@ -719,7 +719,7 @@ class PinDeleteTest(TestCase):
         response = self.client.post('/pin/1/delete/',
                 follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'board/board_list.html')
+        self.assertEqual(response.templates[0].name, 'pin/pin_list.html')
         
         # assert pin has been deleted
         n_pins = Pin.objects.all().count()

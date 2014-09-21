@@ -24,7 +24,7 @@
     - default user avatar « PP »
 #    - profil page
     - add link to navigate between pin views
-    - redirect to pin_list and not board_list after pin update
+    - redirect to pin_list and not board_list after pin_update or create cancel
     - link back to board in pin_view
 #    - header with:
 #        - user info
@@ -117,3 +117,23 @@
     - create a sprite
 
 
+===== Password recovery =====
+    - add password recovery link in login form.
+    - '/recovery/'
+        - form with username
+        - on form submit :
+            - search user with username
+                - if no user, error message
+            - generate uuid
+            - store uuid in user db, store uuid expiration
+            - send mail with link and expiration date.
+            - return a message :
+                - you've receive a mail, check your mailbox.
+    - '/recovery/uuid/'
+        - form with password and password confirmation
+        - on form submit :
+            - search user with uuid
+            - set password for this user
+            - log this user in
+            - send a mail :
+                - your password has correctly been updated.

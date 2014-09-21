@@ -678,6 +678,54 @@ class UserChangePasswordTest(TestCase):
 
 
 
+class UserPasswordRecoveryTest(TestCase):
+    """User password recovery test class."""
+    pass
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # launch client
+        self.client = Client()
+
+
+    def test_urls(self):
+        urls = [
+            # if user is not logged in, serve form
+            {
+                'url': '/recovery/',
+                'status': 200,
+                'template': 'board/board_forms.html'
+            },
+            # if user bad uuid is requested, return 404
+            {
+                'url': '/recovery/f47ac10b-58cc-4372-a567-0e02b2c3d479/',
+                'status': 404,
+                'template': '404.html'
+            }
+        ]
+        test_urls(self, urls)
+
+
+    def test_logged_in_urls(self):
+        # login with user
+        login(self, self.user)
+        urls = [
+            # if user is logged in, redirect to password changement form
+            {
+                'url': '/recovery/',
+                'status': 302,
+                'template': 'board/board_forms.html'
+            },
+            # if user bad uuid is requested, return 404
+            {
+                'url': '/recovery/f47ac10b-58cc-4372-a567-0e02b2c3d479/',
+                'status': 404,
+                'template': '404.html'
+            }
+        ]
+        test_urls(self, urls)
+
 
 
 
