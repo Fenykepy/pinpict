@@ -280,12 +280,20 @@ article#form, article#form-pin-from {
         right: 0px;
         width: 236px;
         height: 296px;
-        line-height: 300px;
         text-align: center;
         border-radius: 4px;
         overflow: hidden;
         background-color: @47;
         border: 1px solid @31;
+        white-space : nowrap;
+        vertical-align: middle;
+        // hack found here : http://jsfiddle.net/kizu/4RPFa/4571/
+        &:before {
+            content: "";
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+        }
     }
 }
 
