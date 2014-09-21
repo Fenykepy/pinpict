@@ -17,7 +17,7 @@
     <p id="private">This board is private</p>
     {% endif %}
 </header>
-
+<div id="user-wrapper">
 <article id="user-compact">
     {% if owner.avatar %}
         <a href="{% url "boards_list" owner.username %}"><img src="{{ MEDIA_URL }}{{ owner.avatar }}" /></a>
@@ -37,7 +37,7 @@
     {% endif %}</a></h2>
     <div class="user-website"><a href="{{ owner.website }}" target="_blank">{{ owner.website }}</a></div>
 </article>
-
+</div>
 {% if user.is_authenticated and user == owner %}
 <article id="create-pin" class="pin">
     <a href="{% url "choose_origin_pin" %}">

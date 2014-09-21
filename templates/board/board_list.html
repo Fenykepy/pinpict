@@ -6,6 +6,7 @@
 
 {% block body %}
 <section id="boards">
+<div id="user-wrapper">
 <article id="user">
     {% if owner.avatar %}
     <img src="{{ MEDIA_URL }}{{ owner.avatar }}" alt="{{ owner.username }}" />
@@ -28,6 +29,7 @@
     </ul>
     {% endspaceless %}
 </article>
+</div>
 {% spaceless %}
 {% if user.is_authenticated and user == owner %}
 <article class="create-board">
