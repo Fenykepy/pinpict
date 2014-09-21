@@ -78,7 +78,7 @@ class ProfilView(UpdateView):
     """Class to update user profil."""
     form_class = ProfilForm
     model = User
-    template_name = 'board/board_forms.html'
+    template_name = 'user/user_profil.html'
 
     def get_object(self, queryset=None):
         """Returns object view is displaying."""

@@ -395,7 +395,7 @@ class UserProfilTest(TestCase):
                 'url': '/profil/',
                 'status': 200,
                 #'template': 'user/user_profil.html',
-                'template': 'board/board_forms.html',
+                'template': 'user/user_profil.html',
             },
         ]
         test_urls(self, urls)
@@ -454,7 +454,7 @@ class UserProfilTest(TestCase):
         )
         # assert form is served again
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'board/board_forms.html')
+        self.assertEqual(response.templates[0].name, 'user/user_profil.html')
 
         # assert user still has mail
         user = User.objects.get(username=self.user.username)
