@@ -363,6 +363,7 @@ class UserRegistrationTest(TestCase):
             self.assertEqual(user, 0)
 
 
+
 class UserProfilTest(TestCase):
     """User profil test class."""
 
@@ -508,6 +509,178 @@ class UserProfilTest(TestCase):
 
         # remove file
         os.remove(file)
+
+
+
+class UserChangePasswordTest(TestCase):
+    """User password changement test class."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # launch client
+        self.client = Client()
+
+
+    def test_urls(self):
+        urls = [
+            # if user is not logged in, redirect to login page
+            {
+                'url': '/profil/password/',
+                'status': 302,
+                'template': 'user/user_login.html'
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_logged_in_urls(self):
+        # login with user
+        login(self, self.user)
+        urls = [
+            {
+                'url': '/profil/password/',
+                'status': 200,
+                'template': 'board/board_forms.html'
+            },
+        ]
+        test_urls(self, urls)
+
+
+    def test_change_user_password(self):
+        # login with user
+        login(self, self.user)
+        response = self.client.post('/profil/password/', {
+            'password1': 'tata',
+            'password2': 'tata',
+            }, follow=True
+        )
+
+        # assert everything is ok
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'board/board_list.html')
+
+        # logout
+        response = self.client.get('/logout/')
+
+        # try to login with new password
+        result = self.client.login(username=self.user.username,
+            password='tata')
+        self.assertTrue(result)
+
+        # logout
+        response = self.client.get('/logout/')
+
+        # try to login with old password
+        result = self.client.login(username=self.user.username,
+                password='top_secret')
+        self.assertEqual(result, False)
+
+
+
+    def test_change_user_password_with_bad_confirmation_password(self):
+        # login with user
+        login(self, self.user)
+        response = self.client.post('/profil/password/', {
+            'password1': 'tata',
+            'password2': 'tati',
+            }, follow=True
+        )
+
+        # assert everything is ok
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'board/board_forms.html')
+
+        # logout
+        response = self.client.get('/logout/')
+
+        # try to login with new password
+        result = self.client.login(username=self.user.username,
+            password='tata')
+        self.assertEqual(result, False)
+
+        # logout
+        response = self.client.get('/logout/')
+
+        # try to login with new password
+        result = self.client.login(username=self.user.username,
+            password='tati')
+        self.assertEqual(result, False)
+
+
+        # logout
+        response = self.client.get('/logout/')
+
+        # try to login with old password
+        result = self.client.login(username=self.user.username,
+                password='top_secret')
+        self.assertTrue(result)
+
+
+
+    def test_change_user_password_without_confirmation_password(self):
+        # login with user
+        login(self, self.user)
+        response = self.client.post('/profil/password/', {
+            'password2': 'tati',
+            }, follow=True
+        )
+
+        # assert everything is ok
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'board/board_forms.html')
+
+        # logout
+        response = self.client.get('/logout/')
+
+        # try to login with new password
+        result = self.client.login(username=self.user.username,
+            password='tata')
+        self.assertEqual(result, False)
+
+        # logout
+        response = self.client.get('/logout/')
+
+        # try to login with old password
+        result = self.client.login(username=self.user.username,
+                password='top_secret')
+        self.assertTrue(result)
+
+
+
+    def test_change_user_password_without_password(self):
+        # login with user
+        login(self, self.user)
+        response = self.client.post('/profil/password/', {
+            'password1': 'tati',
+            }, follow=True
+        )
+
+        # assert everything is ok
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'board/board_forms.html')
+
+        # logout
+        response = self.client.get('/logout/')
+
+        # try to login with new password
+        result = self.client.login(username=self.user.username,
+            password='tati')
+        self.assertEqual(result, False)
+
+        # logout
+        response = self.client.get('/logout/')
+
+        # try to login with old password
+        result = self.client.login(username=self.user.username,
+                password='top_secret')
+        self.assertTrue(result)
+
+
+
+
+
+
 
 
 

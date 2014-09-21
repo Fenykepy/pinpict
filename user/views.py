@@ -95,3 +95,32 @@ class ProfilView(UpdateView):
         return reverse_lazy('boards_list',
                 kwargs={'user': self.request.user.slug})
 
+
+class PasswordView(FormView):
+    """Class to register a user."""
+    form_class = PasswordForm
+    template_name = 'board/board_forms.html'
+
+
+    def form_valid(self, form):
+        password = form.cleaned_data["password1"]
+
+        self.request.user.set_password(password)
+        self.request.user.save()
+
+
+        # send mail to admin and user here
+        return redirect(reverse_lazy('boards_list',
+            kwargs={
+                'user': self.request.user.slug,
+            }))
+
+    def get_context_data(self, **kwargs):
+        context = super(PasswordView, self).get_context_data(**kwargs)
+        context['title'] = 'Change my password'
+        context['button'] = 'Save'
+
+        return context
+
+
+
