@@ -4,6 +4,7 @@ from PIL import Image
 
 from django.test import TestCase, Client
 from django.core.files import File
+from django.core import mail
 
 from user.models import User
 from pinpict.settings import RESERVED_WORDS, BASE_DIR, MEDIA_ROOT, AVATAR_MAX_SIZE
@@ -107,6 +108,7 @@ class UserLoginTest(TestCase):
         # assert user is connected
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['user'].username, 'flr')
+        self.assertTrue(response.context['user'].is_authenticated())
         # user is redirected to his board page
         self.assertEqual(response.templates[0].name,
                 'board/board_list.html')
@@ -725,6 +727,70 @@ class UserPasswordRecoveryTest(TestCase):
             }
         ]
         test_urls(self, urls)
+
+
+    def test_password_recovery(self):
+        response = self.client.post('/recovery/', {
+            'username': self.client.username,
+            }, follow=True
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'user/user_recovery.html')
+
+        # assert mail has been sent
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, ([self.user.email]))
+
+        user = User.objects.get(username=self.user.username)
+        self.assertTrue(user.uuid)
+        self.assertTrue(user.uuid_expiration)
+
+
+        response = self.client.get('/recovery/{}/'.format(user.uuid))
+
+        self.assertEqual(response.status_code, 302)
+
+        # assert user is logged in
+        self.assertEqual(response.context['user'].username, 'flr')
+        self.assertTrue(response.context['user'].is_authenticated())
+
+        # assert user uuid and uuid_expiration has been reset
+        user = User.objects.get(username=self.user.username)
+        self.assertEqual(user.uuid, False)
+        self.assertEqual(user.uuid_expiration, False)
+
+        # try again following redirections
+        response = self.client.post('/recovery/', {
+            'username': self.client.username,
+            }, follow=True
+        )
+        user = User.objects.get(username=self.user.username)
+        response = self.client.get('/recovery/{}/'.format(user.uuid),
+                follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name,
+                'board/board_forms.html')
+
+    def test_password_recovery_with_wrong_user(self):
+        response = self.client.post('/recovery/', {
+            'username': 'David',
+            }
+        )
+
+        # assert form is served again.
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'user/user_recovery.html')
+
+
+
+
+
+
+
+
+
 
 
 

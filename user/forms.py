@@ -163,3 +163,23 @@ class ProfilForm(ModelForm):
         )
 
 
+class PasswordRecoveryForm(Form):
+    """Form to recovery password."""
+
+    username = forms.CharField(
+            max_length=254,
+            widget=forms.TextInput(attrs={
+                'placeholder': 'Username',
+                'required': 'required'
+            }
+        ))
+
+    def clean_username(self):
+        username = self.cleaned_data["username"]
+        try:
+            User._default_manager.get(username=username)
+        except User.DoesNotExist:
+            raise forms.ValidationError(
+                'Invalid username.'
+            )
+        return username

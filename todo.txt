@@ -130,10 +130,8 @@
             - return a message :
                 - you've receive a mail, check your mailbox.
     - '/recovery/uuid/'
-        - form with password and password confirmation
-        - on form submit :
             - search user with uuid
-            - set password for this user
+            - reset uuid
+            - reset uuid expiration date
             - log this user in
-            - send a mail :
-                - your password has correctly been updated.
+            - redirect to user password changement form

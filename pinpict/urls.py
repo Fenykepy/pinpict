@@ -8,7 +8,7 @@ from django.conf.urls.static import static
 
 from board.views import *
 from user.views import LoginView, RegistrationView, ProfilView, \
-        PasswordView
+        PasswordView, RecoveryView
 from pin.views import ListPins
 
 admin.autodiscover()
@@ -30,6 +30,10 @@ urlpatterns = patterns('',
 
     ## registration
     url(r'^register/$', RegistrationView.as_view(), name='user_registration'),
+
+    ## password recovery
+    url(r'^recovery/$', RecoveryView.as_view(), name='user_recovery'),
+    url(r'^recovery/(?P<uuid>[-\w]+)/$', 'user.views.confirm_recovery_view', name='user_confirm_recovery'),
 
     ## profil
     url(r'^profil/$', login_required(ProfilView.as_view()), name='user_profil'),

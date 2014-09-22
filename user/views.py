@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import FormView, UpdateView
 from django.core.urlresolvers import reverse_lazy
@@ -123,4 +125,27 @@ class PasswordView(FormView):
         return context
 
 
+class RecoveryView(FormView):
+    """Class to ask for password recovery."""
+    form_class = PasswordRecoveryForm
+    template_name = 'user/user_recovery.html'
+    success_url = ''
 
+    def form_valid(self, form):
+        # get user object
+        username = form.cleaned_data['username']
+        user = User.objects.get(username=username)
+
+        # set user uuid
+        #user.uuid = uuid.uuid4()
+        # set user uuid expiration
+        #user.uuid_expiration = now + timedelta 24h
+        
+        # send mail with uuid
+        
+
+        return redirect(self.get_success_url())
+
+
+def confirm_recovery_view(request):
+    pass

@@ -38,6 +38,7 @@ RESERVED_WORDS = (
         'logout',
         'profil',
         'register',
+        'recovery',
 )
 
 # max size for avatar img (side in px)
