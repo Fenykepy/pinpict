@@ -64,16 +64,19 @@ class Board(models.Model):
         slug = '%s' % (self.title)
         unique_slugify(self, slug,
                 queryset=Board.objects.filter(user=self.user))
-        super(Board, self).save()
 
         # if policy has changed, update pin's policy
-        #if has_changed(self, 'policy'):
-        #    for pin in self.pin_set.all():
-        #        pin.policy = self.policy
-        #        pin.save()
+        if has_changed(self, 'policy'):
+            self.pin_set.all().update(policy=self.policy)
+
+        # save object
+        super(Board, self).save()
+
 
     def __str__(self):
         return "%s" % self.title
+
+
 
 @receiver(post_save, sender=Board)
 @receiver(post_delete, sender=Board)

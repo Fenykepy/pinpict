@@ -16,7 +16,8 @@
 #    - user uuid field
 #    - user uuid expiration field
 #    - pin policy field
-        - synchronized it with board's one (with has_changed in board save function)
+#        - synchronized it with board's one (with has_changed in board save function)
+        - test it
     - user list_pins (publics or publics and privates)
 #    - registration form
 #    - password recovery
