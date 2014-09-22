@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
-from user.models import User
+from user.models import User, has_changed
 from board.slug import unique_slugify
 
 
@@ -65,6 +65,12 @@ class Board(models.Model):
         unique_slugify(self, slug,
                 queryset=Board.objects.filter(user=self.user))
         super(Board, self).save()
+
+        # if policy has changed, update pin's policy
+        #if has_changed(self, 'policy'):
+        #    for pin in self.pin_set.all():
+        #        pin.policy = self.policy
+        #        pin.save()
 
     def __str__(self):
         return "%s" % self.title

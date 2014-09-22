@@ -12,7 +12,7 @@ Delete a pin
     <form method="post" action="{{ action }}">
     {% csrf_token %}
     {{ form.non_field_errors }}
-    <article class="pin standalone">
+    <article class="pin-standalone">
     <img src="{{ MEDIA_URL }}previews/236/{{ pin.resource.previews_path }}" alt="" />
     <p class="pin-description">{{ pin.description }}</p>
     <footer>
@@ -30,7 +30,7 @@ Delete a pin
     <p class="text-wrapper">Are you sure you want to permanently delete this pin ?</p>
     <p class="center-align"><strong>(This operation can't be undone.)</strong></p>
     <p class="center-align submit">
-    <a href="{% url "boards_list" user.slug %}"><button type="button">Cancel</button></a>
+    <a href="{% url "board_view" user.slug pin.board.slug %}"><button type="button">Cancel</button></a>
     <input type="submit" name="delete" value="Delete pin" />
     </p>
     {% endspaceless %}

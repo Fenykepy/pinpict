@@ -31,7 +31,11 @@
         {% if delete %}
         <a href="{% url "pin_delete" pin.pk %}"><button type="button">{{ delete }}</button></a>
         {% endif %}
-        <a href="{% url "boards_list" user.slug %}"><button type="button">Cancel</button></a>
+        {% if pin %}
+            <a href="{% url "board_view" user.slug pin.board.slug %}"><button type="button">Cancel</button></a>
+        {% else %}
+            <a href="{% url "boards_list" user.slug %}"><button type="button">Cancel</button></a>
+        {% endif %}
         <input type="submit" name="save" value="{{ submit }}" />
         </p>
         {% endspaceless %}

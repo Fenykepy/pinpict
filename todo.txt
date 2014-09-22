@@ -16,7 +16,7 @@
 #    - user uuid field
 #    - user uuid expiration field
 #    - pin policy field
-        - synchronized it with board's one
+        - synchronized it with board's one (with has_changed in board save function)
     - user list_pins (publics or publics and privates)
 #    - registration form
 #    - password recovery
@@ -25,7 +25,10 @@
     - default user avatar « PP »
 #    - profil page
     - add link to navigate between pin views
-    - redirect to pin_list and not board_list after pin_update or create cancel
+    - add an article under pin_view with preview of other pins from board.
+#    - redirect to pin_list and not board_list after pin_update or create cancel
+#    - redirect to pin_list and not board_list after pin_delete cancel
+    
     - link back to board in pin_view
 #    - header with:
 #        - user info
