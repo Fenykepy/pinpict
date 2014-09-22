@@ -19,6 +19,7 @@
         - synchronized it with board's one
     - user list_pins (publics or publics and privates)
 #    - registration form
+#    - password recovery
 #    - profil form
 #        - avatar in profil form
     - default user avatar « PP »

@@ -1,9 +1,12 @@
-import uuid
+import datetime
 
+from uuid import uuid4
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import FormView, UpdateView
 from django.core.urlresolvers import reverse_lazy
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404, render
+from django.utils import timezone
+from django.http import Http404
 
 from user.models import User
 from user.forms import *
@@ -110,7 +113,6 @@ class PasswordView(FormView):
         self.request.user.set_password(password)
         self.request.user.save()
 
-
         # send mail to admin and user here
         return redirect(reverse_lazy('boards_list',
             kwargs={
@@ -125,11 +127,19 @@ class PasswordView(FormView):
         return context
 
 
+
 class RecoveryView(FormView):
     """Class to ask for password recovery."""
     form_class = PasswordRecoveryForm
     template_name = 'user/user_recovery.html'
-    success_url = ''
+
+
+    def dispatch(self, request, *args, **kwargs):
+        # if user is logged in, redirect to password changement page
+        if request.user.is_authenticated():
+            return redirect(reverse_lazy('user_password'))
+        return super(RecoveryView, self).dispatch(request, *args, **kwargs)
+
 
     def form_valid(self, form):
         # get user object
@@ -137,15 +147,49 @@ class RecoveryView(FormView):
         user = User.objects.get(username=username)
 
         # set user uuid
-        #user.uuid = uuid.uuid4()
+        user.uuid = str(uuid4())
         # set user uuid expiration
-        #user.uuid_expiration = now + timedelta 24h
+        user.uuid_expiration = datetime.timedelta(1) + \
+            datetime.datetime.utcnow().replace(tzinfo=timezone.utc)
         
         # send mail with uuid
+        subject = '[Pin Pict]Password Recovery'
+        message = (
+            "You may have asked for a password recovery on Pin Pict.\n"
+            "If this request is from you, you can set a new password"
+            " during 24 hours by following this link :\n"
+            "http://{}/recovery/{}/\n"
+        ).format(self.request.get_host(), user.uuid)
+
+        user.send_mail(subject, message)
+
+        user.save()
+
         
+        return render(self.request, 'user/user_recovery.html', {'recovery': True})
 
-        return redirect(self.get_success_url())
+
+def confirm_recovery_view(request, uuid):
+    """Login and redirect to password changement page user who
+    corresponds to given uuid, else return 404"""
+    # get user wich correspond to uuid or return 404
+    user = get_object_or_404(User, uuid=uuid)
+    # compare dates
+    now = datetime.datetime.utcnow().replace(tzinfo=timezone.utc)
+    if user.uuid_expiration.timestamp() <  now.timestamp():
+        raise Http404
+    # login user if everything is ok
+    # reset it's password to uuid
+    password = str(uuid4())
+    user.set_password(password)
+    # reset user's uuid and uuid_expiration
+    user.uuid = None
+    user.uuid_expiration = None
+    user.save()
+    user = authenticate(username=user.username, password=password)
+    login(request, user)
+    
+    # redirect to password changement form
+    return redirect(reverse_lazy('user_password'))
 
 
-def confirm_recovery_view(request):
-    pass

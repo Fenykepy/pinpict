@@ -17,6 +17,7 @@
     <input type="hidden" name="next" value="{{ next }}" />
 </div>
 {% endfor %}
+<p><a href="{% url "user_recovery" %}">Loosed your password ? It's here…</a></p>
     <p class="center-align submit">
     <input type="submit" value="Login" />
     <a class="popup" href="{% url "user_registration" %}">

@@ -6,10 +6,12 @@ from PIL import Image
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.mail import send_mail
 
 from board.slug import unique_slugify
 from pinpict.settings import AVATAR_MAX_SIZE, MEDIA_ROOT
 from pin.utils import get_sha1_hexdigest
+from pinpict.settings import DEFAULT_FROM_EMAIL
 
 
 def has_changed(instance, field, manager='objects'):
@@ -90,6 +92,15 @@ class User(AbstractUser):
     n_public_boards = models.PositiveIntegerField(default=0,
             verbose_name="Public Boards'number")
 
+
+    def send_mail(self, subject, message):
+        """send a mail to user."""
+        return send_mail(
+                subject,
+                message,
+                DEFAULT_FROM_EMAIL,
+                [self.email],
+        )
 
 
     def save(self, **kwargs):

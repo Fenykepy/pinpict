@@ -144,3 +144,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'pinpict/data/')
 PREVIEWS_ROOT = os.path.join(MEDIA_ROOT, 'previews')
 
 MEDIA_URL = '/media/'
+
+## Email configuration
+DEFAULT_FROM_EMAIL = 'pinpict@lavilotte-rolle.fr'
+EMAIL_SUBJECT_PREFIX = '[Pinpict]'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

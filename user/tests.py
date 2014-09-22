@@ -697,7 +697,7 @@ class UserPasswordRecoveryTest(TestCase):
             {
                 'url': '/recovery/',
                 'status': 200,
-                'template': 'board/board_forms.html'
+                'template': 'user/user_recovery.html'
             },
             # if user bad uuid is requested, return 404
             {
@@ -731,7 +731,7 @@ class UserPasswordRecoveryTest(TestCase):
 
     def test_password_recovery(self):
         response = self.client.post('/recovery/', {
-            'username': self.client.username,
+            'username': self.user.username,
             }, follow=True
         )
 
@@ -747,9 +747,10 @@ class UserPasswordRecoveryTest(TestCase):
         self.assertTrue(user.uuid_expiration)
 
 
-        response = self.client.get('/recovery/{}/'.format(user.uuid))
+        response = self.client.get('/recovery/{}/'.format(user.uuid), follow=True)
 
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'board/board_forms.html')
 
         # assert user is logged in
         self.assertEqual(response.context['user'].username, 'flr')
@@ -757,21 +758,9 @@ class UserPasswordRecoveryTest(TestCase):
 
         # assert user uuid and uuid_expiration has been reset
         user = User.objects.get(username=self.user.username)
-        self.assertEqual(user.uuid, False)
-        self.assertEqual(user.uuid_expiration, False)
+        self.assertEqual(user.uuid, None)
+        self.assertEqual(user.uuid_expiration, None)
 
-        # try again following redirections
-        response = self.client.post('/recovery/', {
-            'username': self.client.username,
-            }, follow=True
-        )
-        user = User.objects.get(username=self.user.username)
-        response = self.client.get('/recovery/{}/'.format(user.uuid),
-                follow=True)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name,
-                'board/board_forms.html')
 
     def test_password_recovery_with_wrong_user(self):
         response = self.client.post('/recovery/', {
