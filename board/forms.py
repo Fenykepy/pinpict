@@ -20,6 +20,12 @@ class ModelForm(forms.ModelForm):
 
 class UpdateBoardForm(ModelForm):
     """Board creation and edition form."""
+    def __init__(self, *args, **kwargs):
+        super(UpdateBoardForm, self).__init__(*args, **kwargs)
+        self.fields['policy'].empty_label = None
+        from pprint import pprint
+        pprint(self.fields['policy'].__dict__)
+
     class Meta:
         model = Board
         fields = ('title', 'description', 'policy')

@@ -15,8 +15,8 @@ BOARD_POLICY_CHOICES = (
 
 class PublicBoardsManager(models.Manager):
     """Returns a queryset with all public boards."""
-    def get_query_set(self):
-        return super(PublicBoardsManager, self).get_query_set().filter(
+    def get_queryset(self):
+        return super(PublicBoardsManager, self).get_queryset().filter(
                 policy=1)
 
 
@@ -24,8 +24,8 @@ class PublicBoardsManager(models.Manager):
 
 class PrivateBoardsManager(models.Manager):
     """Returns a queryset with all public boards."""
-    def get_query_set(self):
-        return super(PrivateBoardsManager, self).get_query_set().filter(
+    def get_queryset(self):
+        return super(PrivateBoardsManager, self).get_queryset().filter(
                 policy=0)
 
 
@@ -46,7 +46,7 @@ class Board(models.Model):
     n_pins = models.PositiveIntegerField(default=0,
             verbose_name="Pins number")
     policy = models.PositiveIntegerField(
-            choices=BOARD_POLICY_CHOICES, verbose_name="Policy")
+            choices=BOARD_POLICY_CHOICES, verbose_name="Policy", null=False, blank=False)
     user = models.ForeignKey(User)
     order = models.PositiveIntegerField(default=100000)
 

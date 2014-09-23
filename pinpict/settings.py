@@ -92,7 +92,7 @@ ROOT_URLCONF = 'pinpict.urls'
 WSGI_APPLICATION = 'pinpict.wsgi.application'
 
 TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'templates/')
+    os.path.join(BASE_DIR, 'templates/'),
 )
 
 # To add slash at url ends
