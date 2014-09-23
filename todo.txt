@@ -17,7 +17,7 @@
 #    - user uuid expiration field
 #    - pin policy field
 #        - synchronized it with board's one (with has_changed in board save function)
-        - test it
+#        - test it
     - user list_pins (publics or publics and privates)
 #    - registration form
 #    - password recovery
@@ -31,7 +31,7 @@
 #    - redirect to pin_list and not board_list after pin_delete cancel
     
     - link back to board in pin_view
-    - remove '------' from board_create form policy select
+#    - remove '------' from board_create form policy select
 #    - header with:
 #        - user info
         - search bar
@@ -122,22 +122,3 @@
     - create a Pin It button
     - create a sprite
 
-
-===== Password recovery =====
-    - add password recovery link in login form.
-    - '/recovery/'
-        - form with username
-        - on form submit :
-            - search user with username
-                - if no user, error message
-            - generate uuid
-            - store uuid in user db, store uuid expiration
-            - send mail with link and expiration date.
-            - return a message :
-                - you've receive a mail, check your mailbox.
-    - '/recovery/uuid/'
-            - search user with uuid
-            - reset uuid
-            - reset uuid expiration date
-            - log this user in
-            - redirect to user password changement form

@@ -46,7 +46,8 @@ class Board(models.Model):
     n_pins = models.PositiveIntegerField(default=0,
             verbose_name="Pins number")
     policy = models.PositiveIntegerField(
-            choices=BOARD_POLICY_CHOICES, verbose_name="Policy", null=False, blank=False)
+            choices=BOARD_POLICY_CHOICES, verbose_name="Policy",
+            null=False, blank=False, default=1)
     user = models.ForeignKey(User)
     order = models.PositiveIntegerField(default=100000)
 
