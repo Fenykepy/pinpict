@@ -31,6 +31,7 @@
 #    - redirect to pin_list and not board_list after pin_delete cancel
     
     - link back to board in pin_view
+    - remove '------' from board_create form policy select
 #    - header with:
 #        - user info
         - search bar

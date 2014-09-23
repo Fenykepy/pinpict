@@ -44,6 +44,7 @@ def create_test_pins(instance):
             board = instance.board,
             description = 'Test pin for first board',
             pin_user = instance.user,
+            policy = instance.board.policy
     )
     instance.pin.save()
 
@@ -52,6 +53,7 @@ def create_test_pins(instance):
             board = instance.board2,
             description = 'Test pin for second board',
             pin_user = instance.user,
+            policy = instance.board.policy
     )
     instance.pin2.save()
 
@@ -66,6 +68,7 @@ def create_test_private_pins(instance):
             board = instance.privateBoard,
             description = 'Test private pin',
             pin_user = instance.user,
+            policy = instance.board.policy
 
     )
     instance.privatePin.save()
@@ -75,6 +78,7 @@ def create_test_private_pins(instance):
             board = instance.privateBoard,
             description = 'Second test private pin',
             pin_user = instance.user,
+            policy = instance.board.policy
     )
     instance.privatePin2.save()
 
@@ -1294,4 +1298,80 @@ class FindPinTest(TestCase):
         self.assertEqual(response.context['picts'], 
                 [{'alt': '', 'href': 'http://lavilotte-rolle.fr/tmp/pinpict_tests/999.jpg'}])
         self.assertEqual(response.context['url'], 'http://lavilotte-rolle.fr/tmp/pinpict_tests/999.jpg')
+
+
+class PinPolicyTest(TestCase):
+    """Test policy of pins."""
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # create resources
+        create_test_resources(self)
+        # create boards
+        create_test_boards(self)
+        # create pins
+        create_test_pins(self)
+        self.pin3 = Pin(
+            resource = self.resource,
+            board = self.board,
+            description = 'test pin 3',
+            pin_user = self.user,
+        )
+        self.pin3.save()
+        self.pin4 = Pin(
+            resource = self.resource,
+            board = self.board,
+            description = 'test pin 4',
+            pin_user = self.user,
+        )
+        self.pin4.save()
+        # launch client
+        self.client = Client()
+
+    def test_policy_create(self):
+        # create a pin
+        pin = Pin(
+            resource = self.resource,
+            board=self.board,
+            description = 'test pin',
+            pin_user = self.user,
+        )
+        pin.save()
+        # assert it has same policy than it's board.
+        self.assertEqual(pin.policy, self.board.policy)
+
+
+    def test_policy_update(self):
+        # login
+        login(self, self.user)
+        response = self.client.post('/flr/user-board/edit/', {
+            'title': 'user board',
+            'description': 'user board for tests',
+            'policy': 0,
+            }, follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name,
+            'board/board_list.html'
+        )
+
+        # assert board's pin policy have been updated
+        pins = Pin.objects.filter(board=self.board)
+        for pin in pins:
+            self.assertEqual(pin.policy, 0)
+
+
+        response = self.client.post('/flr/user-board/edit/', {
+            'title': 'user board',
+            'description': 'user board for tests',
+            'policy': 1,
+            }, follow=True
+        )
+
+        # assert board's pin policy have been updated
+        pins = Pin.objects.filter(board=self.board)
+        for pin in pins:
+            self.assertEqual(pin.policy, 1)
+
+
 

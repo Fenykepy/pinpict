@@ -96,6 +96,7 @@ class Pin(models.Model):
 
     def save(self, **kwargs):
         """get domain from source, then save."""
+        self.policy = self.board.policy
         if self.source:
             self.source_domain = extract_domain_name(self.source)
 
