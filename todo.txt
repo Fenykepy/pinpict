@@ -85,6 +85,7 @@
 #    - test user n_boards counter
 #    - test user n_pins counter
 #    - test resource n_pins counter
+    - synchro user n_public_pins and n_public_boards
 
 
 ==== JavaScript ====
@@ -121,4 +122,107 @@
     - create a PP icon for pages footers
     - create a Pin It button
     - create a sprite
+
+
+
+==== Refactoring of pin creation ====
+
+- add a field = user.last_used_board in db
+- add a field = user.last_used_board_datetime in db
+- last_visited_board  and last_visited_board_date :
+    - session variable.
+    - set at each visit of 'board_view'
+
+- dowloading file from url :
+    - Choose url in form :
+    - return 'find_pin' view with forms with hidden fields and pin it button :
+        src : url of image itself
+        url : url to website itself (same as href if url links directly to image)
+        description : description of pin
+
+    - Click on js button on a site execute a post request to /pin/create with :
+        src : url of image itself
+        url : url to website itself (same as href if url links directly to image)
+        description : description of pin
+
+- uploading file from computer :
+    - choose file in form
+    - check if resource exists with same hash
+        - if not :
+            - save file in MEDIA_ROOT/images/tmp with unique hash name if it's a valid image
+        - else :
+            redirect to pin_create with session variable set 'resource' containing resource id
+    - redirect to 'pin_create' with session variable 'tmp_pin' containing saved file name
+
+- /pin/create
+    - create an object in session like :
+        creation_pin {
+            'resource': 235,
+            'source': 'http://taratata.com/',
+            'added_via': 34,
+            'url': 'http://toto.com/my_page/',
+            'src': 'http://toto.com/my_file.jpg',
+            'tmp_pin': 'images/tmp/ianetanitpd.jpg',
+        }
+    - if request is post and url and no src in post : (from incomplet pin_pict js button)
+        - redirect to 'find_pin' with url
+
+    - if request is post and src, url are in post : (from find_pin or pin_pict js button)
+        - set creation_pin['url']
+        - set creation_pin['src']
+        - return form prepopulated with:
+            - src as preview
+            - description if any as description
+            - last_visited_board if any as default board
+            - or user_last_used board if any as default board
+            take more recent
+
+    - if request is post and pin in form : (from pin_list or pin_view)
+        - set creation_pin['resource']
+        - set creation_pin['source'] with pin.source
+        - set creation_pin['add_via'] if pin owner isn't user
+        - return form prepopulated with:
+            - pin preview as preview
+            - pin description as description
+            - last_visited_board if any as default board
+            - or user_last_used board if any as default board
+            take more recent
+
+    - if request is post and board, description in post : (real pin_creation form sent)
+
+        - if creation_pin['resource']:
+            - create new pin with resource
+            - set added_via if creation_pin['added_via']
+            - set source if creation_pin['source']
+
+        - if creation_pin['url'] and creation_pin['src']
+            - create new resource from src
+            - add user as resource owner
+            - create resource previews
+            - create new pin from resource
+
+        - if creation_pin['tmp_pin']:
+            - create new resource from tmp_pin
+            - add user as resource owner
+            - create resource preview
+        
+        - reset creation_pin
+        - redirect to new pin
+
+    - if request is get and 'tmp_pin' in variable session : (from pin_upload)
+        - set creation_pin['tmp_pin'] with tmp_pin
+        - return form prepopulated with:
+            - tmp_pin as preview
+            - last_visited_board if any as default board
+            - or user_last_used board if any as default board
+            take more recent
+    
+    - if request is get and 'resource' in variable session : (from pin_upload)
+        - set creation_pin['resource'] with resource
+        - return form prepopulated with:
+            - resource preview as preview
+            - last_visited_board if any as default board
+            - or user_last_used board if any as default board
+
+    - if request is get and no 'tmp_pin' or 'resource' variable session, raise 404
 

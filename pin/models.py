@@ -56,7 +56,6 @@ class Resource(models.Model):
     type = models.CharField(max_length=30,
         verbose_name="Type of file",
         blank=True, null=True)
-    order = models.PositiveIntegerField(default=100000)
     previews_path = models.CharField(max_length=254,
         blank=True, null=True)
     user = models.ForeignKey(User, blank=True, null=True,
@@ -65,7 +64,7 @@ class Resource(models.Model):
             
 
     class Meta:
-        ordering = ['order', 'date_created']
+        ordering = ['date_created']
 
     def __str__(self):
         return "%s" % self.source_file
