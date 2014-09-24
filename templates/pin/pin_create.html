@@ -11,7 +11,12 @@
         {% csrf_token %}
         {{ form.non_field_errors }}
         {% spaceless %}
-        <div id="preview-wrapper"><img class="preview" src="{{ MEDIA_URL }}previews/236/{{ resource.previews_path }}" alt="" /></div>
+        <div id="preview-wrapper">
+            {% if src %}
+                <img class="preview" src="{{ src }}" alt="" /></div>
+            {% elif resource %}
+            <img class="preview" src="{{ MEDIA_URL }}previews/236/{{ resource.previews_path }}" alt="" /></div>
+            {% endif %}
         {% endspaceless %}
 
         <div class="field_wrapper img">

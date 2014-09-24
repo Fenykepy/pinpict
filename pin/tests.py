@@ -420,7 +420,7 @@ class PinCreationTest(TestCase):
         login(self, self.user)
         # set session
         session = self.client.session
-        session['resource'] = 1
+        session['pin_create_tmp_resource'] = 1
         session.save()
 
         urls = [
@@ -451,7 +451,7 @@ class PinCreationTest(TestCase):
         login(self, self.user)
         # set session
         session = self.client.session
-        session['resource'] = 1
+        session['pin_create_tmp_resource'] = 1
         session.save()
 
 

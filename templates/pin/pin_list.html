@@ -52,7 +52,11 @@
     {% if owner == user %}
         <a href="{% url 'update_pin' pin.pk %}" title="Edit pin"><button class="edit">Edit</button></a>
     {% endif %}
-    <a href="{% url "board_update" owner.slug board.slug %}" title="Pin it"><button class="pinit">Pin it</button></a>
+    <form method="post" action="{% url "create_pin" %}">
+        {% csrf_token %}
+        <input type="hidden" name="pin" value="{{ pin.pk }}" />
+        <input type="submit" value="Pin it" class="pinit"/>
+    </form>
     <a href="{% url "pin_view" pin.pk %}" class="pin-link"><img src="{{ MEDIA_URL }}previews/236/{{ pin.resource.previews_path }}" alt="" /></a>
     </div>
     <p class="pin-description">

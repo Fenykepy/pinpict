@@ -13,11 +13,11 @@ Pick a pin on Pinpict
 {% for pict in picts %}
 <article class="pin find">
     <div class="buttons-wrapper">
-    <form method="post" action="{% url "pin_download" %}">
+    <form method="post" action="{% url "create_pin" %}">
         {% csrf_token %}
-        <input type="hidden" name="href" value="{{ pict.href }}" />
+        <input type="hidden" name="src" value="{{ pict.href }}" />
         <input type="hidden" name="url" value="{{ url }}" />
-        <input type="hidden" name="alt" value="{{ pict.alt }}" />
+        <input type="hidden" name="description" value="{{ pict.alt }}" />
         <input type="submit" value="Pin it" class="pinit"/>
     </form>
     <a href="{{ pict.href }}" target="_blank"><img src="{{ pict.href }}" alt="{{ pict.alt }}" /></a>

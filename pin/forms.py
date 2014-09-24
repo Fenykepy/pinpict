@@ -17,22 +17,39 @@ class PinForm(ModelForm):
 
 
 
-class UploadPinForm(ModelForm):
+class UploadPinForm(Form):
     """Pin resource upload form."""
-    class Meta:
-        model = Resource
-        fields = ('source_file',)
+    file = forms.ImageField(required=True)
 
 
 
 class DownloadPinForm(Form):
     """Pin Resource download form."""
     # image url
-    href = forms.URLField()
+    src = forms.URLField(widget=forms.HiddenInput(), required=False)
     # image source page url
-    url = forms.URLField()
-    # image alt
-    alt = forms.CharField(required=False)
+    url = forms.URLField(widget=forms.HiddenInput())
+    # image description
+    description = forms.CharField(widget=forms.HiddenInput(),
+            required=False)
+
+
+
+class RePinForm(Form):
+    """Pin repinning form."""
+    pin = forms.IntegerField(widget=forms.HiddenInput())
+
+    def clean_pin(self):
+        # return pin object corresponding to pin id
+        # or raise an error
+        pin_id = self.cleaned_data['pin']
+        try:
+            pin = Pin._default_manager.get(id=pin_id)
+        except Pin.DoesNotExist:
+            raise forms.ValidationError(
+                "Invalid pin"
+            )
+        return pin
 
 
 

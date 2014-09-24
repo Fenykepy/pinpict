@@ -5,17 +5,18 @@ from django.views.generic import ListView, DetailView, \
         FormView
 from django.core.urlresolvers import reverse_lazy
 from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.http import urlquote_plus, urlunquote_plus
 from django.contrib.auth.decorators import login_required
 from django.core.files.images import ImageFile
 
-#from pinpict.settings import LOGIN_URL !!!
+from pinpict.settings import MEDIA_URL, MEDIA_ROOT
 from board.views import AjaxableResponseMixin
 from user.models import User
 from pin.models import Pin, Resource
 from board.models import Board
-from pin.forms import PinForm, UploadPinForm, PinUrlForm, DownloadPinForm
+from pin.forms import PinForm, UploadPinForm, PinUrlForm, DownloadPinForm,\
+        RePinForm
 from pin.utils import get_sha1_hexdigest, generate_previews, \
         scan_html_for_picts, get_pict_over_http
 
@@ -64,7 +65,6 @@ class PinView(DetailView):
             and self.object.board.user != self.request.user):
                 raise Http404
 
-
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
 
@@ -78,78 +78,151 @@ class ChoosePinOrigin(TemplateView, AjaxableResponseMixin):
 
 
 
-class CreatePin(CreateView, AjaxableResponseMixin):
+@login_required
+def create_pin(request):
     """View to create a pin."""
-    form_class = PinForm
-    model = Pin
-    template_name = 'pin/pin_create.html'
+    if (request.method == 'POST' and 'url' in request.POST
+            and not 'src' in request.POST):
+        # from invalid pin_pict js button, redirect to find
+        form = DownloadPinForm(request.POST)
+        if form.is_valid():
+            url = form.cleaned_data['url']
+            return redirect(reverse_lazy('find_pin') + '?url={}'.format(
+            urlquote_plus(url)))
 
-    def dispatch(self, request, *args, **kwargs):
-        # get resource from session or raise 404
-        if not self.request.session.get('resource'):
-            raise Http404
-        self.resource = get_object_or_404(Resource, pk=self.request.session['resource'])
-        return super(CreateView, self).dispatch(request, *args, **kwargs)
+    if (request.method == 'POST' and 'url' in request.POST
+            and 'src' in request.POST):
+        # form arrive from pin_pict js button, or pin_find
+        form = DownloadPinForm(request.POST)
+        if form.is_valid():
+            # set session variables
+            request.session['pin_create_source'] = form.cleaned_data['url']
+            request.session['pin_create_src'] = form.cleaned_data['src']
+            pin_form = PinForm()
+            pin_form.initial = {}
+            if 'description' in form.cleaned_data:
+                pin_form.initial['description'] = form.cleaned_data['description']
+            if request.session.get('last_visited_board'):
+                pin_form.initial['board'] = request.session['last_visited_board']
 
+            return render(request, 'pin/pin_create.html', {
+                'form': pin_form,
+                'src': form.cleaned_data['src'],
+                'submit': 'Pin it',
+            })
 
-    def get_context_data(self, **kwargs):
-        context = super(CreatePin, self).get_context_data(**kwargs)
-        context['resource'] = self.resource
-        context['submit'] = 'Pin it'
+    if request.method == 'POST' and 'pin' in request.POST:
+        # form arrive from existing pin's pin it button
+        form = RePinForm(request.POST)
+        if form.is_valid():
+            # set pin object
+            pin = form.cleaned_data['pin']
+            # set session variables
+            request.session['pin_create_resource'] = pin.resource.pk
+            request.session['pin_create_source'] = pin.source
+            if pin.pin_user and pin.pin_user != request.user:
+                request.session['pin_create_added_via'] = pin.pin_user.pk
 
-        return context
+            pin_form = PinForm()
+            pin_form.initial = {}
+            pin_form.initial['description'] = pin.description
+            if request.session.get('last_visited_board'):
+                pin_form.initial['board'] = request.session['last_visited_board']
 
+            return render(request, 'pin/pin_create.html', {
+                'form': pin_form,
+                'resource': pin.resource,
+                'submit': 'Pin it',
+            })
 
-    def get(self, request, *args, **kwargs):
-        """
-        Handles GET requests and instantiates a blank version of the form.
-        """
-        self.object = None
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
+    if (request.method == 'POST' and 'board' in request.POST
+            and 'description' in request.POST):
+        form = PinForm(request.POST)
+        if form.is_valid():
+            pin = form.save(commit=False)
 
-        # set initial data
-        form.initial = {}
-        if self.request.session.get('last_visited_board'):
-            form.initial['board'] = self.request.session['last_visited_board']
-        if self.request.session.get('resource_description'):
-            form.initial['description'] = self.request.session['resource_description']
+            # if posted board doesn't belong to user raise 404
+            if pin.board.user != request.user:
+                raise Http404
+            # set pin user
+            pin.pin_user = request.user
+            # set pin policy
+            pin.policy = pin.board.policy
+            # set added_via if any
+            if request.session.get('pin_create_added_via'):
+                added_via = User.objects.get(
+                        pk = request.session['pin_create_added_via']
+                )
+                pin.added_via = added_via
+                del request.session['pin_create_added_via']
+            # set source
+            if request.session.get('pin_create_source'):
+                pin.source = request.session['pin_create_source']
+                del request.session['pin_create_source']
+            # set resource
+            if request.session.get('pin_create_resource'):
+                # if resource in session (repin)
+                resource = Resource.objects.get(
+                        pk = request.session['pin_create_resource']
+                )
+                pin.resource = resource
+                del request.session['pin_create_resource']
+            elif request.session.get('pin_create_src'):
+                # if resource has to be downloaded
+                resource = make_resource_from_url(
+                        request.session['pin_create_src'],
+                        request.user,
+                )
+                if resource:
+                    pin.resource = resource
+                del request.session['pin_create_src']
+            elif request.session.get('pin_create_tmp_resource'):
+                # if resource is a temporary file
+                resource = make_resource_from_file(
+                        request.session['pin_create_tmp_resource'],
+                        request.user,
+                )
+                if resource:
+                    pin.resource = resource
+                del request.session['pin_create_tmp_resource']
+            else:
+                # raise an resource error
+                pass
+            
+            # save pin in db
+            pin.save()
 
-        # ensure that only user's boards are listed
-        form.fields["board"].queryset = Board.objects.filter(user=request.user)
-        return self.render_to_response(self.get_context_data(form=form))
-
-
-    def form_valid(self, form):
-        """If form is valid, save associated model."""
-        self.object = form.save(commit=False)
-        
-        # if posted board doesn't belongs to user raise 404
-        if self.object.board.user != self.request.user:
-            raise Http404
-        self.object.resource = self.resource
-
-        # if object has been downloaded
-        if self.request.session.get('resource_source'):
-            self.object.source = self.request.session['resource_source']
-            del self.request.session['resource_source']
-        # set pin user
-        self.object.pin_user = self.request.user
-        # save object
-        self.object.save()
-        # del session variables
-        del self.request.session['resource']
-        if self.request.session.get('resource_description'):
-            del self.request.session['resource_description']
-
-        # redirect to board
-        return redirect(reverse_lazy('board_view',
+            # redirect to board
+            return redirect(reverse_lazy('board_view',
                 kwargs={
-                    'user': self.request.user.slug,
-                    'board': self.object.board.slug
+                    'user': request.user.slug,
+                    'board': pin.board.slug
                 }))
+    
+    if request.method == 'GET':
+        # request arrive from upload pin with new uploaded file
+        if request.session.get('pin_create_tmp_resource'):
+            src = MEDIA_URL + request.session['pin_create_tmp_resource']
+        # request arrive from upload pin with no uploaded file (it exists)
+        elif request.session.get('pin_create_resource'):
+            resource = Resource.objects.get(
+                pk = request.session['pin_create_resource']
+            )
+            src = MEDIA_URL + 'previews/236/' + resource.previews_path
+        # request is error
+        else:
+            raise Http404
+            
+        pin_form = PinForm()
+        pin_form.initial = {}
+        if request.session.get('last_visited_board'):
+            pin_form.initial['board'] = request.session['last_visited_board']
 
-
+        return render(request, 'pin/pin_create.html', {
+            'form': pin_form,
+            'src': src,
+            'submit': 'Pin it',
+        })
 
 
 
@@ -252,9 +325,8 @@ class DeletePin(DeleteView, AjaxableResponseMixin):
 
 
 
-class UploadPin(CreateView, AjaxableResponseMixin):
+class UploadPin(FormView, AjaxableResponseMixin):
     """View to upload a pin resource."""
-    model = Resource
     template_name = 'board/board_forms.html'
     form_class = UploadPinForm
 
@@ -268,13 +340,15 @@ class UploadPin(CreateView, AjaxableResponseMixin):
 
     def form_valid(self, form):
         """If form is valid, save associated model."""
-        self.object = form.save(commit=False)
+        file = form.cleaned_data['file']
+        print(file.__dict__)
         # compute file sha1
-        self.object.sha1 = get_sha1_hexdigest(self.object.source_file)
+        sha1 = get_sha1_hexdigest(file)
+        print(sha1)
 
         # search resource with same hash
         try:
-            clone = Resource.objects.get(sha1=self.object.sha1)
+            clone = Resource.objects.get(sha1=sha1)
         except:
             clone = False
 
@@ -282,24 +356,29 @@ class UploadPin(CreateView, AjaxableResponseMixin):
         # returns create_pin view with it's ID, and don't save anything
         if clone:
             # add resource ID to session
-            self.request.session['resource'] = clone.pk
+            self.request.session['pin_create_resource'] = clone.pk
             # redirect to create pin view
             return redirect(reverse_lazy('create_pin'))
 
-        self.object.width = self.object.source_file.width
-        self.object.height = self.object.source_file.height
-        self.object.size = self.object.source_file.size
-        basename, ext = os.path.splitext(self.object.source_file.name)
-        self.object.type = ext.lower().lstrip('.')
+        # else save file in MEDIA_ROOT/tmp/<sha1>.<file_type> for it to be
+        # accessible from create_pin template
+        basename, ext = os.path.splitext(file._name)
+        print(ext)
+        name = "{}{}".format(sha1, ext.lower())
+        path = os.path.join(MEDIA_ROOT, 'tmp')
+        print(path)
+        if not os.path.exists(path):
+            os.mkdir(path)
+        pathname = os.path.join(path, name)
+        urlname = 'tmp/' + name
 
-        # save object
-        self.object.save()
+        # save file :
+        with open(pathname, 'wb+') as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
 
-        # add resource ID to session
-        self.request.session['resource'] = self.object.pk
-
-        # create previews
-        generate_previews(self.object)
+        # add file path to session
+        self.request.session['pin_create_tmp_resource'] = urlname
 
         # redirect to create_pin view
         return redirect(reverse_lazy('create_pin'))
