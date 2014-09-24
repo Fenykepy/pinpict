@@ -9,6 +9,8 @@ __pycache__/
 db.sqlite3
 
 # data files
+pinpict/data/tmp/*/
+pinpict/data/tmp/*
 pinpict/data/previews/*/
 pinpict/data/previews/*
 pinpict/data/images/avatars/*/
