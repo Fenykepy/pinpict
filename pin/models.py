@@ -261,7 +261,9 @@ class ResourceFactory(object):
     
     def __init__(self):
         self.resource = None
+        self.path = None
         self.filepath = None
+        self.sha1 = None
         return
 
 
@@ -288,9 +290,26 @@ class ResourceFactory(object):
     def make_tmp_resource(self, file):
         """Store given file in temporary folder if
         no resource exists with its hash, return filepath
-        if resource exists with its hash, remove file and return resource.
+        if resource exists with its hash, remove file and return resourceo        file -- in memory uploaded file object.
         """
-        pass
+        # return resource object if any, else self.filepath, which is None
+        self._get_file_sha1(file)
+
+        # set pathname as MEDIA_ROOT/tmp/<sha1>
+        pathname = os.path.join(
+                self._get_tmp_resource_path(),
+                self.sha1
+        )
+
+        # save file in tmp folder
+        with open(pathname, 'wb+') as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
+        del file
+
+        # return file url relative to MEDIA_URL
+        return 'tmp/' + self.sha1
+
 
 
     def _get_file_over_http(self, url):
@@ -307,16 +326,19 @@ class ResourceFactory(object):
         if not headers['Content-Type'] in self.ALLOWED_MIME_TYPE:
             return False
         # else return file_path
-        return self._get_file_sha1()
+        return self._get_file_sha1(self.filepath)
 
     
-    def _get_file_sha1(self):
+    def _get_file_sha1(self, file):
         """Return file sha1 hash."""
-        with open(self.filepath, 'rb') as f:
-            sha1 = get_sha1_hexdigest(ImageFile(f))
+        try:
+            self.sha1 = get_sha1_hexdigest(file)
+        except AttributeError:
+            with open(file, 'rb') as f:
+                self.sha1 = get_sha1_hexdigest(ImageFile(f))
         if self.resource:
-            self.resource.sha1 = sha1
-        return self._get_clone(sha1)
+            self.resource.sha1 = self.sha1
+        return self._get_clone(self.sha1)
 
 
     def _get_clone(self, sha1):
@@ -327,12 +349,22 @@ class ResourceFactory(object):
             clone = Resource.objects.get(sha1=sha1)
         except:
             return self._create_new_resource()
+        print('clone')
         return clone
 
 
     def _get_image_type(self):
         """Return image type of self.filepath."""
         return imghdr.what(self.filepath)
+
+
+    def _get_tmp_resource_path(self):
+        """Return path tmp file will be saved to."""
+        self.path = os.path.join(MEDIA_ROOT, 'tmp')
+        if not os.path.exists(self.path):
+            os.makedirs(self.path)
+        return self.path
+
 
 
     def _create_new_resource(self):

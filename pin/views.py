@@ -178,7 +178,8 @@ def create_pin(request):
                 del request.session['pin_create_src']
             elif request.session.get('pin_create_tmp_resource'):
                 # if resource is a temporary file
-                resource = ResourceFactory.make_resource_from_file(
+                fact = ResourceFactory()
+                resource = fact.make_resource_from_file(
                         request.session['pin_create_tmp_resource'],
                         request.user,
                 )
@@ -341,45 +342,18 @@ class UploadPin(FormView, AjaxableResponseMixin):
     def form_valid(self, form):
         """If form is valid, save associated model."""
         file = form.cleaned_data['file']
-        print(file.__dict__)
-        # compute file sha1
-        sha1 = get_sha1_hexdigest(file)
-        print(sha1)
-
-        # search resource with same hash
-        try:
-            clone = Resource.objects.get(sha1=sha1)
-        except:
-            clone = False
-
-        # if we have another resource with same hash
-        # returns create_pin view with it's ID, and don't save anything
-        if clone:
+        fact = ResourceFactory()
+        resource = fact.make_tmp_resource(file)
+        # if resource is a Resource object (get a clone)
+        if resource and isinstance(resource, Resource):
             # add resource ID to session
-            self.request.session['pin_create_resource'] = clone.pk
+            self.request.session['pin_create_resource'] = resource.pk
             # redirect to create pin view
             return redirect(reverse_lazy('create_pin'))
-
-        # else save file in MEDIA_ROOT/tmp/<sha1>.<file_type> for it to be
-        # accessible from create_pin template
-        basename, ext = os.path.splitext(file._name)
-        print(ext)
-        name = "{}{}".format(sha1, ext.lower())
-        path = os.path.join(MEDIA_ROOT, 'tmp')
-        print(path)
-        if not os.path.exists(path):
-            os.mkdir(path)
-        pathname = os.path.join(path, name)
-        urlname = 'tmp/' + name
-
-        # save file :
-        with open(pathname, 'wb+') as destination:
-            for chunk in file.chunks():
-                destination.write(chunk)
-
-        # add file path to session
-        self.request.session['pin_create_tmp_resource'] = urlname
-
+        # if resource is a string (url relative to MEDIA_URL)
+        if resource and isinstance(resource, str):
+            # add file path to session
+            self.request.session['pin_create_tmp_resource'] = resource
         # redirect to create_pin view
         return redirect(reverse_lazy('create_pin'))
 
