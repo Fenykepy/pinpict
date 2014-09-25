@@ -3,22 +3,11 @@ import os
 import re
 import httplib2
 import urllib.request
+import imghdr
 
 from html.parser import HTMLParser
 
-from PIL import Image, ImageFile
-
-from pinpict.settings import PREVIEWS_WIDTH, PREVIEWS_CROP,\
-        PREVIEWS_ROOT, MEDIA_ROOT
-
-
-ALLOWED_MIME_TYPE = (
-        'image/jpeg',
-        'image/png',
-        'image/gif',
-        'image/tiff',
-        'image/svg+xml',
-)
+from PIL import Image
 
 
 def get_sha1_hexdigest(file):
@@ -64,30 +53,17 @@ def remove_empty_folders(path):
 
 
 
-def set_previews_filename(resource):
-    """Create a filename from sha1."""
-    return '{}.jpg'.format(resource.sha1)
 
-
-
-def set_previews_subdirs(resource):
-    """Create a path with two subdirectorys from sha1."""
-    return '{}/{}/'.format(
-        resource.sha1[0:2],
-        resource.sha1[2:4]
-    )
-
-
-
-def save_preview(img, destination, quality):
+def save_image(img, destination, type, quality):
     """Save a thumbnail.
     img -- Image instance
     destination -- full pathname to output preview
+    type -- image type ('JPEG')
     """
     def save():
         img.save(
                 destination,
-                "JPEG",
+                type,
                 quality=quality,
                 optimize=True,
                 progressive=True
@@ -141,7 +117,7 @@ def generate_previews(resource):
             # create preview
             img.thumbnail(size, Image.ANTIALIAS)
             # save preview
-            save_preview(img, destination, quality)
+            save_image(img, destination, "JPEG", quality)
         # else, symlink to original file
         elif not os.path.isfile(destination):
             os.symlink(source, destination)
@@ -197,7 +173,7 @@ def generate_previews(resource):
         # crop preview
         img = img.crop((left, upper, right, lower))
         # save preview
-        save_preview(img, destination, quality)
+        save_image(img, destination, "JPEG", quality)
 
 
 
@@ -325,49 +301,6 @@ def scan_html_for_picts(url):
     
     # return pictures list
     return parser.pictures
-
-
-
-def get_pict_over_http(url):
-    """Retrieve an image over http.
-    return False if url is not image
-    return temporary path if everything is ok.
-    """
-    # get file in temp dir
-    try:
-        local_filename, headers = urllib.request.urlretrieve(url)
-    except:
-        return False
-    # if file is not an image return
-    if not headers['Content-Type'] in ALLOWED_MIME_TYPE:
-        return False
-    # get file extension (because it's used by
-    # filestorage rename function)
-    extension = headers['Content-Type'][6:]
-    if extension == 'jpeg':
-        extension = 'jpg'
-    # rename temp file with extension
-    tmp_name = local_filename + '.' + extension
-    os.rename(local_filename, tmp_name)
-
-    return tmp_name
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-
-
-
 
 
 

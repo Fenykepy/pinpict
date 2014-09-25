@@ -13,12 +13,11 @@ from django.core.files.images import ImageFile
 from pinpict.settings import MEDIA_URL, MEDIA_ROOT
 from board.views import AjaxableResponseMixin
 from user.models import User
-from pin.models import Pin, Resource
+from pin.models import Pin, Resource, ResourceFactory
 from board.models import Board
 from pin.forms import PinForm, UploadPinForm, PinUrlForm, DownloadPinForm,\
         RePinForm
-from pin.utils import get_sha1_hexdigest, generate_previews, \
-        scan_html_for_picts, get_pict_over_http
+from pin.utils import get_sha1_hexdigest, scan_html_for_picts
 
 
 class ListPins(ListView):
@@ -169,7 +168,8 @@ def create_pin(request):
                 del request.session['pin_create_resource']
             elif request.session.get('pin_create_src'):
                 # if resource has to be downloaded
-                resource = make_resource_from_url(
+                fact = ResourceFactory()
+                resource = fact.make_resource_from_url(
                         request.session['pin_create_src'],
                         request.user,
                 )
@@ -178,7 +178,7 @@ def create_pin(request):
                 del request.session['pin_create_src']
             elif request.session.get('pin_create_tmp_resource'):
                 # if resource is a temporary file
-                resource = make_resource_from_file(
+                resource = ResourceFactory.make_resource_from_file(
                         request.session['pin_create_tmp_resource'],
                         request.user,
                 )
@@ -187,7 +187,7 @@ def create_pin(request):
                 del request.session['pin_create_tmp_resource']
             else:
                 # raise an resource error
-                pass
+                return False
             
             # save pin in db
             pin.save()
@@ -382,73 +382,6 @@ class UploadPin(FormView, AjaxableResponseMixin):
 
         # redirect to create_pin view
         return redirect(reverse_lazy('create_pin'))
-
-
-
-@login_required
-def download_pin(request):
-    """View to download a pin resource from a webpage."""
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = DownloadPinForm(request.POST)
-        if form.is_valid():
-            # add url to session
-            request.session['resource_source'] = form.cleaned_data['url']
-            # add alt to session
-            request.session['resource_description'] = form.cleaned_data['alt']
-            # create resource from href
-            tmp_name = get_pict_over_http(form.cleaned_data['href'])
-            if not tmp_name:
-                # file is not image, raise 404
-                raise Http404
-            # open file
-            file = ImageFile(open(tmp_name, 'rb'))
-            # compute file sha1
-            sha1 = get_sha1_hexdigest(file)
-
-
-            # search resource with same hash
-            try:
-                clone = Resource.objects.get(sha1=sha1)
-            except:
-                clone = False
-            # if we have another resource with same hash
-            # returns create_pin view with it's ID, and don't save anything
-            if clone:
-                # add resource ID to session
-                request.session['resource'] = clone.pk
-                # redirect to create pin view
-                return redirect(reverse_lazy('create_pin'))
-
-
-            # else create new resource
-            resource = Resource()
-            resource.source_file = file
-            resource.sha1 = sha1
-            resource.size = resource.source_file.size
-            resource.width = resource.source_file.width
-            resource.height = resource.source_file.height
-            resource.source_file_url = form.cleaned_data['href']
-            basename, ext = os.path.splitext(resource.source_file.name)
-            resource.type = ext.lower().lstrip('.')
-            
-            resource.save()
-
-            # add resource ID to session
-            request.session['resource'] = resource.pk
-
-            # create previews
-            generate_previews(resource)
-
-            return redirect(reverse_lazy('create_pin'))
-        else:
-            # form is invalid, raise 404
-            raise Http404
-
-    else:
-        # form is build in pin_find view, no get here.
-        raise Http404
-    
 
 
 
