@@ -180,7 +180,10 @@ def create_pin(request):
                 # if resource is a temporary file
                 fact = ResourceFactory()
                 resource = fact.make_resource_from_file(
-                        request.session['pin_create_tmp_resource'],
+                        os.path.join(
+                            MEDIA_ROOT,
+                            request.session['pin_create_tmp_resource']
+                        ),
                         request.user,
                 )
                 if resource:

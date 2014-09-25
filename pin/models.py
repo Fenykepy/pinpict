@@ -284,7 +284,13 @@ class ResourceFactory(object):
         """Make a resource from given file.
         It must be an image file.
         """
-        pass
+        # set up
+        self.resource = Resource()
+        self.resource.user = user
+        self.filepath = file
+
+        return self._get_file_sha1(file)
+        
 
     
     def make_tmp_resource(self, file):
