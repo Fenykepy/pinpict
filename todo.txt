@@ -178,7 +178,6 @@
 #            - description if any as description
 #            - last_visited_board if any as default board
             - or user_last_used board if any as default board
-            take more recent
 
 #    - if request is post and pin in form : (from pin_list or pin_view)
 #        - set creation_pin['resource']
@@ -188,8 +187,7 @@
 #            - pin preview as preview
 #            - pin description as description
 #            - last_visited_board if any as default board
-            - or user_last_used board if any as default board
-            take more recent
+            - or user_last_used board if any as default board if creation_pin['add_via']
 
 #    - if request is post and board, description in post : (real pin_creation form sent)
 
