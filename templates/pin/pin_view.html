@@ -17,7 +17,7 @@
     <button type="button">Visit Site</button>
     </a>
     {% endif %}
-    <a href="{{ MEDIA_URL }}previews/full/{{ pin.resource.previews_path }}" target="_blank">
+    <a href="{{ MEDIA_URL }}{{ pin.resource.source_file }}" target="_blank">
     <button type="button">Image</button>
     </a>
     {% if user.is_authenticated and user == owner %}
@@ -28,9 +28,11 @@
 </header>
 {# !!! look to add a lightbox link here, or a link to full image, in template or not #}
 {% if pin.source %}
+    {# link to origin url #}
     <a href="{{ pin.source }}" target="_blank">
 {% else %}
-<a href="{{ MEDIA_URL}}previews/full/{{ pin.resource.previews_path }}" target="_blank">
+    {# link to full image #}
+    <a href="{{ MEDIA_URL}}{{ pin.resource.source_file }}" target="_blank">
 {% endif %}
 <div id="image-wrapper">
 <img src="{{ MEDIA_URL }}previews/736/{{ pin.resource.previews_path }}" alt="{{ pin.description }}" />

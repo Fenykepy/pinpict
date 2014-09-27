@@ -33,11 +33,13 @@ class ResourceFileSystemStorage(FileSystemStorage):
 def set_pathname(instance, filename):
     """Set pathname under form
     full/4a/52/4a523fe9c50a2f0b1dd677ae33ea0ec6e4a4b2a9.ext."""
-    sha1 = instance.sha1
-    type = instance.type
-    basename, ext = os.path.splitext(filename)
-    return os.path.join('previews', 'full', sha1[0:2], sha1[2:4],
-            sha1 + '.' + instance.type)
+    return os.path.join(
+            'previews',
+            'full',
+            instance.sha1[0:2],
+            instance.sha1[2:4],
+            instance.sha1 + '.' + instance.type
+    )
 
 
 
@@ -389,6 +391,7 @@ class ResourceFactory(object):
             self.resource.type = type
             self.resource.save()
             self.resource.generate_previews()
+
 
         return self.resource
 

@@ -89,6 +89,7 @@
     - split settings.py
     - mail registration to user
     - test create_pin new algo
+#    - mv pin to final destination in ResourceFactory.make_resource_from_file
 
 
 ==== JavaScript ====
