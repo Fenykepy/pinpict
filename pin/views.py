@@ -178,16 +178,14 @@ def create_pin(request):
                 del request.session['pin_create_src']
             elif request.session.get('pin_create_tmp_resource'):
                 # if resource is a temporary file
+                tmp_path = os.path.join(MEDIA_ROOT, request.session['pin_create_tmp_resource'])
                 fact = ResourceFactory()
-                resource = fact.make_resource_from_file(
-                        os.path.join(
-                            MEDIA_ROOT,
-                            request.session['pin_create_tmp_resource']
-                        ),
-                        request.user,
-                )
+                resource = fact.make_resource_from_file(tmp_path, request.user)
                 if resource:
                     pin.resource = resource
+                # delete old tmp file
+                os.remove(tmp_path)
+
                 del request.session['pin_create_tmp_resource']
             else:
                 # raise an resource error
@@ -207,12 +205,14 @@ def create_pin(request):
         # request arrive from upload pin with new uploaded file
         if request.session.get('pin_create_tmp_resource'):
             src = MEDIA_URL + request.session['pin_create_tmp_resource']
+            del request.session['pin_create_tmp_resource']
         # request arrive from upload pin with no uploaded file (it exists)
         elif request.session.get('pin_create_resource'):
             resource = Resource.objects.get(
                 pk = request.session['pin_create_resource']
             )
             src = MEDIA_URL + 'previews/236/' + resource.previews_path
+            del request.session['pin_create_resource']
         # request is error
         else:
             raise Http404

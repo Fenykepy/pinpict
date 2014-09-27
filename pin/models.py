@@ -301,7 +301,9 @@ class ResourceFactory(object):
         if resource exists with its hash, remove file and return resourceo        file -- in memory uploaded file object.
         """
         # return resource object if any, else self.filepath, which is None
-        self._get_file_sha1(file)
+        resource = self._get_file_sha1(file)
+        if resource:
+            return resource
 
         # set pathname as MEDIA_ROOT/tmp/<sha1>
         pathname = os.path.join(
@@ -313,6 +315,8 @@ class ResourceFactory(object):
         with open(pathname, 'wb+') as destination:
             for chunk in file.chunks():
                 destination.write(chunk)
+        print('saved file in:')
+        print(pathname)
         del file
 
         # return file url relative to MEDIA_URL
