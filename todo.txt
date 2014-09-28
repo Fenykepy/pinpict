@@ -88,7 +88,8 @@
     - synchro user n_public_pins and n_public_boards
     - split settings.py
     - mail registration to user
-    - test create_pin new algo
+#    - test create_pin new algo
+        - change url in download test for a local url
 #    - mv pin to final destination in ResourceFactory.make_resource_from_file
 
 
