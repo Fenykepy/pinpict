@@ -46,20 +46,6 @@ RESERVED_WORDS = (
 AVATAR_MAX_SIZE = 150
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '#k!x=d3t3m34*0ptgz1ca9i8-s#svn1j=9g)sync7f1wbah1&s'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-TEMPLATE_DEBUG = True
-
-ALLOWED_HOSTS = []
-
-
 
 # Application definition
 
@@ -103,24 +89,10 @@ AUTH_USER_MODEL = 'user.User'
 
 ## login page
 LOGIN_URL = '/login/'
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 DEFAULT_CHARSET = 'utf-8'
-
-#LANGUAGE_CODE = 'fr-FR'
-LANGUAGE_CODE = 'en-US'
-
-TIME_ZONE = 'Europe/Paris'
 
 USE_I18N = True
 
@@ -145,7 +117,10 @@ PREVIEWS_ROOT = os.path.join(MEDIA_ROOT, 'previews')
 
 MEDIA_URL = '/media/'
 
-## Email configuration
-DEFAULT_FROM_EMAIL = 'pinpict@lavilotte-rolle.fr'
-EMAIL_SUBJECT_PREFIX = '[Pinpict]'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# import environment specific configuration
+try:
+    from pinpict.local_settings import *
+except ImportError:
+    print('settings importation error')
+    pass

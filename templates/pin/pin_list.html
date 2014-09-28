@@ -35,7 +35,9 @@
     {% else %}
     {{ owner.username }}
     {% endif %}</a></h2>
+    {% if owner.website %}
     <div class="user-website"><a href="{{ owner.website }}" target="_blank">{{ owner.website }}</a></div>
+    {% endif %}
 </article>
 </div>
 {% if user.is_authenticated and user == owner %}
