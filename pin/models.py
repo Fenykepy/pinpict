@@ -9,6 +9,7 @@ from  django.core.files.images import ImageFile
 from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
+from django.http import Http404
 
 from user.models import User
 from board.models import Board
@@ -289,6 +290,8 @@ class ResourceFactory(object):
         # set up
         self.resource = Resource()
         self.resource.user = user
+        if not os.path.isfile(file):
+            raise Http404
         self.filepath = file
 
         return self._get_file_sha1(file)
@@ -315,8 +318,6 @@ class ResourceFactory(object):
         with open(pathname, 'wb+') as destination:
             for chunk in file.chunks():
                 destination.write(chunk)
-        print('saved file in:')
-        print(pathname)
         del file
 
         # return file url relative to MEDIA_URL

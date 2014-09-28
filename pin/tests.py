@@ -52,7 +52,7 @@ def create_test_pins(instance):
             resource = instance.resource2,
             board = instance.board2,
             description = 'Test pin for second board',
-            pin_user = instance.user,
+            pin_user = instance.user2,
             policy = instance.board.policy
     )
     instance.pin2.save()
@@ -245,80 +245,6 @@ class UtilsTest(TestCase):
 
 
 
-#        # assert previews have been generated and file size are good
-#        for preview in PREVIEWS_WIDTH:
-#            preview_file = os.path.join(MEDIA_ROOT, 'previews', preview[1],
-#                'f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg')
-#            self.assertEqual(os.path.isfile(preview_file), True)
-#            img = Image.open(preview_file)
-#            width = img.size[0]
-#            # assert it's good width
-#            if preview[0] > 200:
-#                self.assertEqual(width, 200)
-#            else:
-#                self.assertEqual(img.size[0], preview[0])
-#
-#        for preview in PREVIEWS_CROP:
-#            preview_file = os.path.join(MEDIA_ROOT, 'previews', preview[2],
-#                'f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg')
-#            self.assertEqual(os.path.isfile(preview_file), True)
-#            img = Image.open(preview_file)
-#            width, height = img.size
-#            # assert it's good width and height
-#            self.assertEqual(width, preview[0])
-#            self.assertEqual(height, preview[1])
-#
-#        # assert resource has been save in db
-#        resource = Resource.objects.get(
-#                sha1='f5fbd1897ef61b69f071e36295342571e81017b9')
-#        self.assertEqual(resource.source_file,
-#            'previews/full/f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg')
-#        self.assertEqual(resource.width, 200)
-#        self.assertEqual(resource.height, 300)
-#        self.assertEqual(resource.size, 16628)
-#
-#
-#        # upload again same image
-#        response = post_image()
-#        self.assertEqual(response.status_code, 302)
-#
-#        # assert no new file has been saved on hdd (with a similar name,
-#        # in case FyleSystemStorage didn't work
-#        path = os.path.join(MEDIA_ROOT, 'previews/full/f5/fb/')
-#        count = 0
-#
-#        for file in os.listdir(path):
-#            if file[:40] == 'f5fbd1897ef61b69f071e36295342571e81017b9':
-#                count +=1
-#        # assert only one file is present
-#        self.assertEqual(count, 1)
-#
-#
-#        # assert no new entry has been saved in db
-#        resource = Resource.objects.filter(
-#                sha1='f5fbd1897ef61b69f071e36295342571e81017b9').count()
-#        self.assertEqual(resource, 1)
-#        
-#        
-#        # remove files from MEDIA_ROOT
-#        os.remove(os.path.join(MEDIA_ROOT,
-#            'previews/full/f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg'))
-#        for preview in PREVIEWS_WIDTH:
-#            os.remove(os.path.join(MEDIA_ROOT, 'previews', preview[1],
-#                'f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg'))
-#
-#        for preview in PREVIEWS_CROP:
-#            os.remove(os.path.join(MEDIA_ROOT, 'previews', preview[2],
-#                'f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpg'))
-#
-#
-#        # remove empty folders from MEDIA_ROOT, 'previews'
-#        path = os.path.join(MEDIA_ROOT, 'previews')
-#        remove_empty_folders(path)
-#
-#
-
-
 class PinCreationTest(TestCase):
     """Pin creation test class."""
 
@@ -473,11 +399,14 @@ class PinCreationTest(TestCase):
         login(self, self.user)
         session = self.client.session
 
-        def post_image():
+        def post_image(follow=False):
             # post an image file
             with open(os.path.join(BASE_DIR, 'pin',
                 'test_files', 'test.jpg'), 'rb') as fp:
-                return self.client.post('/pin/upload/', {'file': fp})
+                return self.client.post('/pin/upload/', {
+                    'file': fp
+                    }, follow=follow
+                )
 
         # post image file
         response = post_image()
@@ -488,7 +417,13 @@ class PinCreationTest(TestCase):
         tmp_path = os.path.join(MEDIA_ROOT, tmp)
         self.assertEqual(os.path.isfile(tmp_path), True)
         self.assertEqual(self.client.session['pin_create_tmp_resource'], tmp)
-        
+ 
+        # post image file
+        #response = post_image(follow=True)
+        #self.assertEqual(response.status_code, 200)
+        #self.assertEqual(response.templates[0].name, 'pin/pin_create.html')
+        #self.assertEqual(response.context['src'], '/media/tmp/f5fbd1897ef61b69f071e36295342571e81017b9')
+
         # post pin
         response = self.client.post('/pin/create/', {
             'board': self.board.pk,
@@ -504,9 +439,17 @@ class PinCreationTest(TestCase):
         self.assertEqual(resource.n_pins, 1)
         # assert user n_pins has been updated
         self.assertEqual(pins[0].pin_user.n_pins, 1)
+        # assert board n_pins has been updated
+        self.assertEqual(pins[0].board.n_pins, 1)
         # assert resource_file exists
         self.assertTrue(os.path.exists(os.path.join(MEDIA_ROOT,
             resource.source_file.name)))
+        # assert resource file, size, width and height are stored in db
+        self.assertEqual(resource.source_file.name,
+            'previews/full/f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpeg')
+        self.assertEqual(resource.width, 200)
+        self.assertEqual(resource.height, 300)
+        self.assertEqual(resource.size, 16628)
         # assert previews have been generated !!!
         self.previews_generation_test(resource)
         
@@ -543,104 +486,309 @@ class PinCreationTest(TestCase):
 
 
 
+    def test_pin_creation_from_user_other_pin(self):
+        # create resources and pins
+        create_test_resources(self)
+        create_test_pins(self)
+        # login with user
+        login(self, self.user)
+        response = self.client.post('/pin/create/', {
+            'pin': self.pin.pk,
+        }, follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'pin/pin_create.html')
+        # assert session variable has been set
+        self.assertEqual(self.client.session['pin_create_resource'], self.pin.resource.pk)
+        self.assertEqual(self.client.session['pin_create_source'], self.pin.source)
+        self.assertEqual(hasattr(self.client.session, 'pin_create_added_via'), False)
+        # assert no other users' boards are in select
+        self.assertEqual(response.context['form'].fields['board']._queryset.count(), 2)
+        self.assertEqual(response.context['form'].fields['board']._queryset[0].pk, 1)      
+        # assert ressource is in context
+        self.assertEqual(response.context['resource'], self.resource)
+        # post pin
+        response = self.client.post('/pin/create/', {
+            'board': self.board.pk,
+            'description': 'Description of pin',
+        }, follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'pin/pin_list.html')
+        # assert pin is in db
+        pins = Pin.objects.filter(board=self.board, description='Description of pin')
+        self.assertEqual(len(pins), 1)
+        # assert resource n_pins has been updated
+        resource = pins[0].resource
+        self.assertEqual(resource.n_pins, 2)
+        # assert user n_pins has been updated
+        self.assertEqual(pins[0].pin_user.n_pins, 2)
+        # assert board n_pins has been updated
+        self.assertEqual(pins[0].board.n_pins, 2)
+
+
+
+    def test_pin_creation_from_other_user_pin(self):
+        # create resources and pins
+        create_test_resources(self)
+        create_test_pins(self)
+        # login with user
+        login(self, self.user)
+        response = self.client.post('/pin/create/', {
+            'pin': self.pin2.pk,
+        }, follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'pin/pin_create.html')
+        # assert session variable has been set
+        self.assertEqual(self.client.session['pin_create_resource'], self.pin2.resource.pk)
+        self.assertEqual(self.client.session['pin_create_source'], self.pin2.source)
+        self.assertEqual(self.client.session['pin_create_added_via'], self.user2.pk) 
+        # assert no other users' boards are in select
+        self.assertEqual(response.context['form'].fields['board']._queryset.count(), 2)
+        self.assertEqual(response.context['form'].fields['board']._queryset[0].pk, 1)           
+        # assert ressource is in context
+        self.assertEqual(response.context['resource'], self.pin2.resource)
+        # post pin
+        response = self.client.post('/pin/create/', {
+            'board': self.board.pk,
+            'description': 'Description of pin',
+        }, follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'pin/pin_list.html')
+        # assert pin is in db
+        pins = Pin.objects.filter(board=self.board, description='Description of pin')
+        self.assertEqual(len(pins), 1)
+        # assert resource n_pins has been updated
+        resource = pins[0].resource
+        self.assertEqual(resource.n_pins, 2)
+        # assert user n_pins has been updated
+        self.assertEqual(pins[0].pin_user.n_pins, 2)
+        # assert board n_pins has been updated
+        self.assertEqual(pins[0].board.n_pins, 2)
+
+
+
+    def test_pin_creation_with_unexisting_file(self):
+        # login with user
+        login(self, self.user)
+        # set session
+        session = self.client.session
+        session['pin_create_tmp_resource'] = 'tmp/nothing/'
+        session.save()
+        response = self.client.post('/pin/create/', {
+            'board': self.board.pk,
+            'description': 'Description of pin',
+        }, follow = True)
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.templates[0].name, '404.html')
+
+
+
+    def test_pin_creation_with_wrong_board(self):
+        # login with user
+        login(self, self.user)
+        # set session
+        session = self.client.session
+        session['pin_create_resource'] = 1
+        session.save()
+        response = self.client.post('/pin/create/', {
+            'board': self.board2.pk,
+            'description': 'Try to post a pin on a board which isn\'t mine',
+            }, follow=True)
+        # assert form is served again
+        self.assertEqual(response.templates[0].name, '404.html')
+        # assert no pin has been saved
+        pins = Pin.objects.all().count()
+        self.assertEqual(pins, 0)
+
+
+
+    def test_pin_creation_with_unexisting_resource(self):
+        # login with user
+        login(self, self.user)
+        # set session
+        session = self.client.session
+        session['pin_create_resource'] = 6
+        session.save()
+
+        response = self.client.post('/pin/create/', {
+            'board': self.board.pk,
+            'description': 'Try to post a pin with an inexisting resource.',
+            }, follow=True)
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.templates[0].name, '404.html')
 
 
 
 
 
 
-#    def test_pin_creation(self):
+
+
+
+
+
+        
+#class DownloadPinTest(TestCase):
+#    """download_pin Test class."""
+#
+#    def setUp(self):
+#        # create users
+#        create_test_users(self)
+#        # launch client
+#        self.client = Client()
+#
+#
+#    def test_urls(self):
+#        urls = [
+#            # user should be connected
+#            {
+#                'url': '/pin/download/',
+#                'status': 302,
+#                'template': 'user/user_login.html',
+#            },
+#        ]
+#        test_urls(self, urls)
+#
+#
+#    def test_logged_in_urls(self):
 #        # login with user
 #        login(self, self.user)
-#        # set session
-#        session = self.client.session
-#        session['pin_create_tmp_resource'] = 1
-#        session.save()
+#
+#        urls = [
+#            # shouldn't accept get method
+#            {
+#                'url': '/pin/download/',
+#                'status': 404,
+#                'template': '404.html',
+#            },
+#        ]
+#        test_urls(self, urls)
+#
+#    def test_pin_download(self):
+#        # login with user
+#        login(self, self.user)
+#
+#        # 999.jpg sha1 = 'e94ec191e243cbd891dd1b32d77329b8ce65a52f'
+#
+#        response = self.client.post('/pin/download/', {
+#            'url': 'http://lavilotte-rolle.fr/tmp/pinpict_tests/',
+#            'alt': 'description',
+#            'href': 'http://lavilotte-rolle.fr/tmp/pinpict_tests/999.jpg'
+#        })
+#
+#        self.assertEqual(response.status_code, 302)
+#
+#        # assert file has been save on hdd
+#        full = os.path.join(MEDIA_ROOT,
+#            'previews/full/e9/4e/e94ec191e243cbd891dd1b32d77329b8ce65a52f.jpg')
+#        self.assertEqual(os.path.isfile(full), True)
+#
+#        # assert previews have been generated
+#        for preview in PREVIEWS_WIDTH:
+#            preview_file = os.path.join(MEDIA_ROOT, 'previews', preview[1],
+#                'e9/4e/e94ec191e243cbd891dd1b32d77329b8ce65a52f.jpg')
+#            self.assertEqual(os.path.isfile(preview_file), True)
+#
+#        for preview in PREVIEWS_CROP:
+#            preview_file = os.path.join(MEDIA_ROOT, 'previews', preview[2],
+#                'e9/4e/e94ec191e243cbd891dd1b32d77329b8ce65a52f.jpg')
+#            self.assertEqual(os.path.isfile(preview_file), True)
+#
+#        # assert resource has been save in db
+#        resource = Resource.objects.get(
+#            sha1='e94ec191e243cbd891dd1b32d77329b8ce65a52f')
+#
+#        self.assertEqual(resource.source_file,
+#            'previews/full/e9/4e/e94ec191e243cbd891dd1b32d77329b8ce65a52f.jpg')
+#        self.assertEqual(resource.width, 500)
+#        self.assertEqual(resource.height, 329)
+#        self.assertEqual(resource.size, 39268)
 #
 #
-#        response = self.client.get('/pin/create/')
-#        # assert no other users' boards are in select
-#        self.assertEqual(response.context['form'].fields['board']._queryset.count(), 1)
-#        self.assertEqual(response.context['form'].fields['board']._queryset[0].pk, 1)
+#        # download same file again 
+#        response = self.client.post('/pin/download/', {
+#            'url': 'http://lavilotte-rolle.fr/tmp/pinpict_tests/',
+#            'alt': 'description',
+#            'href': 'http://lavilotte-rolle.fr/tmp/pinpict_tests/999.jpg'
+#        }, follow=True)
 #
-#        # assert ressource is in context
-#        self.assertEqual(response.context['resource'], self.resource)
 #
-#        # test pin creation
-#        response = self.client.post('/pin/create/', {
-#            'board': self.board.pk,
-#            'description': 'Description of pin',
-#            }, follow=True)
 #        self.assertEqual(response.status_code, 200)
-#        self.assertEqual(response.templates[0].name, 'pin/pin_list.html')
-#        # assert pin is in db
-#        pins = Pin.objects.filter(resource=self.resource, board=self.board,
-#            description='Description of pin').count()
-#        self.assertEqual(pins, 1)
+#        self.assertEqual(response.templates[0].name, 'pin/pin_create.html')
 #
-#        # assert resource n_pins has been updated
-#        resource = Resource.objects.get(pk=1)
-#        self.assertEqual(resource.n_pins, 1)
+#        # assert no new file has been saved on hdd (with a similar name
+#        path = os.path.join(MEDIA_ROOT, 'previews/full/e9/4e/')
 #
-#        # assert user n_pins has been updated
-#        user = User.objects.get(pk=1)
-#        self.assertEqual(user.n_pins, 1)
+#        count = 0
 #
-#        # assert board n_pins has been updated
-#        board = Board.objects.get(pk=1)
-#        self.assertEqual(board.n_pins, 1)
+#        for file in os.listdir(path):
+#            if file[:40] == 'e94ec191e243cbd891dd1b32d77329b8ce65a52f':
+#                count += 1
+#        # assert only one file is present
+#        self.assertEqual(count, 1)
 #
+#        # assert no new entry has been saved in db
+#        resource = Resource.objects.filter(
+#            sha1='e94ec191e243cbd891dd1b32d77329b8ce65a52f').count()
+#        self.assertEqual(resource, 1)
 #
-#    def test_pin_creation_with_wrong_board(self):
+#        # remove files from MEDIA_ROOT
+#        os.remove(os.path.join(MEDIA_ROOT,
+#            'previews/full/e9/4e/e94ec191e243cbd891dd1b32d77329b8ce65a52f.jpg'))
+#        for preview in PREVIEWS_WIDTH:
+#            os.remove(os.path.join(MEDIA_ROOT, 'previews', preview[1],
+#            'e9/4e/e94ec191e243cbd891dd1b32d77329b8ce65a52f.jpg'))
+#
+#        for preview in PREVIEWS_CROP:
+#            os.remove(os.path.join(MEDIA_ROOT, 'previews', preview[2],
+#            'e9/4e/e94ec191e243cbd891dd1b32d77329b8ce65a52f.jpg'))
+#
+#        # remove empty folders from MEDIA_ROOT, 'previews'
+#        path = os.path.join(MEDIA_ROOT, 'previews')
+#        remove_empty_folders(path)
+#
+#    def test_pin_download_with_wrong_form(self):
+#        # with not logged in user, 302
+#        response = self.client.post('/pin/download/', {
+#            'url': 'lavilotte-rolle.fr/tmp/pinpict_tests/',
+#            'alt': 'description',
+#            'href': 'lavilotte-rolle.fr/tmp/pinpict_tests/999.jpg'
+#        })
+#        self.assertEqual(response.status_code, 302)
+#
 #        # login with user
 #        login(self, self.user)
-#        # set session
-#        session = self.client.session
-#        session['resource'] = 1
-#        session.save()
-#        response = self.client.post('/pin/create/', {
-#            'board': self.board2.pk,
-#            'description': 'Try to post a pin on a board which isn\'t mine',
-#            }, follow=True)
-#        # assert form is served again
-#        self.assertEqual(response.templates[0].name, '404.html')
-#        # assert no pin has been saved
-#        pins = Pin.objects.all().count()
-#        self.assertEqual(pins, 0)
 #
-#
-#    def test_pin_creation_with_unexisting_resource(self):
-#        # login with user
-#        login(self, self.user)
-#        # set session
-#        session = self.client.session
-#        session['resource'] = 3
-#        session.save()
-#
-#        response = self.client.post('/pin/create/', {
-#            'board': self.board.pk,
-#            'description': 'Try to post a pin with an inexisting resource.',
-#            }, follow=True)
+#        # with 404 href
+#        response = self.client.post('/pin/download/', {
+#            'url': 'lavilotte-rolle.fr/tmp/pinpict_tests/',
+#            #'alt': 'description',
+#            'href': 'lavilotte-rolle.fr/tmp/pinpict_tests/998.jpg'
+#        })
 #        self.assertEqual(response.status_code, 404)
-#        self.assertEqual(response.templates[0].name, '404.html')
+#        
+#        # with no href
+#        response = self.client.post('/pin/download/', {
+#            'url': 'lavilotte-rolle.fr/tmp/pinpict_tests/',
+#            'alt': 'description',
+#        })
+#        self.assertEqual(response.status_code, 404)
 #
+#        # with no url
+#        response = self.client.post('/pin/download/', {
+#            'alt': 'description',
+#            'href': 'lavilotte-rolle.fr/tmp/pinpict_tests/998.jpg'
+#        })
+#        self.assertEqual(response.status_code, 404)
+#        
+#        # with not url href
+#        response = self.client.post('/pin/download/', {
+#            'url': 'lavilotte-rolle.fr/tmp/pinpict_tests/',
+#            #'alt': 'description',
+#            'href': 'pinpict_tests/998.jpg'
+#        })
+#        self.assertEqual(response.status_code, 404)
+# 
 #
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1179,171 +1327,6 @@ class PinChooseUrlTest(TestCase):
                 'url=http%3A%2F%2Fwww.lavilotte-rolle.fr')
 
 
-
-
-        
-#class DownloadPinTest(TestCase):
-#    """download_pin Test class."""
-#
-#    def setUp(self):
-#        # create users
-#        create_test_users(self)
-#        # launch client
-#        self.client = Client()
-#
-#
-#    def test_urls(self):
-#        urls = [
-#            # user should be connected
-#            {
-#                'url': '/pin/download/',
-#                'status': 302,
-#                'template': 'user/user_login.html',
-#            },
-#        ]
-#        test_urls(self, urls)
-#
-#
-#    def test_logged_in_urls(self):
-#        # login with user
-#        login(self, self.user)
-#
-#        urls = [
-#            # shouldn't accept get method
-#            {
-#                'url': '/pin/download/',
-#                'status': 404,
-#                'template': '404.html',
-#            },
-#        ]
-#        test_urls(self, urls)
-#
-#    def test_pin_download(self):
-#        # login with user
-#        login(self, self.user)
-#
-#        # 999.jpg sha1 = 'e94ec191e243cbd891dd1b32d77329b8ce65a52f'
-#
-#        response = self.client.post('/pin/download/', {
-#            'url': 'http://lavilotte-rolle.fr/tmp/pinpict_tests/',
-#            'alt': 'description',
-#            'href': 'http://lavilotte-rolle.fr/tmp/pinpict_tests/999.jpg'
-#        })
-#
-#        self.assertEqual(response.status_code, 302)
-#
-#        # assert file has been save on hdd
-#        full = os.path.join(MEDIA_ROOT,
-#            'previews/full/e9/4e/e94ec191e243cbd891dd1b32d77329b8ce65a52f.jpg')
-#        self.assertEqual(os.path.isfile(full), True)
-#
-#        # assert previews have been generated
-#        for preview in PREVIEWS_WIDTH:
-#            preview_file = os.path.join(MEDIA_ROOT, 'previews', preview[1],
-#                'e9/4e/e94ec191e243cbd891dd1b32d77329b8ce65a52f.jpg')
-#            self.assertEqual(os.path.isfile(preview_file), True)
-#
-#        for preview in PREVIEWS_CROP:
-#            preview_file = os.path.join(MEDIA_ROOT, 'previews', preview[2],
-#                'e9/4e/e94ec191e243cbd891dd1b32d77329b8ce65a52f.jpg')
-#            self.assertEqual(os.path.isfile(preview_file), True)
-#
-#        # assert resource has been save in db
-#        resource = Resource.objects.get(
-#            sha1='e94ec191e243cbd891dd1b32d77329b8ce65a52f')
-#
-#        self.assertEqual(resource.source_file,
-#            'previews/full/e9/4e/e94ec191e243cbd891dd1b32d77329b8ce65a52f.jpg')
-#        self.assertEqual(resource.width, 500)
-#        self.assertEqual(resource.height, 329)
-#        self.assertEqual(resource.size, 39268)
-#
-#
-#        # download same file again 
-#        response = self.client.post('/pin/download/', {
-#            'url': 'http://lavilotte-rolle.fr/tmp/pinpict_tests/',
-#            'alt': 'description',
-#            'href': 'http://lavilotte-rolle.fr/tmp/pinpict_tests/999.jpg'
-#        }, follow=True)
-#
-#
-#        self.assertEqual(response.status_code, 200)
-#        self.assertEqual(response.templates[0].name, 'pin/pin_create.html')
-#
-#        # assert no new file has been saved on hdd (with a similar name
-#        path = os.path.join(MEDIA_ROOT, 'previews/full/e9/4e/')
-#
-#        count = 0
-#
-#        for file in os.listdir(path):
-#            if file[:40] == 'e94ec191e243cbd891dd1b32d77329b8ce65a52f':
-#                count += 1
-#        # assert only one file is present
-#        self.assertEqual(count, 1)
-#
-#        # assert no new entry has been saved in db
-#        resource = Resource.objects.filter(
-#            sha1='e94ec191e243cbd891dd1b32d77329b8ce65a52f').count()
-#        self.assertEqual(resource, 1)
-#
-#        # remove files from MEDIA_ROOT
-#        os.remove(os.path.join(MEDIA_ROOT,
-#            'previews/full/e9/4e/e94ec191e243cbd891dd1b32d77329b8ce65a52f.jpg'))
-#        for preview in PREVIEWS_WIDTH:
-#            os.remove(os.path.join(MEDIA_ROOT, 'previews', preview[1],
-#            'e9/4e/e94ec191e243cbd891dd1b32d77329b8ce65a52f.jpg'))
-#
-#        for preview in PREVIEWS_CROP:
-#            os.remove(os.path.join(MEDIA_ROOT, 'previews', preview[2],
-#            'e9/4e/e94ec191e243cbd891dd1b32d77329b8ce65a52f.jpg'))
-#
-#        # remove empty folders from MEDIA_ROOT, 'previews'
-#        path = os.path.join(MEDIA_ROOT, 'previews')
-#        remove_empty_folders(path)
-#
-#    def test_pin_download_with_wrong_form(self):
-#        # with not logged in user, 302
-#        response = self.client.post('/pin/download/', {
-#            'url': 'lavilotte-rolle.fr/tmp/pinpict_tests/',
-#            'alt': 'description',
-#            'href': 'lavilotte-rolle.fr/tmp/pinpict_tests/999.jpg'
-#        })
-#        self.assertEqual(response.status_code, 302)
-#
-#        # login with user
-#        login(self, self.user)
-#
-#        # with 404 href
-#        response = self.client.post('/pin/download/', {
-#            'url': 'lavilotte-rolle.fr/tmp/pinpict_tests/',
-#            #'alt': 'description',
-#            'href': 'lavilotte-rolle.fr/tmp/pinpict_tests/998.jpg'
-#        })
-#        self.assertEqual(response.status_code, 404)
-#        
-#        # with no href
-#        response = self.client.post('/pin/download/', {
-#            'url': 'lavilotte-rolle.fr/tmp/pinpict_tests/',
-#            'alt': 'description',
-#        })
-#        self.assertEqual(response.status_code, 404)
-#
-#        # with no url
-#        response = self.client.post('/pin/download/', {
-#            'alt': 'description',
-#            'href': 'lavilotte-rolle.fr/tmp/pinpict_tests/998.jpg'
-#        })
-#        self.assertEqual(response.status_code, 404)
-#        
-#        # with not url href
-#        response = self.client.post('/pin/download/', {
-#            'url': 'lavilotte-rolle.fr/tmp/pinpict_tests/',
-#            #'alt': 'description',
-#            'href': 'pinpict_tests/998.jpg'
-#        })
-#        self.assertEqual(response.status_code, 404)
-# 
-#
 
 
 class FindPinTest(TestCase):

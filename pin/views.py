@@ -160,8 +160,8 @@ def create_pin(request):
                 del request.session['pin_create_source']
             # set resource
             if request.session.get('pin_create_resource'):
-                # if resource in session (repin)
-                resource = Resource.objects.get(
+                # if resource in session (repin or clone on upload)
+                resource = get_object_or_404(Resource,
                         pk = request.session['pin_create_resource']
                 )
                 pin.resource = resource
@@ -227,6 +227,9 @@ def create_pin(request):
             'src': src,
             'submit': 'Pin it',
         })
+
+    # in all other cases return 404
+    raise Http404
 
 
 
