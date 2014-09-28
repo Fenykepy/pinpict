@@ -115,6 +115,7 @@ class BoardCreationTest(TestCase):
         # assert user n_boars has been updated
         user = User.objects.get(username='flr')
         self.assertEqual(user.n_boards, 1)
+        self.assertEqual(user.n_public_boards, 1)
 
 
     def test_private_board_creation(self):
@@ -143,6 +144,7 @@ class BoardCreationTest(TestCase):
         # assert user n_boars has been updated
         user = User.objects.get(username='flr')
         self.assertEqual(user.n_boards, 1)
+        self.assertEqual(user.n_public_boards, 0)
 
 
 
@@ -405,6 +407,7 @@ class BoardDeleteTest(TestCase):
         # assert user n_boards has been updated
         user = User.objects.get(username='flr')
         self.assertEqual(user.n_boards, 0)
+        self.assertEqual(user.n_public_boards, 0)
         # assert board pins have been deleted
         n_pins = Pin.objects.all().count()
         self.assertEqual(n_pins, 0)

@@ -83,7 +83,8 @@ class Board(models.Model):
 @receiver(post_delete, sender=Board)
 def update_user_n_boards(sender, instance, **kwargs):
     """Update user's n_boards after board save or delete."""
-    instance.user.n_boards = Board.objects.filter(user = instance.user).count()
+    instance.user.n_boards = instance.user.get_n_boards()
+    instance.user.n_public_boards = instance.user.get_n_public_boards()
     instance.user.save()
 
 

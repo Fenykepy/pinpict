@@ -241,11 +241,8 @@ def update_n_pins(sender, instance, **kwargs):
     instance.resource.save()
 
     # update user n_pins
-    n = 0
-    for board in instance.board.user.board_set.all():
-        n += board.n_pins
-
-    instance.board.user.n_pins = n
+    instance.board.user.n_pins = instance.pin_user.get_n_pins()
+    instance.board.user.n_public_pins = instance.pin_user.get_n_public_pins()
     instance.board.user.save()
 
 

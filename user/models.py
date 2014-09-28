@@ -101,7 +101,29 @@ class User(AbstractUser):
                 DEFAULT_FROM_EMAIL,
                 [self.email],
         )
+    
+    def get_pins(self):
+        """return a queryset with all user's pin."""
+        return self.pin_user.all()
 
+    def get_public_pins(self):
+        """return a queryset with all user's public pins."""
+        return self.pin_user.filter(policy=1)
+
+    def get_n_pins(self):
+        """get user n_pins."""
+        return self.get_pins().count()
+
+    def get_n_public_pins(self):
+        """get user n_public_pins."""
+        return self.get_public_pins().count()
+
+    def get_n_boards(self):
+        """get user n_boards."""
+        return self.board_set.all().count()
+
+    def get_n_public_boards(self):
+        return self.board_set.filter(policy=1).count()
 
     def save(self, **kwargs):
         """Make a unique slug from username then save."""

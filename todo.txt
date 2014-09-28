@@ -85,7 +85,7 @@
 #    - test user n_boards counter
 #    - test user n_pins counter
 #    - test resource n_pins counter
-    - synchro user n_public_pins and n_public_boards
+#    - synchro user n_public_pins and n_public_boards
     - split settings.py
     - mail registration to user
 #    - test create_pin new algo

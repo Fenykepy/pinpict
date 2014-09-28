@@ -439,6 +439,7 @@ class PinCreationTest(TestCase):
         self.assertEqual(resource.n_pins, 1)
         # assert user n_pins has been updated
         self.assertEqual(pins[0].pin_user.n_pins, 1)
+        self.assertEqual(pins[0].pin_user.n_public_pins, 1)
         # assert board n_pins has been updated
         self.assertEqual(pins[0].board.n_pins, 1)
         # assert resource_file exists
@@ -521,6 +522,7 @@ class PinCreationTest(TestCase):
         self.assertEqual(resource.n_pins, 2)
         # assert user n_pins has been updated
         self.assertEqual(pins[0].pin_user.n_pins, 2)
+        self.assertEqual(pins[0].pin_user.n_public_pins, 2)
         # assert board n_pins has been updated
         self.assertEqual(pins[0].board.n_pins, 2)
 
@@ -561,6 +563,7 @@ class PinCreationTest(TestCase):
         self.assertEqual(resource.n_pins, 2)
         # assert user n_pins has been updated
         self.assertEqual(pins[0].pin_user.n_pins, 2)
+        self.assertEqual(pins[0].pin_user.n_public_pins, 2)
         # assert board n_pins has been updated
         self.assertEqual(pins[0].board.n_pins, 2)
 
@@ -645,6 +648,7 @@ class PinCreationTest(TestCase):
         self.assertEqual(resource.n_pins, 1)
         # assert user n_pins has been updated
         self.assertEqual(pins[0].pin_user.n_pins, 1)
+        self.assertEqual(pins[0].pin_user.n_public_pins, 1)
         # assert board n_pins has been updated
         self.assertEqual(pins[0].board.n_pins, 1)
         # assert resource file exists
@@ -687,6 +691,7 @@ class PinCreationTest(TestCase):
         self.assertEqual(resource.n_pins, 2)
         # assert user n_pins has been updated
         self.assertEqual(pins[0].pin_user.n_pins, 2)
+        self.assertEqual(pins[0].pin_user.n_public_pins, 2)
         # assert board n_pins has been updated
         self.assertEqual(pins[0].board.n_pins, 2)
 
@@ -934,6 +939,7 @@ class PinDeleteTest(TestCase):
         
         user = User.objects.get(pk=1)
         self.assertEqual(user.n_pins, 0)
+        self.assertEqual(user.n_public_pins, 0)
 
         board = Board.objects.get(pk=1)
         self.assertEqual(board.n_pins, 0)
