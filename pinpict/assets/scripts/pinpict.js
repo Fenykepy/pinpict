@@ -59,7 +59,7 @@ $(document).ready(function () {
                     // 403 status code are not in errors handler…
                     pict = new Image();
                     pict.src = img.attr('src');
-                    if (pict.width == 0 || pict.height == 0) {
+                    if (pin.attr('id') != 'create-pin' && (pict.width == 0 || pict.height == 0)) {
                         // error (type 403 for exemple)
                         // remove error pin
                         pin.remove();
