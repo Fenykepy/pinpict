@@ -95,6 +95,8 @@
 #    - test create_pin new algo
         - change url in download test for a local url
 #    - mv pin to final destination in ResourceFactory.make_resource_from_file
+    
+#    - in case of 404 of one image, they other stay hidden in js script
 
 
 ==== JavaScript ====
