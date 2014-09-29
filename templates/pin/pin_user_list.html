@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+{{ board.title }} on Pinpict
+{% endblock %}
+
+{% block body %}
+{% spaceless %}
+<section id="pins">
+<div id="user-wrapper">
+<article id="user">
+    {% if owner.avatar %}
+    <img src="{{ MEDIA_URL }}{{ owner.avatar }}" alt="{{ owner.username }}" />
+    {% else %}
+    <img src="{% static 'images/structure/default_avatar.png' %}" alt="{{ owner.username }}" />
+    {% endif %}
+    {% if owner.first_name or owner.last_name %}
+        <h1>{{ owner.first_name }} {{ owner.last_name }}</h1>
+    {% else %}
+        <h1>{{ owner.username }}</h1>
+    {% endif %}
+    <hr />
+    {% if owner.website %}
+    <div class="user-website"><a href="{{ owner.website }}" target="_blank">{{ owner.website }}</a></div>
+    {% endif %}
+    <ul>
+        <li><a href="{% url "boards_list" owner.slug %}"><span class="number">{{ owner.n_public_boards }}</span></br><span class="title">Board{{ owner.n_public_boards|pluralize }}</span></a></li>
+        <li class="selected"><a href=""><span class="number">{{ owner.n_public_pins }}</span></br><span class="title">Pin{{ owner.n_public_pins|pluralize }}</span></a></li>
+    </ul>
+</article>
+</div>
+{% for pin in pins %}
+<article class="pin">
+    <div class="buttons-wrapper">
+    {% if owner == user %}
+        <a href="{% url 'update_pin' pin.pk %}" title="Edit pin"><button class="edit">Edit</button></a>
+    {% endif %}
+    <form method="post" action="{% url "create_pin" %}">
+        {% csrf_token %}
+        <input type="hidden" name="pin" value="{{ pin.pk }}" />
+        <input type="submit" value="Pin it" class="pinit"/>
+    </form>
+    <a href="{% url "pin_view" pin.pk %}" class="pin-link"><img src="{{ MEDIA_URL }}previews/236/{{ pin.resource.previews_path }}" alt="" /></a>
+    </div>
+    <p class="pin-description">
+    {{ pin.description }}
+    </p>
+    <footer>
+    {% if pin.source_domain %}
+     <a href="{{ pin.source }}" target="_blank">
+         <span>Pinned from</span><br />
+       {{ pin.source_domain }}
+    </a>
+    {% else %}
+    <a href=""><span>Uploaded to Pin Pict</span></a>
+    {% endif %}
+    </footer>
+</article>
+{% endfor %}
+{% endspaceless %}
+</section>
+{% endblock body %}

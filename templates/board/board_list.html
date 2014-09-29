@@ -25,7 +25,7 @@
     {% spaceless %}
     <ul>
         <li class="selected"><a href=""><span class="number">{{ owner.n_public_boards }}</span></br><span class="title">Board{{ owner.n_public_boards|pluralize }}</span></a></li>
-        <li><a href=""><span class="number">{{ owner.n_public_pins }}</span></br><span class="title">Pin{{ owner.n_public_pins|pluralize }}</span></a></li>
+        <li><a href="{% url "user_pins" owner.slug %}"><span class="number">{{ owner.n_public_pins }}</span></br><span class="title">Pin{{ owner.n_public_pins|pluralize }}</span></a></li>
     </ul>
     {% endspaceless %}
 </article>

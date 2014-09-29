@@ -20,7 +20,7 @@ from pin.forms import PinForm, UploadPinForm, PinUrlForm, DownloadPinForm,\
 from pin.utils import get_sha1_hexdigest, scan_html_for_picts
 
 
-class ListPins(ListView):
+class ListBoardPins(ListView):
     """List all pins of a board."""
     model = Pin
     context_object_name = 'pins'
@@ -44,8 +44,27 @@ class ListPins(ListView):
         return self.board.pin_set.all()
 
     def get_context_data(self, **kwargs):
-        context = super(ListPins, self).get_context_data(**kwargs)
+        context = super(ListBoardPins, self).get_context_data(**kwargs)
         context['board'] = self.board
+        context['owner'] = self.user
+
+        return context
+
+
+
+class ListUserPins(ListView):
+    """List all pins of a user."""
+    model = Pin
+    context_object_name = 'pins'
+    template_name = 'pin/pin_user_list.html'
+
+    def get_queryset(self):
+        self.user = get_object_or_404(User, slug=self.kwargs['user'])
+
+        return self.user.pin_user.filter(policy=1).order_by('-date_created')
+
+    def get_context_data(self, **kwargs):
+        context = super(ListUserPins, self).get_context_data(**kwargs)
         context['owner'] = self.user
 
         return context
@@ -66,8 +85,6 @@ class PinView(DetailView):
 
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
-
-
 
 
 

@@ -25,6 +25,7 @@
     <button type="button">Edit</button>
     </a>
     {% endif %}
+    <a id="back-to-board" href="{% url "board_view" owner.slug pin.board.slug %}" title="Back to board"><span class="accessibility-text">back to board</span></a>
 </header>
 {# !!! look to add a lightbox link here, or a link to full image, in template or not #}
 {% if pin.source %}

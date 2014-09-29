@@ -9,7 +9,7 @@ from django.conf.urls.static import static
 from board.views import *
 from user.views import LoginView, RegistrationView, ProfilView, \
         PasswordView, RecoveryView
-from pin.views import ListPins
+from pin.views import ListBoardPins, ListUserPins
 
 admin.autodiscover()
 
@@ -41,6 +41,9 @@ urlpatterns = patterns('',
     ## password changement
     url(r'^profil/password/$', login_required(PasswordView.as_view()), name='user_password'),
 
+    ## user pins list
+    url(r'^(?P<user>[-\w]+)/pins/$',
+        ListUserPins.as_view(), name='user_pins'),
 
     ## home page
     url(r'^$', 'pinpict.views.home', name='home'),
@@ -63,7 +66,7 @@ urlpatterns = patterns('',
 
     ## pin list
     url(r'^(?P<user>[-\w]+)/(?P<board>[-\w]+)/$',
-        ListPins.as_view(), name='board_view'),
+        ListBoardPins.as_view(), name='board_view'),
 
     ## board update
     url(r'^(?P<user>[-\w]+)/(?P<board>[-\w]+)/edit/$',

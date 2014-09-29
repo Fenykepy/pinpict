@@ -1086,7 +1086,7 @@ class PinViewTest(TestCase):
 
 
 
-class PinList(TestCase):
+class ListBoardPins(TestCase):
     """Pin list test class."""
 
     def setUp(self):
