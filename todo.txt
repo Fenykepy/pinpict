@@ -19,7 +19,7 @@
 #        - synchronized it with board's one (with has_changed in board save function)
 #        - test it
 #    - user list_pins (publics or publics and privates)
-        - add "pins" as forbidden slug for boards
+#        - add "pins" as forbidden slug for boards
     - add some kind of sitemap
     - add pagination by 300 for user list_pins
 #    - registration form
