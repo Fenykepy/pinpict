@@ -124,12 +124,13 @@ $(document).ready(function () {
         // on img load
         img.one('load', function() {
             // append width and height to footer
+            console.log(pict.width);
             article.find('span.width').append(pict.width);
             article.find('span.height').append(pict.height);
         });
         // if pict is already loaded, trigger load event
         if (pict.complete) {
-            pict.trigger('load');
+            img.trigger('load');
         }
     });
 });

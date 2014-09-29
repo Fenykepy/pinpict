@@ -30,6 +30,7 @@
 #    - profil page
     - add link to navigate between pin views
     - add an article under pin_view with preview of other pins from board.
+    - add a field with 0-5 owner rating
 #    - redirect to pin_list and not board_list after pin_update or create cancel
 #    - redirect to pin_list and not board_list after pin_delete cancel
     
@@ -107,6 +108,7 @@
     - sort of boards by drag and drop
     - ajax forms
     - add a new board text input in board select of PinForm to add a new board on the go
+    - errors with width and height display in pin_find
 #   - replace unfound previews with color image -> done in html / css
 #   - justify pins
 #       - justify again when window size changes
