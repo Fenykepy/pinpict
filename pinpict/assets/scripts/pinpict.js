@@ -51,11 +51,24 @@ $(document).ready(function () {
                 var img = pin.find('img').eq(0);
                 // if pin has no img (#create-pin)
                 if (img.length <= 0) {
-                    console.log('no img');
                     return justify();
                 }
 
                 function justify () {
+                    // create image object to check width and height and see if it has correctly loaded :
+                    // 403 status code are not in errors handler…
+                    pict = new Image();
+                    pict.src = img.attr('src');
+                    if (pict.width == 0 || pict.height == 0) {
+                        // error (type 403 for exemple)
+                        // remove error pin
+                        pin.remove();
+                        // reload remaining pin elements
+                        pins = $('article.pin');
+                        // continue loop without incrementing index
+                        return next();
+                    }
+
                     pin.css('position', 'absolute').css('left', pos_colons[colon].left)
                         .css('top', pos_colons[colon].height).css('display', 'block')
                         .css('visibility', 'visible');
@@ -66,8 +79,18 @@ $(document).ready(function () {
                     return next();
                 }
                 
+                function justify_errors () {
+                    // remove error pin
+                    pin.remove();
+                    // reload remaining pin elements
+                    pins = $('article.pin');
+                    // continue loop without incrementing index
+                    return next();
+                }
                 // on img load
                 img.one('load', justify);
+                // on img error
+                img.on('error', justify_errors);
                 // if img is already loaded, trigger load event
                 if (img[0].complete) {
                     //console.log('trigger');
