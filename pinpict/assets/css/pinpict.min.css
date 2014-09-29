@@ -105,7 +105,7 @@ article.pin form,article.pin-standalone form{margin:0;padding:0}
 article.pin button,article.pin-standalone button,article.pin input[type="submit"],article.pin-standalone input[type="submit"]{position:absolute;display:none;width:auto;top:8px;margin:0;height:30px}
 article.pin button.pinit,article.pin-standalone button.pinit,article.pin input.pinit,article.pin-standalone input.pinit{right:8px}
 article.pin button.edit,article.pin-standalone button.edit{left:8px;color:#000;border:none;background:#f7f7f7;background:-webkit-linear-gradient(#f7f7f7, #ccc);background:-moz-linear-gradient(#f7f7f7, #ccc);background:-ms-linear-gradient(#f7f7f7, #ccc);background:-o-linear-gradient(#f7f7f7, #ccc);background:linear-gradient(#f7f7f7, #ccc)}
-article.pin p.pin-description,article.pin-standalone p.pin-description{border-top:1px solid #505050;padding:7px 14px;font-size:.9em}
+article.pin p.pin-description,article.pin-standalone p.pin-description{border-top:1px solid #505050;padding:10px 14px;font-size:.9em;line-height:1.4em}
 article.pin footer,article.pin-standalone footer{border-top:1px solid #505050;font-size:.8em}article.pin footer span,article.pin-standalone footer span{font-weight:bold;color:#000}
 article.pin footer p.size,article.pin-standalone footer p.size{padding:7px 14px;color:#222;background-color:#585858;text-align:center}article.pin footer p.size span,article.pin-standalone footer p.size span{font-weight:normal}
 article.pin footer a,article.pin-standalone footer a{padding:7px 14px;display:block;height:100%;color:#222;line-height:17px}article.pin footer a:hover,article.pin-standalone footer a:hover,article.pin footer a:focus,article.pin-standalone footer a:focus,article.pin footer a:hover,article.pin-standalone footer a:hover{background-color:#585858;color:#222}
@@ -116,6 +116,9 @@ article.pin-standalone{float:right;margin:0 0 0 15px}
 section#pin{padding-bottom:50px}section#pin article{background:#666;box-shadow:0 0 8px #000;border:1px solid #222;border-radius:4px;width:736px;margin:50px auto 14px;overflow:hidden}section#pin article header{height:60px;padding:0 8px;border-bottom:1px solid #313131}section#pin article header form{margin:0;float:right}
 section#pin article header button,section#pin article header input[type="submit"]{width:80px;margin-top:10px;height:40px}
 section#pin article a:hover div#image-wrapper,section#pin article a:focus div#image-wrapper,section#pin article a:active div#image-wrapper{background-color:#585858}
+section#pin article a#back-to-board{position:fixed;display:block;top:80px;right:0;height:80px;width:80px;box-shadow:0 0 8px #222;border:1px solid #222;background-color:#404040;border-radius:4px 0 0 4px}section#pin article a#back-to-board:hover,section#pin article a#back-to-board:focus,section#pin article a#back-to-board:active{background-color:#585858}
+section#pin article a#back-to-board:before{content:"";position:absolute;height:0;width:0;border-left:25px solid #222;border-top:20px solid transparent;border-bottom:20px solid transparent;right:15px;top:50%;margin-top:-18px}
+section#pin article a#back-to-board:after{content:"";display:block;height:10px;width:28px;position:absolute;top:50%;margin-top:-3px;right:30px;background-color:#222}
 section#pin article div#image-wrapper{border-bottom:1px solid #313131;background-color:#474747;text-align:center}
 section#pin article img{margin:8px 5px;max-width:726px}
 section#pin article p.pin-description{padding:18px}
