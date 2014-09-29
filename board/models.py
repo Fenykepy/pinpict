@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
+from pinpict.settings import BOARD_RESERVED_WORDS
 from user.models import User, has_changed
 from board.slug import unique_slugify
 
@@ -63,6 +64,9 @@ class Board(models.Model):
     def save(self, **kwargs):
         """Make a unique slug for from title, then save."""
         slug = '%s' % (self.title)
+        # ensure reserved words are not used as board slug:
+        if slug in BOARD_RESERVED_WORDS:
+            slug = slug + '-1'
         unique_slugify(self, slug,
                 queryset=Board.objects.filter(user=self.user))
 

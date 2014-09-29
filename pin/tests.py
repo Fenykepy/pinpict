@@ -1085,9 +1085,50 @@ class PinViewTest(TestCase):
         self.assertEqual(response.context['pin'].pk, 3)
 
 
+class ListUserPins(TestCase):
+    """User pin list test class."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # create resources(self)
+        create_test_resources(self)
+        # create boards
+        create_test_boards(self)
+        # create private boards
+        create_test_private_boards(self)
+        # create pins
+        create_test_pins(self)
+        # create private pins
+        create_test_private_pins(self)
+        # launch client
+        self.client = Client()
+
+
+    def test_urls(self):
+        urls = [
+            {
+                'url': '/flr/pins/',
+                'status': 200,
+                'template': 'pin/pin_user_list.html',
+            },
+            {
+                'url': '/tartempion/pins/',
+                'status': 404,
+                'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+
+    def test_pin_list_context(self):
+        """Assert context shows good pins."""
+        response = self.client.get('/flr/pins/')
+        self.assertEqual(len(response.context['pins']), 1)
+
+
 
 class ListBoardPins(TestCase):
-    """Pin list test class."""
+    """Board pin list test class."""
 
     def setUp(self):
         # create users

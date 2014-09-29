@@ -41,6 +41,11 @@ RESERVED_WORDS = (
         'recovery',
 )
 
+# words that can't be used as board name
+BOARD_RESERVED_WORDS = (
+        'pins',
+)
+
 # max size for avatar img (side in px)
 # if uploaded file is bigger, it will be resized.
 AVATAR_MAX_SIZE = 150

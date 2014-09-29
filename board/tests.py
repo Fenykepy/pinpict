@@ -4,6 +4,7 @@ from user.models import User
 from user.tests import create_test_users, login, test_urls
 from board.models import Board
 from pin.models import Pin, Resource
+from pinpict.settings import BOARD_RESERVED_WORDS
 
 
 
@@ -145,6 +146,26 @@ class BoardCreationTest(TestCase):
         user = User.objects.get(username='flr')
         self.assertEqual(user.n_boards, 1)
         self.assertEqual(user.n_public_boards, 0)
+
+
+    def test_public_board_creation_with_reserved_name(self):
+        # login with user
+        login(self, self.user)
+
+        for word in BOARD_RESERVED_WORDS:
+            response = self.client.post('/board/create/', {
+                'title': word,
+            }, follow = True)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.templates[0].name,
+                'board/board_list.html'
+            )
+            board = Board.objects.get(title=word)
+            if board.slug == word:
+                result = True
+            else:
+                result = False
+            self.assertEqual(result, False)
 
 
 
