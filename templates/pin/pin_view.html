@@ -27,6 +27,8 @@
     {% endif %}
     <a id="back-to-board" href="{% url "board_view" owner.slug pin.board.slug %}" title="Back to board"><span class="accessibility-text">back to board</span></a>
 </header>
+<a href="" id="previous-pin" title="Previous pin"><div><span class="accessibility-text">previous pin</span></div></a>
+<a href="" id="next-pin" title="Next pin"><div><span class="accessibility-text">next pin</span></div></a>
 {# !!! look to add a lightbox link here, or a link to full image, in template or not #}
 {% if pin.source %}
     {# link to origin url #}
