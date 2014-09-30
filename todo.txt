@@ -20,7 +20,7 @@
 #        - test it
 #    - user list_pins (publics or publics and privates)
 #        - add "pins" as forbidden slug for boards
-    - add some kind of sitemap
+    - add some kind of sitemap for bots index
     - add pagination by 300 for user list_pins
 #    - registration form
 #    - password recovery
@@ -29,6 +29,7 @@
     - default user avatar « PP »
 #    - profil page
 #    - add link to navigate between pin views
+#    - add an article nder pin_view with a link to user pin was added via.
     - add an article under pin_view with preview of other pins from board.
     - add a field with 0-5 owner rating
 #    - redirect to pin_list and not board_list after pin_update or create cancel
@@ -98,6 +99,8 @@
 #    - mv pin to final destination in ResourceFactory.make_resource_from_file
     
 #    - in case of 404 of one image, they other stay hidden in js script
+#    - user with no board sees all boards (which doesn't belong to him) in select
+    - user with no board see 404 instead of error messages in PinForm with only pin_description
 
 
 ==== JavaScript ====

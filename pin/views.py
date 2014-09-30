@@ -20,6 +20,8 @@ from pin.forms import PinForm, UploadPinForm, PinUrlForm, DownloadPinForm,\
 from pin.utils import get_sha1_hexdigest, scan_html_for_picts
 
 
+
+
 class ListBoardPins(ListView):
     """List all pins of a board."""
     model = Pin
@@ -131,11 +133,13 @@ def create_pin(request):
             request.session['pin_create_source'] = form.cleaned_data['url']
             request.session['pin_create_src'] = form.cleaned_data['src']
             pin_form = PinForm()
+            pin_form.fields["board"].queryset = Board.objects.filter(user=request.user)
             pin_form.initial = {}
             if 'description' in form.cleaned_data:
                 pin_form.initial['description'] = form.cleaned_data['description']
             if request.session.get('last_visited_board'):
                 pin_form.initial['board'] = request.session['last_visited_board']
+
 
             return render(request, 'pin/pin_create.html', {
                 'form': pin_form,
@@ -156,6 +160,7 @@ def create_pin(request):
                 request.session['pin_create_added_via'] = pin.pin_user.pk
 
             pin_form = PinForm()
+            pin_form.fields["board"].queryset = Board.objects.filter(user=request.user)
             pin_form.initial = {}
             pin_form.initial['description'] = pin.description
             if request.session.get('last_visited_board'):
@@ -167,8 +172,7 @@ def create_pin(request):
                 'submit': 'Pin it',
             })
 
-    if (request.method == 'POST' and 'board' in request.POST
-            and 'description' in request.POST):
+    if (request.method == 'POST' and 'description' in request.POST):
         form = PinForm(request.POST)
         if form.is_valid():
             pin = form.save(commit=False)
@@ -251,6 +255,7 @@ def create_pin(request):
             raise Http404
             
         pin_form = PinForm()
+        pin_form.fields["board"].queryset = Board.objects.filter(user=request.user)
         pin_form.initial = {}
         if request.session.get('last_visited_board'):
             pin_form.initial['board'] = request.session['last_visited_board']
@@ -290,6 +295,8 @@ class UpdatePin(UpdateView, AjaxableResponseMixin):
         form = self.get_form(form_class)
         # ensure that only user's boards are listed
         form.fields["board"].queryset = Board.objects.filter(user=request.user)
+
+        
         return self.render_to_response(self.get_context_data(form=form))
 
 

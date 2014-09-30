@@ -63,20 +63,40 @@
 
 <article class="user-compact">
     {% if owner.avatar %}
-        <a href="{% url "boards_list" owner.username %}"><img src="{{ MEDIA_URL }}{{ owner.avatar }}" /></a>
+        <a href="{% url "boards_list" owner.slug %}"><img src="{{ MEDIA_URL }}{{ owner.avatar }}" /></a>
     {% else %}
-        <a href="{% url "boards_list" owner.username %}"><img src="{% static 'images/structure/default_avatar.png' %}" /></a>
+        <a href="{% url "boards_list" owner.slug %}"><img src="{% static 'images/structure/default_avatar.png' %}" /></a>
     {% endif %}
-    <p><a href="{% url "boards_list" owner.username %}">
+    <p><a href="{% url "boards_list" owner.slug %}">
         <span>Added by</span><br /><strong>
         {% if owner.first_name or owner.last_name %}
         {{ owner.first_name }} {{ owner.last_name }}
         {% else %}
         {{ owner.username }}
         {% endif %}</strong></a> <span class="date">&#149; {{ pin.date_created|naturaltime }}</span></p>
-    
-
 </article>
+
+
+{% if pin.added_via %}
+<article class="user-compact">
+    {% with via=pin.added_via %}
+    {% if via.avatar %}
+        <a href="{% url "boards_list" via.slug %}"><img src="{{ MEDIA_URL }}{{ via.avatar }}" /></a>
+    {% else %}
+        <a href="{% url "boards_list" via.slug %}"><img src="{% static 'images/structure/default_avatar.png' %}" /></a>
+    {% endif %}
+    <p><a href="{% url "boards_list" via.slug %}">
+        <span>Added via</span><br /><strong>
+        {% if via.first_name or via.last_name %}
+        {{ via.first_name }} {{ via.last_name }}
+        {% else %}
+        {{ via.username }}
+        {% endif %}</strong></a></p>
+    {% endwith %}
+</article>
+{% endif %}
+
+
 </section>
 {% endwith %}
 {% endblock %}

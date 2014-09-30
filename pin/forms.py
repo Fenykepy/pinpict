@@ -3,7 +3,7 @@ from django import forms
 from board.forms import Form, ModelForm
 
 from pin.models import Pin, Resource
-
+from board.models import Board
 
 class PinForm(ModelForm):
     """Pin creation and edition form."""
@@ -14,7 +14,6 @@ class PinForm(ModelForm):
     class Meta:
         model = Pin
         fields = ('board', 'description')
-
 
 
 class UploadPinForm(Form):

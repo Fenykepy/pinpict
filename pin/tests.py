@@ -503,7 +503,7 @@ class PinCreationTest(TestCase):
         self.assertEqual(self.client.session['pin_create_source'], self.pin.source)
         self.assertEqual(hasattr(self.client.session, 'pin_create_added_via'), False)
         # assert no other users' boards are in select
-        self.assertEqual(response.context['form'].fields['board']._queryset.count(), 2)
+        self.assertEqual(response.context['form'].fields['board']._queryset.count(), 1)
         self.assertEqual(response.context['form'].fields['board']._queryset[0].pk, 1)      
         # assert ressource is in context
         self.assertEqual(response.context['resource'], self.resource)
@@ -544,7 +544,7 @@ class PinCreationTest(TestCase):
         self.assertEqual(self.client.session['pin_create_source'], self.pin2.source)
         self.assertEqual(self.client.session['pin_create_added_via'], self.user2.pk) 
         # assert no other users' boards are in select
-        self.assertEqual(response.context['form'].fields['board']._queryset.count(), 2)
+        self.assertEqual(response.context['form'].fields['board']._queryset.count(), 1)
         self.assertEqual(response.context['form'].fields['board']._queryset[0].pk, 1)           
         # assert ressource is in context
         self.assertEqual(response.context['resource'], self.pin2.resource)
