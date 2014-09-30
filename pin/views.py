@@ -84,6 +84,22 @@ class PinView(DetailView):
                 raise Http404
 
         context = self.get_context_data(object=self.object)
+        # get prev and next links
+        board_pins = list(self.object.board.pin_set.values_list('id'))
+        index = board_pins.index((self.object.id,))
+        length = len(board_pins)
+
+        if index == 0:
+            context['prev'] = False
+        else:
+            context['prev'] = board_pins[index - 1][0]
+        
+        next = index + 1
+        if next == length:
+            context['next'] = False
+        else:
+            context['next'] = board_pins[next][0]
+
         return self.render_to_response(context)
 
 

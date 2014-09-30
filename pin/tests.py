@@ -1065,6 +1065,47 @@ class PinViewTest(TestCase):
         """Assert context shows good pin."""
         response = self.client.get('/pin/1/')
         self.assertEqual(response.context['pin'].pk, 1)
+        # test links to next and previous pins
+        self.assertEqual(response.context['next'], False)
+        self.assertEqual(response.context['prev'], False)
+
+
+    def test_prev_next_links(self):
+        """Assert prev and next links are ok."""
+        pin2 = Pin(
+                resource = self.resource,
+                board = self.board,
+                description = 'Test pin for first board',
+                pin_user = self.user,
+                policy = self.board.policy
+        )
+        pin2.save()
+        pin3 = Pin(
+                resource = self.resource,
+                board = self.board,
+                description = 'Test pin for first board',
+                pin_user = self.user,
+                policy = self.board.policy
+        )
+        pin3.save()
+
+        response = self.client.get('/pin/1/')
+        # first pin, must have a next link but no prev one
+        self.assertEqual(response.context['next'], 5)
+        self.assertEqual(response.context['prev'], False)
+
+        response = self.client.get('/pin/5/')
+        # middle pin, must have next and prev link
+        self.assertEqual(response.context['next'], 6)
+        self.assertEqual(response.context['prev'], 1)
+
+        response = self.client.get('/pin/6/')
+        # last pin, must have prev link but no next one
+        self.assertEqual(response.context['next'], False)
+        self.assertEqual(response.context['prev'], 5)
+
+
+
 
 
     def test_logged_in_pin_view(self):
