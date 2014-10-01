@@ -67,9 +67,7 @@
     <footer>
     {% if pin.source_domain %}
      <a href="{{ pin.source }}" target="_blank">
-         <span>Pinned from</span><br />
-       {{ pin.source_domain }}
-    </a>
+         <span>Pinned from</span><br />{{ pin.source_domain }}</a>
     {% else %}
     <a href=""><span>Uploaded to Pin Pict</span></a>
     {% endif %}

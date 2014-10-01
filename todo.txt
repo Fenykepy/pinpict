@@ -136,7 +136,7 @@
 #   - add "*:required fields" where it misses
     - review create_pin margin and padding to ensure img is at right place
 #    - put bigger line-height in pin descriptions
-    - add a display block to source link under pins (if url is long, it overflows)
+#    - add a display block to source link under pins (if url is long, it overflows)
 
 ==== Media creation ====
     - create a lock logo for private boards
