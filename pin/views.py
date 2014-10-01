@@ -171,7 +171,8 @@ def create_pin(request):
                 'resource': pin.resource,
                 'submit': 'Pin it',
             })
-
+    
+    ## final post to create the pin itself
     if (request.method == 'POST' and 'description' in request.POST):
         form = PinForm(request.POST)
         if form.is_valid():
@@ -193,7 +194,7 @@ def create_pin(request):
                 del request.session['pin_create_added_via']
             # set source
             if request.session.get('pin_create_source'):
-                pin.source = request.session['pin_create_source']
+                pin.source = request.session['pin_create_source'][:2000]
                 del request.session['pin_create_source']
             # set resource
             if request.session.get('pin_create_resource'):
@@ -239,19 +240,19 @@ def create_pin(request):
                 }))
     
     if request.method == 'GET':
-        # request arrive from upload pin with new uploaded file
+        ## request arrive from upload pin with new uploaded file
         if request.session.get('pin_create_tmp_resource'):
             src = MEDIA_URL + request.session['pin_create_tmp_resource']
-            del request.session['pin_create_tmp_resource']
-        # request arrive from upload pin with no uploaded file (it exists)
+        ## request arrive from upload pin with no uploaded file (it exists)
         elif request.session.get('pin_create_resource'):
             resource = Resource.objects.get(
                 pk = request.session['pin_create_resource']
             )
             src = MEDIA_URL + 'previews/236/' + resource.previews_path
             del request.session['pin_create_resource']
-        # request is error
+        ## request is error
         else:
+            # here should be some invalid form (no board in select or no description) handler !!!
             raise Http404
             
         pin_form = PinForm()

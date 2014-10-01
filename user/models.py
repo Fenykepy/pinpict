@@ -43,42 +43,49 @@ class User(AbstractUser):
     website = models.URLField(
             null=True,
             blank=True,
+            max_length=2000,
             verbose_name="Site web",
             help_text="A link to your website."
     )
     facebook_link = models.URLField(
             null=True,
             blank=True,
+            max_length=2000,
             verbose_name="Facebook",
             help_text="A link to your facebook page."
     )
     flickr_link = models.URLField(
             null=True,
             blank=True,
+            max_length=2000,
             verbose_name="Flickr",
             help_text="A link to your flickr page."
     )
     twitter_link = models.URLField(
             null=True,
             blank=True,
+            max_length=2000,
             verbose_name="Twitter",
             help_text="A link to your twitter page."
     )
     gplus_link = models.URLField(
             null=True,
             blank=True,
+            max_length=2000,
             verbose_name="Google +",
             help_text="A link to your google + page."
     )
     pinterest_link = models.URLField(
             null=True,
             blank=True,
+            max_length=2000,
             verbose_name="Pinterest",
             help_text="A link to your pinterest page."
     )
     vk_link = models.URLField(
             null=True,
             blank=True,
+            max_length=2000,
             verbose_name="Vkontakte",
             help_text="A link to your vkontakte page."
     )

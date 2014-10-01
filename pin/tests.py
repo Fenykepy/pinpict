@@ -419,10 +419,10 @@ class PinCreationTest(TestCase):
         self.assertEqual(self.client.session['pin_create_tmp_resource'], tmp)
  
         # post image file
-        #response = post_image(follow=True)
-        #self.assertEqual(response.status_code, 200)
-        #self.assertEqual(response.templates[0].name, 'pin/pin_create.html')
-        #self.assertEqual(response.context['src'], '/media/tmp/f5fbd1897ef61b69f071e36295342571e81017b9')
+        response = post_image(follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'pin/pin_create.html')
+        self.assertEqual(response.context['src'], '/media/tmp/f5fbd1897ef61b69f071e36295342571e81017b9')
 
         # post pin
         response = self.client.post('/pin/create/', {

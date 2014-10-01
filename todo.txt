@@ -101,6 +101,9 @@
 #    - in case of 404 of one image, they other stay hidden in js script
 #    - user with no board sees all boards (which doesn't belong to him) in select
     - user with no board see 404 instead of error messages in PinForm with only pin_description
+#    - error in case of long urls :
+#        https://fbcdn-sphotos-b-a.akamaihd.net/hphotos-ak-xfp1/v/t1.0-9/10710704_834679179910255_1916233767044535325_n.jpg?oh=9c75ad244b3976e2599513ac5cd56010&oe=54C59DA2&__gda__=1422785067_310d8189483839c6f688b4dc22257190
+#        or not, it fails with upload too :( works with sqlite
 
 
 ==== JavaScript ====
@@ -133,6 +136,7 @@
 #   - add "*:required fields" where it misses
     - review create_pin margin and padding to ensure img is at right place
 #    - put bigger line-height in pin descriptions
+    - add a display block to source link under pins (if url is long, it overflows)
 
 ==== Media creation ====
     - create a lock logo for private boards

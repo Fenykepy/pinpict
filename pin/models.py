@@ -54,7 +54,7 @@ class Resource(models.Model):
             storage=ResourceFileSystemStorage()
     )
     source_file_url = models.URLField(blank=True, null=True,
-        verbose_name="Source of original picture")
+        verbose_name="Source of original picture", max_length=2000)
     n_pins = models.PositiveIntegerField(default=0,
         verbose_name="Board number")
     width = models.PositiveIntegerField(default=0,
@@ -206,7 +206,7 @@ class Pin(models.Model):
     source_domain = models.CharField(max_length=254, blank=True, null=True,
             verbose_name="Domain pin comes from")
     source = models.URLField(null=True, blank=True,
-            verbose_name="Web page pin comes from")
+            verbose_name="Web page pin comes from", max_length=2000)
     description = models.TextField(verbose_name="Pin description")
     board = models.ForeignKey(Board)
     resource = models.ForeignKey(Resource)
@@ -216,6 +216,9 @@ class Pin(models.Model):
 
     def __str__(self):
         return "%s" % self.description
+
+    class Meta:
+        ordering = ['date_created']
 
     def save(self, **kwargs):
         """get domain from source, then save."""
@@ -274,7 +277,7 @@ class ResourceFactory(object):
         """
         # set up
         self.resource = Resource()
-        self.resource.source_file_url = url
+        self.resource.source_file_url = url[:2000]
         self.resource.user = user
         # get file from http
         return self._get_file_over_http(url)
