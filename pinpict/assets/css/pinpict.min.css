@@ -113,17 +113,21 @@ article.pin-standalone{float:right;margin:0 0 0 15px}
 #user-compact,.user-compact{height:60px}#user-compact img,.user-compact img{width:40px;height:40px}
 #user-compact h2,.user-compact h2{font-size:1.1em;font-weight:bold}#user-compact h2 a:hover,.user-compact h2 a:hover,#user-compact h2 a:focus,.user-compact h2 a:focus,#user-compact h2 a:active,.user-compact h2 a:active{color:#222}
 #user-compact button,.user-compact button{float:right;margin:13px 10px;width:auto}
-section#pin{padding-bottom:50px}section#pin article{background:#666;box-shadow:0 0 8px #000;border:1px solid #222;border-radius:4px;width:736px;margin:50px auto 14px;overflow:hidden}section#pin article header{height:60px;padding:0 8px;border-bottom:1px solid #313131}section#pin article header form{margin:0;float:right}
+section#pin{padding-bottom:50px}section#pin article{position:relative;background:#666;box-shadow:0 0 8px #000;border:1px solid #222;border-radius:4px;width:736px;margin:50px auto 14px}section#pin article header{height:60px;padding:0 8px;border-bottom:1px solid #313131}section#pin article header form{margin:0;float:right}
 section#pin article header button,section#pin article header input[type="submit"]{width:80px;margin-top:10px;height:40px}
 section#pin article a:hover div#image-wrapper,section#pin article a:focus div#image-wrapper,section#pin article a:active div#image-wrapper{background-color:#585858}
 section#pin article a#back-to-board{position:fixed;display:block;top:80px;right:0;height:80px;width:80px;box-shadow:0 0 8px #222;border:1px solid #222;background-color:#404040;border-radius:4px 0 0 4px}section#pin article a#back-to-board:hover,section#pin article a#back-to-board:focus,section#pin article a#back-to-board:active{background-color:#585858}
 section#pin article a#back-to-board:before{content:"";position:absolute;height:0;width:0;border-left:25px solid #222;border-top:20px solid transparent;border-bottom:20px solid transparent;right:15px;top:50%;margin-top:-18px}
 section#pin article a#back-to-board:after{content:"";display:block;height:10px;width:28px;position:absolute;top:50%;margin-top:-3px;right:30px;background-color:#222}
+section#pin article a#previous-pin,section#pin article a#next-pin{display:block;position:absolute;top:0;bottom:0;width:55px}section#pin article a#previous-pin div,section#pin article a#next-pin div{visibility:hidden;width:45px}
+section#pin article a#previous-pin:hover div,section#pin article a#next-pin:hover div,section#pin article a#previous-pin:active div,section#pin article a#next-pin:active div,section#pin article a#previous-pin:focus div,section#pin article a#next-pin:focus div{visibility:visible;position:absolute;height:80px;width:45px;top:40%;border-radius:4px;background-color:#404040;box-shadow:0 0 8px #222;border:1px solid #222}
+section#pin article a#previous-pin{left:-55px}section#pin article a#previous-pin div{left:0}section#pin article a#previous-pin div:before{content:"";position:absolute;height:0;width:0;border-right:20px solid #222;border-top:20px solid transparent;border-bottom:20px solid transparent;left:10px;top:50%;margin-top:-18px}
+section#pin article a#next-pin{right:-55px}section#pin article a#next-pin div{right:0}section#pin article a#next-pin div:before{content:"";position:absolute;height:0;width:0;border-left:20px solid #222;border-top:20px solid transparent;border-bottom:20px solid transparent;right:10px;top:50%;margin-top:-18px}
 section#pin article div#image-wrapper{border-bottom:1px solid #313131;background-color:#474747;text-align:center}
 section#pin article img{margin:8px 5px;max-width:726px}
-section#pin article p.pin-description{padding:18px}
+section#pin article p.pin-description{padding:18px 25px;line-height:1.4em}
 section#pin article footer{border-top:1px solid #505050;font-size:.95em}section#pin article footer span{font-weight:bold;color:#000}
-section#pin article footer a{display:block;height:100%;padding:15px 25px;color:#222}section#pin article footer a:hover,section#pin article footer a:focus,section#pin article footer a:hover{background-color:#585858;color:#222}
+section#pin article footer a{display:block;height:100%;padding:15px 25px;color:#222;border-radius:0 0 4px 4px}section#pin article footer a:hover,section#pin article footer a:focus,section#pin article footer a:hover{background-color:#585858;color:#222}
 section#pin article.user-compact{margin-top:25px;height:auto;padding:15px}section#pin article.user-compact h2{margin-top:18px}
 section#pin article.user-compact img{height:60px;width:60px;margin:0 15px 0 0}
 section#pin article.user-compact p{line-height:1.4em;vertical-align:middle}
