@@ -334,9 +334,12 @@ class ResourceFactory(object):
         try:
             self.filepath, headers = urllib.request.urlretrieve(url)
         except:
+            print('error with urllib')
             return False
         # if file is not an image, return false
-        if not headers['Content-Type'] in self.ALLOWED_MIME_TYPE:
+        if not headers['Content-Type'].lower() in self.ALLOWED_MIME_TYPE:
+            print('file is not image type')
+            print(headers['Content-Type'])
             return False
         # else return file_path
         return self._get_file_sha1(self.filepath)
