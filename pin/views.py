@@ -213,6 +213,9 @@ def create_pin(request):
                 )
                 if resource:
                     pin.resource = resource
+                else:
+                    print('error: make resource from url didn\'t return a resource.')
+                    return False
                 del request.session['pin_create_src']
             elif request.session.get('pin_create_tmp_resource'):
                 # if resource is a temporary file
@@ -226,6 +229,7 @@ def create_pin(request):
 
                 del request.session['pin_create_tmp_resource']
             else:
+                print('return false')
                 # raise an resource error
                 return False
             
