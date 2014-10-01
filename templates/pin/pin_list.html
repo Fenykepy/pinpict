@@ -57,7 +57,7 @@
     <form method="post" action="{% url "create_pin" %}">
         {% csrf_token %}
         <input type="hidden" name="pin" value="{{ pin.pk }}" />
-        <input type="submit" value="Pin it" class="pinit"/>
+        <input type="submit" value="Pin it" class="pinit" title="Pin it ! file is {{ pin.resource.width }} x {{ pin.resource.height }}px" />
     </form>
     <a href="{% url "pin_view" pin.pk %}" class="pin-link"><img src="{{ MEDIA_URL }}previews/236/{{ pin.resource.previews_path }}" alt="" /></a>
     </div>
