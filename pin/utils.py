@@ -285,10 +285,17 @@ def scan_html_for_picts(url):
             r"\g<charset>", response['content-type'])
     # if charset in known charset… else charset = 'utf-8'
     if not charset in PYTHON_CODEC:
-        charset = 'utf-8'
+        print('extracted charset:')
+        print(charset)
+        print('response content-type:')
+        print(response['content-type'])
+        print('wrong charset, use utf-8')
+        for elem in response:
+            print('{}: {}'.format(elem, response[elem]))
 
+        charset = 'utf-8'
     
-    decoded = content.decode(charset)
+    decoded = content.decode(charset, errors='replace')
 
     split = url.split('//')
     # parse html
