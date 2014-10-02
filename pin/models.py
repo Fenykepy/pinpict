@@ -371,7 +371,23 @@ class ResourceFactory(object):
 
     def _get_image_type(self):
         """Return image type of self.filepath."""
-        return imghdr.what(self.filepath)
+        img = Image.open(self.filepath)
+        type = img.format
+        # in case of no result, try other way
+        if not type:
+            print('type: {}'.format(type))
+            type = imghdr.what(self.filepath)
+        # last solution, take actual extension
+        if not type:
+            print('type: {}'.format(type))
+            basename, ext = os.path.splitext(self.filepath)
+            type = ext.strip('.')
+        # else use default unknown ext
+        if not type:
+            print('type: {}'.format(type))
+            type = 'unknown'
+
+        return type.lower()
 
 
     def _get_tmp_resource_path(self):
@@ -390,6 +406,7 @@ class ResourceFactory(object):
             return self.filepath
         # create type before opening file
         type = self._get_image_type()
+        print(type)
         with open(self.filepath, 'rb') as f:
             file = ImageFile(f)
             self.resource.source_file = file

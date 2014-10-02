@@ -1,10 +1,11 @@
 ==== Errors : ====
 
 #http://www.fanpop.com/clubs/natalia-vodianova/images/11339609/title/d-spring-2010-paolo-roversi-photo
-http://www.npr.org/blogs/pictureshow/2009/07/avedons_performance.html
-
+#http://www.npr.org/blogs/pictureshow/2009/07/avedons_performance.html
+#http://www.florian-weiler.de/albums/alone-and-nowhere-1/    -> with pinning.
 
 ==== Not found : ====
 
 # http://fuckyeahpaoloroversi.tumblr.com/page/37
 http://www.avedonfoundation.org/#s=9&mi=2&pt=1&pi=10000&p=1&a=0&at=0
+http://www.chalets-charpente-menuiserie-mossaz.com/charpente.php
