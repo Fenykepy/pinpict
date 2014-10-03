@@ -331,11 +331,12 @@ class ResourceFactory(object):
         return file path otherwise.
         """
         # get file in tmp dir
-        try:
-            self.filepath, headers = urllib.request.urlretrieve(url)
-        except:
-            print('error with urllib')
-            return False
+        #try:
+        print(url)
+        self.filepath, headers = urllib.request.urlretrieve(url)
+        #except:
+        #    print('error with urllib')
+        #    return False
         # if file is not an image, return false
         if not headers['Content-Type'].lower() in self.ALLOWED_MIME_TYPE:
             print('file is not image type')

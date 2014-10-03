@@ -7,7 +7,8 @@ from django.core.files import File
 from django.core import mail
 
 from user.models import User
-from pinpict.settings import RESERVED_WORDS, BASE_DIR, MEDIA_ROOT, AVATAR_MAX_SIZE
+from pinpict.settings import RESERVED_WORDS, BASE_DIR, MEDIA_ROOT, AVATAR_MAX_SIZE, \
+        ADMINS
 
 
 
@@ -255,6 +256,12 @@ class UserRegistrationTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.templates[0].name, 'board/board_list.html')
         self.assertEqual(response.context['user'].username, 'john')
+
+        # assert mail has been sent
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(mail.outbox[0].to, (['john@john.com']))
+        self.assertEqual(mail.outbox[1].to, ([user.email for user in User.objects.filter(is_staff=True)]))
+
 
         # assert user has been created
         user = User.objects.get(username='john')

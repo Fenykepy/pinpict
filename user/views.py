@@ -3,12 +3,13 @@ import datetime
 from uuid import uuid4
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import FormView, UpdateView
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404, render
 from django.utils import timezone
 from django.http import Http404
 
-from user.models import User
+from pinpict.settings import EMAIL_SUBJECT_PREFIX
+from user.models import User, mail_staffmembers
 from user.forms import *
 
 
@@ -70,8 +71,47 @@ class RegistrationView(FormView):
         user = authenticate(username=username, password=password)
         # login user
         login(self.request, user)
+        
+        # send mail to new user
+        subject = '{} Welcome on pinpict'.format(EMAIL_SUBJECT_PREFIX)
 
-        # send mail to admin and user here
+        message = (
+            "Welcome on pinpict {} !\n\n"
+            "You can access to your page here:\n"
+            "{}\n\n"
+            "And set your profil up there:\n"
+            "{}\n"
+            "Good pinning !\n\n"
+        ).format(
+            username,
+            self.request.build_absolute_uri(reverse('boards_list',
+                kwargs={
+                    'user': user.slug,
+                })),
+            self.request.build_absolute_uri(reverse('user_profil')),
+        )
+
+        user.send_mail(subject, message)
+
+        # send mail to admins
+        subject = '{} new registration'.format(EMAIL_SUBJECT_PREFIX)
+
+        message = (
+            "A new user registered on pinpict.\n"
+            "username: {}\n"
+            "email: {}\n"
+            "page: {}\n"
+        ).format(
+            username,
+            user.email,
+            self.request.build_absolute_uri(reverse('boards_list',
+                kwargs={
+                    'user': user.slug,
+                })),
+        )
+        mail_staffmembers(subject, message)
+
+
 
         return redirect(reverse_lazy('boards_list',
             kwargs={
