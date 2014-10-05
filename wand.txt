@@ -1,0 +1,52 @@
+>>> file = 'FLR_14_10095.jpg'
+>>> 
+>>> from wand.image import Image
+>>> with Image(filename=file) as img:
+...    img.width
+...    img.heiht
+... 
+768
+Traceback (most recent call last):
+  File "<stdin>", line 3, in <module>
+AttributeError: 'Image' object has no attribute 'heiht'
+>>> with Image(filename=file) as img:
+...    img.height
+... 
+1024
+>>> with Image(filename=file) as img:
+...    img.format
+... 
+'JPEG'
+>>> widh = 768
+>>> height = 1024
+>>> width = 768
+>>> del widh
+>>> ratio = width / height
+>>> ratio
+0.75
+>>> 500 / ratio
+666.6666666666666
+>>> int(500 / ratio)
+666
+>>> int(500 * ratio)
+375
+>>> with Image(filename=file) as img:
+...    img.resize(375, 500)
+...    img.save(filename='test1.jpg')
+... 
+>>> 
+
+To extract a sub-rectangle from an image, use the crop() method. It crops the image in-place. Its parameters are left, top, right, bottom in order.
+
+>>> img.size
+(200, 300)
+>>> img.crop(10, 20, 50, 100)
+>>> img.size
+(40, 80)
+It can also take keyword arguments width and height. These parameters replace right and bottom.
+
+>>> img.size
+(200, 300)
+>>> img.crop(10, 20, width=40, height=80)
+>>> img.size
+(40, 80)

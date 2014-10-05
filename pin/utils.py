@@ -131,6 +131,11 @@ class PictureHTMLParser(HTMLParser):
 
 
     def handle_starttag(self, tag, attrs):
+        """ Store url and description in a tuple as:
+            (url, description)
+            img tags goes to self.img list
+            a tags goes to self.a list.
+        """
         if tag == 'a':
             a = {
                 'href': '',
