@@ -1,13 +1,14 @@
 import os
 
-from PIL import Image
+from wand.image import Image
 
 from django.test import TestCase, Client
 from django.core.files import File
 from django.core import mail
 
 from user.models import User
-from pinpict.settings import RESERVED_WORDS, BASE_DIR, MEDIA_ROOT, AVATAR_MAX_SIZE
+from pinpict.settings import RESERVED_WORDS, BASE_DIR, MEDIA_ROOT, AVATAR_MAX_SIZE, \
+        ADMINS
 
 
 
@@ -256,6 +257,12 @@ class UserRegistrationTest(TestCase):
         self.assertEqual(response.templates[0].name, 'board/board_list.html')
         self.assertEqual(response.context['user'].username, 'john')
 
+        # assert mail has been sent
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(mail.outbox[0].to, (['john@john.com']))
+        self.assertEqual(mail.outbox[1].to, ([user.email for user in User.objects.filter(is_staff=True)]))
+
+
         # assert user has been created
         user = User.objects.get(username='john')
         self.assertEqual(user.username, 'john')
@@ -495,19 +502,11 @@ class UserProfilTest(TestCase):
         self.assertTrue(os.path.isfile(file))
         
         # assert avatar has been resized
-        img = Image.open(file)
-        self.assertTrue(img.size[0] > 1)
-        self.assertTrue(img.size[0] <= AVATAR_MAX_SIZE)
-        self.assertTrue(img.size[1] > 1)
-        self.assertTrue(img.size[1] <= AVATAR_MAX_SIZE)
-
-        # assert file equal to <user.id>.<file_format>
-        #self.assertEqual(file, os.path.join(
-        #    MEDIA_ROOT,
-        #    "images/avatars",
-        #    "{}{}".format(user.id, ext.lower()
-        #)))
-        
+        with Image(filename=file) as img:
+            self.assertTrue(img.size[0] > 1)
+            self.assertTrue(img.size[0] <= AVATAR_MAX_SIZE)
+            self.assertTrue(img.size[1] > 1)
+            self.assertTrue(img.size[1] <= AVATAR_MAX_SIZE)
 
         # remove file
         os.remove(file)

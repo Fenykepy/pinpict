@@ -3,6 +3,8 @@
 #http://www.fanpop.com/clubs/natalia-vodianova/images/11339609/title/d-spring-2010-paolo-roversi-photo
 #http://www.npr.org/blogs/pictureshow/2009/07/avedons_performance.html
 #http://www.florian-weiler.de/albums/alone-and-nowhere-1/    -> with pinning.
+#http://blog.florian-weiler.de/2014/08/chloe/ -> with pinning
+#http://blog.florian-weiler.de/wp-content/uploads/2014/08/006-v.-i.-c.-%C2%BA07(pp_w900_h598).jpg -> urls encoding error
 
 ==== Not found : ====
 

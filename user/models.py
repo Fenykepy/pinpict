@@ -1,7 +1,7 @@
 import os
 import io
 
-from PIL import Image
+from wand.image import Image
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -12,6 +12,8 @@ from board.slug import unique_slugify
 from pinpict.settings import AVATAR_MAX_SIZE, MEDIA_ROOT
 from pin.utils import get_sha1_hexdigest
 from pinpict.settings import DEFAULT_FROM_EMAIL
+
+from thumbnail import ThumbnailFactory
 
 
 def has_changed(instance, field, manager='objects'):
@@ -140,20 +142,15 @@ class User(AbstractUser):
 
 
         if self.avatar and has_changed(self, 'avatar'):
-            # open Image object
-            img = Image.open(self.avatar.file)
-            # get Image format
-            format = img.format
+            with ThumbnailFactory(file=self.avatar.file) as img:
+                img.resize_crop(AVATAR_MAX_SIZE, AVATAR_MAX_SIZE)
+                format = img.img.format
+                temp = io.BytesIO()
+                img.save(stream=temp)
+                temp.seek(0)
+            uploaded_file = SimpleUploadedFile('temp', temp.read())
             # set filename
             filename = '{}.{}'.format(self.id, format.lower())
-            # set image size
-            size = AVATAR_MAX_SIZE, AVATAR_MAX_SIZE
-            # resize
-            img.thumbnail(size, Image.ANTIALIAS)
-            temp = io.BytesIO()
-            img.save(temp, format, optimize=True)
-            temp.seek(0)
-            uploaded_file = SimpleUploadedFile('temp', temp.read())
             # save avatar
             self.avatar.save(
                     filename,
@@ -162,5 +159,33 @@ class User(AbstractUser):
 
         # save object
         super(User, self).save()
- 
-            
+
+
+
+def mail_superusers(subject, message):
+    """Send a mail to all super users."""
+    # get superusers
+    superusers = User.objects.filter(is_superuser=True)
+    # get superusers' mails in a list
+    superusers_mails = [superuser.email for superuser in superusers]
+    # send mail to superusers
+    send_mail(subject, message, DEFAULT_FROM_EMAIL, superusers_mails)
+
+
+
+def mail_staffmembers(subject, message):
+    """Send a mail to all staff members."""
+    # get staff members
+    staffmembers = User.objects.filter(is_staff=True)
+    # if no staff member, send mail to super user
+    if not staffmembers:
+        print('No staff members found, send mail to superusers.')
+        return mail_superusers(subject, message)
+
+    # get staff members' mails in a list
+    staffmembers_mails = [staffmember.email for staffmember in staffmembers]
+    # send mail to staff members
+    send_mail(subject, message, DEFAULT_FROM_EMAIL, staffmembers_mails)
+
+
+    

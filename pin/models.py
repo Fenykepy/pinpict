@@ -2,7 +2,7 @@ import os
 import urllib.request
 import imghdr
 
-from PIL import Image
+from wand.image import Image
 
 from django.core.files.storage import FileSystemStorage
 from  django.core.files.images import ImageFile
@@ -10,12 +10,14 @@ from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.http import Http404
+from django.utils.http import urlquote
 
 from user.models import User
 from board.models import Board
-from pin.utils import extract_domain_name, save_image, get_sha1_hexdigest
+from pin.utils import extract_domain_name, get_sha1_hexdigest
 from pinpict.settings import PREVIEWS_WIDTH, PREVIEWS_CROP,\
         PREVIEWS_ROOT, MEDIA_ROOT
+from thumbnail import ThumbnailFactory
 
 
 class ResourceFileSystemStorage(FileSystemStorage):
@@ -101,7 +103,7 @@ class Resource(models.Model):
         self.previews_path = os.path.join(subdirs, filename)
         self.save()
         # def source name
-        source = os.path.join(MEDIA_ROOT, self.source_file.name)
+        source_filename = os.path.join(MEDIA_ROOT, self.source_file.name)
 
         def mk_subdirs(size_dir_name):
             """create preview subdirs if they don't exist.
@@ -116,82 +118,34 @@ class Resource(models.Model):
         # generate width based previews
         for preview in PREVIEWS_WIDTH:
             ## preview[0] -- int width of preview
-            width = preview[0]
+            target_width = preview[0]
             ## preview[1] -- string name of subfolder
             ## preview[2] -- int JPEG quality
             quality = preview[2]
 
             # mk subdirs if necessary
             destination = mk_subdirs(preview[1])
-            # create Pil Image instance
-            img = Image.open(source)
-            full_width, full_height = img.size
-            # if image is enought big, create thumbnail
-            if full_width > width:
-                ratio = full_width / full_height
-                height = int(width/ratio)
-                size = width, height
-                # create preview
-                img.thumbnail(size, Image.ANTIALIAS)
-                # save preview
-                save_image(img, destination, "JPEG", quality)
-            # else, symlink to original file
-            elif not os.path.isfile(destination):
-                os.symlink(source, destination)
+            # create thumbnail
+            with ThumbnailFactory(filename=source_filename) as img:
+                img.resize_width(target_width)
+                img.save(filename=destination, format='pjpeg', quality=quality)
 
         # generate width and height based previews
         for preview in PREVIEWS_CROP:
             ## preview[0] -- int width of preview
-            width = preview[0]
+            target_width = preview[0]
             ## preview[1] -- int height of preview
-            height = preview[1]
+            target_height = preview[1]
             ## preview[2] -- string name of subfolder
             ## preview[3] -- int JPEG quality
             quality = preview[3]
 
             # create subdirs if necessary
             destination = mk_subdirs(preview[2])
-            # create Pil Image instance
-            img = Image.open(source)
-            full_width, full_height = img.size
-            full_ratio = full_width / full_height
-            ratio = width / height
-            
-            # if source is smaller than destination, symlink to original file
-            if full_width < width and full_height < height:
-                if not os.path.isfile(destination):
-                    os.symlink(source, destination)
-                continue
-           
-            # create intermediate thumbnail before crop (much faster)
-            # set size (max width, max height) of intermediate thumbnail
-            if full_ratio >= ratio:
-                size = (int(height * full_ratio + 1), height)
-            else:
-                size = (width, int(width / full_ratio + 1))
-            # create thumbnail
-            img.thumbnail(size, Image.ANTIALIAS)
-            # get new picture size
-            new_width, new_height = img.size
-            # define crop coordinates, depending of ratios
-            if full_ratio >= ratio:
-                delta = new_width - width
-                left = int(delta/2)
-                upper = 0
-                right = left + width
-                lower = height
-            else:
-                delta = new_height - height
-                left = 0
-                upper = int(delta/2)
-                right = width
-                lower = upper + height
-            
-            # crop preview
-            img = img.crop((left, upper, right, lower))
-            # save preview
-            save_image(img, destination, "JPEG", quality)
-
+            # create cropped thumbnail
+            with ThumbnailFactory(filename=source_filename) as img:
+                img.resize_crop(target_width, target_height)
+                img.save(filename=destination, format='pjpeg', quality=quality)
 
 
 
@@ -279,6 +233,11 @@ class ResourceFactory(object):
         self.resource = Resource()
         self.resource.source_file_url = url[:2000]
         self.resource.user = user
+        # secure url
+        split = url.split('://', maxsplit=1)
+        split[1] = urlquote(split[1])
+        url = '://'.join(split)
+
         # get file from http
         return self._get_file_over_http(url)
 
@@ -331,11 +290,12 @@ class ResourceFactory(object):
         return file path otherwise.
         """
         # get file in tmp dir
-        try:
-            self.filepath, headers = urllib.request.urlretrieve(url)
-        except:
-            print('error with urllib')
-            return False
+        #try:
+        print(url)
+        self.filepath, headers = urllib.request.urlretrieve(url)
+        #except:
+        #    print('error with urllib')
+        #    return False
         # if file is not an image, return false
         if not headers['Content-Type'].lower() in self.ALLOWED_MIME_TYPE:
             print('file is not image type')
@@ -371,8 +331,8 @@ class ResourceFactory(object):
 
     def _get_image_type(self):
         """Return image type of self.filepath."""
-        img = Image.open(self.filepath)
-        type = img.format
+        with Image(filename=self.filepath) as img:
+            type = img.format
         # in case of no result, try other way
         if not type:
             print('type: {}'.format(type))

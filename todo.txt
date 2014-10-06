@@ -22,6 +22,7 @@
 #        - add "pins" as forbidden slug for boards
     - add some kind of sitemap for bots index
     - add pagination by 300 for user list_pins
+        - or js infinite scroll
 #    - registration form
 #    - password recovery
 #    - profil form
@@ -93,7 +94,7 @@
 #    - test resource n_pins counter
 #    - synchro user n_public_pins and n_public_boards
 #    - split settings.py
-    - mail registration to user
+#    - mail registration to user
     - use set instead of list in scan_html_for_picts to get only once each items.
     - use windmill or selenium to scan page content with js.
 #    - test create_pin new algo
@@ -107,6 +108,8 @@
 #    - error in case of long urls :
 #        https://fbcdn-sphotos-b-a.akamaihd.net/hphotos-ak-xfp1/v/t1.0-9/10710704_834679179910255_1916233767044535325_n.jpg?oh=9c75ad244b3976e2599513ac5cd56010&oe=54C59DA2&__gda__=1422785067_310d8189483839c6f688b4dc22257190
 #        or not, it fails with upload too :( works with sqlite
+#    - Encode url before retrieve if they are not
+#    - change pillow librairy for something better.
 
 
 ==== JavaScript ====
