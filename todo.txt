@@ -108,7 +108,8 @@
 #    - error in case of long urls :
 #        https://fbcdn-sphotos-b-a.akamaihd.net/hphotos-ak-xfp1/v/t1.0-9/10710704_834679179910255_1916233767044535325_n.jpg?oh=9c75ad244b3976e2599513ac5cd56010&oe=54C59DA2&__gda__=1422785067_310d8189483839c6f688b4dc22257190
 #        or not, it fails with upload too :( works with sqlite
-    - Encode url before retrieve if they are not
+#    - Encode url before retrieve if they are not
+#    - change pillow librairy for something better.
 
 
 ==== JavaScript ====
