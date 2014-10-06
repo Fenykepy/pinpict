@@ -2,7 +2,8 @@ import os
 import urllib.request
 import imghdr
 
-from PIL import Image
+#from PIL import Image
+from wand.image import Image
 
 from django.core.files.storage import FileSystemStorage
 from  django.core.files.images import ImageFile
@@ -372,8 +373,8 @@ class ResourceFactory(object):
 
     def _get_image_type(self):
         """Return image type of self.filepath."""
-        img = Image.open(self.filepath)
-        type = img.format
+        with Image(filename=self.filepath) as img:
+            type = img.format
         # in case of no result, try other way
         if not type:
             print('type: {}'.format(type))

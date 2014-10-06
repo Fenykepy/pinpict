@@ -1,7 +1,7 @@
 import os
 import io
 
-from PIL import Image
+from wand.image import Image
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -140,20 +140,38 @@ class User(AbstractUser):
 
 
         if self.avatar and has_changed(self, 'avatar'):
+            size = AVATAR_MAX_SIZE, AVATAR_MAX_SIZE
             # open Image object
-            img = Image.open(self.avatar.file)
-            # get Image format
-            format = img.format
+            with Image(file=self.avatar.file) as img:
+                # get Image format
+                format = img.format
+                height = img.height
+                width = img.width
+                # set image size
+                if width > AVATAR_MAX_SIZE or height > AVATAR_MAX_SIZE:
+                    ratio = height / width
+                    print(ratio)
+                    print(AVATAR_MAX_SIZE)
+                    # image more width than height
+                    if ratio > 1:
+                        print('height bigger')
+                        target_width = int(AVATAR_MAX_SIZE / ratio)
+                        target_height = AVATAR_MAX_SIZE
+                    # image is square or more height than width
+                    else:
+                        print('width bigger')
+                        target_width = AVATAR_MAX_SIZE
+                        target_height = int(AVATAR_MAX_SIZE * ratio)
+                    print(target_width)
+                    print(target_height)
+                    # resize
+                    img.resize(target_width, target_height)
+                temp = io.BytesIO()
+                img.save(temp)
+                temp.seek(0)
+            uploaded_file = SimpleUploadedFile('temp', temp.read())
             # set filename
             filename = '{}.{}'.format(self.id, format.lower())
-            # set image size
-            size = AVATAR_MAX_SIZE, AVATAR_MAX_SIZE
-            # resize
-            img.thumbnail(size, Image.ANTIALIAS)
-            temp = io.BytesIO()
-            img.save(temp, format, optimize=True)
-            temp.seek(0)
-            uploaded_file = SimpleUploadedFile('temp', temp.read())
             # save avatar
             self.avatar.save(
                     filename,
