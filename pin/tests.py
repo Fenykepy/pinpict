@@ -1,6 +1,7 @@
 import os
 
-from PIL import Image
+
+from wand.image import Image
 
 from django.test import TestCase, Client
 from django.core.files import File
@@ -267,8 +268,8 @@ class PinCreationTest(TestCase):
                     resource.previews_path
             )
             self.assertEqual(os.path.isfile(preview_file), True)
-            img = Image.open(preview_file)
-            width = img.size[0]
+            with Image(filename=preview_file) as img:
+                width = img.size[0]
             # assert preview is good size
             if preview[0] > resource.width:
                 self.assertEqual(width, resource.width)
@@ -283,8 +284,8 @@ class PinCreationTest(TestCase):
                     resource.previews_path
             )
             self.assertEqual(os.path.isfile(preview_file), True)
-            img = Image.open(preview_file)
-            width, height = img.size
+            with Image(filename=preview_file) as img:
+                width, height = img.size
             #a assert it's good size
             self.assertEqual(width, preview[0])
             self.assertEqual(height, preview[1])
@@ -413,7 +414,7 @@ class PinCreationTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
         # assert file has been save on hdd
-        tmp = 'tmp/f5fbd1897ef61b69f071e36295342571e81017b9'
+        tmp = 'tmp/a7ed26bf64d26b6687316b14fdbbaf9630a5d03e'
         tmp_path = os.path.join(MEDIA_ROOT, tmp)
         self.assertEqual(os.path.isfile(tmp_path), True)
         self.assertEqual(self.client.session['pin_create_tmp_resource'], tmp)
@@ -422,7 +423,7 @@ class PinCreationTest(TestCase):
         response = post_image(follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.templates[0].name, 'pin/pin_create.html')
-        self.assertEqual(response.context['src'], '/media/tmp/f5fbd1897ef61b69f071e36295342571e81017b9')
+        self.assertEqual(response.context['src'], '/media/tmp/a7ed26bf64d26b6687316b14fdbbaf9630a5d03e')
 
         # post pin
         response = self.client.post('/pin/create/', {
@@ -447,10 +448,10 @@ class PinCreationTest(TestCase):
             resource.source_file.name)))
         # assert resource file, size, width and height are stored in db
         self.assertEqual(resource.source_file.name,
-            'previews/full/f5/fb/f5fbd1897ef61b69f071e36295342571e81017b9.jpeg')
-        self.assertEqual(resource.width, 200)
-        self.assertEqual(resource.height, 300)
-        self.assertEqual(resource.size, 16628)
+            'previews/full/a7/ed/a7ed26bf64d26b6687316b14fdbbaf9630a5d03e.jpeg')
+        self.assertEqual(resource.width, 1024)
+        self.assertEqual(resource.height, 767)
+        self.assertEqual(resource.size, 114896)
         # assert previews have been generated
         self.previews_generation_test(resource)
         

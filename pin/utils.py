@@ -5,8 +5,6 @@ import httplib2
 
 from html.parser import HTMLParser
 
-from PIL import Image, ImageFile
-
 
 def get_sha1_hexdigest(file):
     """Return sha1 hexadecimal sum of
@@ -48,29 +46,6 @@ def remove_empty_folders(path):
     files = os.listdir(path)
     if len(files) == 0:
         os.rmdir(path)
-
-
-
-
-def save_image(img, destination, type, quality):
-    """Save a thumbnail.
-    img -- Image instance
-    destination -- full pathname to output preview
-    type -- image type ('JPEG')
-    """
-    def save():
-        img.save(
-                destination,
-                type,
-                quality=quality,
-                optimize=True,
-                progressive=True
-        )
-    try:
-        save()
-    except IOError:
-        ImageFile.MAXBLOCK = img.size[0] * img.size[1]
-        save()
 
 
 

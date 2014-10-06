@@ -13,6 +13,8 @@ from pinpict.settings import AVATAR_MAX_SIZE, MEDIA_ROOT
 from pin.utils import get_sha1_hexdigest
 from pinpict.settings import DEFAULT_FROM_EMAIL
 
+from thumbnail import ThumbnailFactory
+
 
 def has_changed(instance, field, manager='objects'):
     """Returns true if a field has changed in a model
@@ -140,34 +142,11 @@ class User(AbstractUser):
 
 
         if self.avatar and has_changed(self, 'avatar'):
-            size = AVATAR_MAX_SIZE, AVATAR_MAX_SIZE
-            # open Image object
-            with Image(file=self.avatar.file) as img:
-                # get Image format
-                format = img.format
-                height = img.height
-                width = img.width
-                # set image size
-                if width > AVATAR_MAX_SIZE or height > AVATAR_MAX_SIZE:
-                    ratio = height / width
-                    print(ratio)
-                    print(AVATAR_MAX_SIZE)
-                    # image more width than height
-                    if ratio > 1:
-                        print('height bigger')
-                        target_width = int(AVATAR_MAX_SIZE / ratio)
-                        target_height = AVATAR_MAX_SIZE
-                    # image is square or more height than width
-                    else:
-                        print('width bigger')
-                        target_width = AVATAR_MAX_SIZE
-                        target_height = int(AVATAR_MAX_SIZE * ratio)
-                    print(target_width)
-                    print(target_height)
-                    # resize
-                    img.resize(target_width, target_height)
+            with ThumbnailFactory(file=self.avatar.file) as img:
+                img.resize_crop(AVATAR_MAX_SIZE, AVATAR_MAX_SIZE)
+                format = img.img.format
                 temp = io.BytesIO()
-                img.save(temp)
+                img.save(stream=temp)
                 temp.seek(0)
             uploaded_file = SimpleUploadedFile('temp', temp.read())
             # set filename

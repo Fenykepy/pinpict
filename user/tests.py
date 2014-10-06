@@ -1,6 +1,6 @@
 import os
 
-from PIL import Image
+from wand.image import Image
 
 from django.test import TestCase, Client
 from django.core.files import File
@@ -502,19 +502,11 @@ class UserProfilTest(TestCase):
         self.assertTrue(os.path.isfile(file))
         
         # assert avatar has been resized
-        img = Image.open(file)
-        self.assertTrue(img.size[0] > 1)
-        self.assertTrue(img.size[0] <= AVATAR_MAX_SIZE)
-        self.assertTrue(img.size[1] > 1)
-        self.assertTrue(img.size[1] <= AVATAR_MAX_SIZE)
-
-        # assert file equal to <user.id>.<file_format>
-        #self.assertEqual(file, os.path.join(
-        #    MEDIA_ROOT,
-        #    "images/avatars",
-        #    "{}{}".format(user.id, ext.lower()
-        #)))
-        
+        with Image(filename=file) as img:
+            self.assertTrue(img.size[0] > 1)
+            self.assertTrue(img.size[0] <= AVATAR_MAX_SIZE)
+            self.assertTrue(img.size[1] > 1)
+            self.assertTrue(img.size[1] <= AVATAR_MAX_SIZE)
 
         # remove file
         os.remove(file)

@@ -11,6 +11,13 @@ class ThumbnailFactory(object):
 
         return self._open()
 
+    def __enter__(self, *args):
+        return self
+
+    def __exit__(self, *args):
+        """Close file on exit."""
+        self.img.close()
+
 
     def resize_max(self, max_side):
         # if image is more width than height
@@ -28,7 +35,7 @@ class ThumbnailFactory(object):
         # if image is too small, return
         print('resize_width')
         if self.img.width <= target_width:
-            print('img too small')
+            print('img too small (width)')
             return
         target_height = int(target_width / self.ratio)
         print('target_width: {}, target_height: {}'.format(target_width, target_height))
@@ -41,7 +48,7 @@ class ThumbnailFactory(object):
         # if image is too small, return
         print('resize_height')
         if self.img.height <= target_height:
-            print('img too small')
+            print('img too small (height)')
             return
         target_width = int(target_height * self.ratio)
         print('target_width: {}, target_height: {}'.format(target_width, target_height))
@@ -53,22 +60,58 @@ class ThumbnailFactory(object):
     def resize_crop(self, target_width, target_height):
         # if image is too small, return
         print('resize_crop')
-        if self.img.width <= target_width and self.img.height <= target_side:
-            print('img too small')
+        if self.img.width <= target_width and self.img.height <= target_height:
+            print('img too small (crop)')
+
             return
+
+        if self.img.width < target_width:
+            print('width too small')
+
+            return self.resize_height(target_height)
+
+        if self.img.height < target_height:
+            print('height too small')
+
+            return self.resize_width(target_width)
+
         print('target_width: {}, target_height: {}'.format(target_width, target_height))
+        target_ratio = target_width / target_height
+
+        if self.ratio >= target_ratio:
+            self.resize_height(target_height)
+            new_width, new_height = self.img.size
+            delta = new_width - target_width
+            left = int(delta/2)
+            upper = 0
+            right = left + target_width
+            lower = target_height
+        else:
+            self.resize_width(target_width)
+            new_width, new_height = self.img.size
+            delta = new_height - target_height
+            left = 0
+            upper = int(delta/2)
+            right = target_width
+            lower = upper + target_height
+
+        # crop thumbnail
+        self.img.crop(left, upper, right, lower)
 
 
-    def save_as_stream(self, stream):
-        self.img.save(stream)
-        self.img.close()
 
-        return
+    def save(self, filename=None, stream=None, format=None, quality=None):
+        if format:
+            self.img.format = format
+        if quality:
+            self.img.compression_quality = quality
 
-
-    def save_as_file(self, filename):
-        self.img.save(filename=filename)
-        self.img.close()
+        if stream:
+            self.img.save(stream)
+        elif filename:
+            self.img.save(filename=filename)
+        else:
+            raise
 
         return
 
@@ -81,7 +124,7 @@ class ThumbnailFactory(object):
             print('open file from stream')
             self.img = Image(file=self.file)
         else:
-            raise Error
+            raise
 
         return self._get_ratio()
 
