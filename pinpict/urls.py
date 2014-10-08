@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
 
 from board.views import *
 from user.views import LoginView, RegistrationView, ProfilView, \
@@ -79,6 +80,13 @@ urlpatterns = patterns('',
         name='board_delete'),
 )
 
+# to test error templates
+if settings.DEBUG:
+    urlpatterns = patterns('',
+        (r'^403/$', TemplateView.as_view(template_name='403.html')),
+        (r'^404/$', TemplateView.as_view(template_name='404.html')),
+        (r'^500/$', TemplateView.as_view(template_name='500.html')),
+    ) + urlpatterns
 
 # To get static files during development
 urlpatterns += staticfiles_urlpatterns()

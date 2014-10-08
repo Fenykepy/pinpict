@@ -28,6 +28,7 @@ a,a:visited{color:#000}a:hover,a:visited:hover{color:#fff}
 #pinpict{background:url("../images/structure/pinpict.png") center bottom no-repeat}
 #user-menu{position:relative;display:none;z-index:100;background:#666;border-radius:0 3px 0 3px}
 #user-bar:hover>#user-menu{display:block}
+#error{padding:10px;font-size:1.2em;text-align:center}#error h1{font-size:6em;font-weight:bold;margin-top:50px;margin-bottom:20px}
 .arrow{content:"";position:absolute;height:0;width:0}
 .out-screen{text-indent:-999em;letter-spacing:-999em;overflow:hidden}
 :invalid:hover,:invalid:focus{box-shadow:0 0 3px #970000}
