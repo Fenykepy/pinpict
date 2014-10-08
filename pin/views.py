@@ -6,7 +6,8 @@ from django.views.generic import ListView, DetailView, \
 from django.core.urlresolvers import reverse_lazy
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils.http import urlquote_plus, urlunquote_plus
+from django.utils.http import urlquote_plus
+from django.utils.encoding import iri_to_uri
 from django.contrib.auth.decorators import login_required
 from django.core.files.images import ImageFile
 
@@ -425,6 +426,7 @@ class ChoosePinUrl(FormView, AjaxableResponseMixin):
     def form_valid(self, form):
         """If form is valid, redirect to find page."""
         url = form.cleaned_data['url']
+        print('url received in form: {}'.format(url))
         return redirect(reverse_lazy('find_pin') + '?url={}'.format(
             urlquote_plus(url)))
 
@@ -435,7 +437,10 @@ class FindPin(TemplateView):
     template_name = 'pin/pin_find.html'
 
     def get(self, request, *args, **kwargs):
-        self.url = urlunquote_plus(self.request.GET.get('url', ''))
+        # it seems that django automaticaly decode arguments.
+        # for safety, encode non ascii char if any
+        self.url = iri_to_uri(self.request.GET.get('url', ''))
+        print('url after iri_to_uri by find pin: {}'.format(self.url))
         # if url is not an absolute url
         if self.url[:4] != 'http':
             raise Http404        

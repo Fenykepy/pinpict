@@ -12,7 +12,7 @@ On a debian like system, run as root:
 
     # apt-get update
     # apt-get safe-upgrade
-    # apt-get install python3 python3-virtualenv python3-pip python3-setuptools libpng12-dev libjpeg8-dev git
+    # apt-get install python3 python3-virtualenv python3-pip python3-setuptools libpng12-dev libjpeg8-dev git libmagickwand-dev
 
 ### Set environement up ###
 
