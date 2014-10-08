@@ -249,7 +249,7 @@ def scan_html_for_picts(url):
 
     # get resource from url
     h = httplib2.Http('.cache')
-    print('url used in html parser: {}'.format(url))
+    #print('url used in html parser: {}'.format(url))
     response, content = h.request(url)
     # return in case of fail
     if response['status'] not in ('200', '304'):
@@ -266,13 +266,13 @@ def scan_html_for_picts(url):
             r"\g<charset>", response['content-type'])
     # if charset in known charset… else charset = 'utf-8'
     if not charset in PYTHON_CODEC:
-        print('extracted charset:')
-        print(charset)
-        print('response content-type:')
-        print(response['content-type'])
-        print('wrong charset, use utf-8')
-        for elem in response:
-            print('{}: {}'.format(elem, response[elem]))
+        #print('extracted charset:')
+        #print(charset)
+        #print('response content-type:')
+        #print(response['content-type'])
+        #print('wrong charset, use utf-8')
+        #for elem in response:
+            #print('{}: {}'.format(elem, response[elem]))
 
         charset = 'utf-8'
     

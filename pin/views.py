@@ -215,7 +215,7 @@ def create_pin(request):
                 if resource:
                     pin.resource = resource
                 else:
-                    print('error: make resource from url didn\'t return a resource.')
+                    #print('error: make resource from url didn\'t return a resource.')
                     return False
                 del request.session['pin_create_src']
             elif request.session.get('pin_create_tmp_resource'):
@@ -230,7 +230,7 @@ def create_pin(request):
 
                 del request.session['pin_create_tmp_resource']
             else:
-                print('return false')
+                #print('return false')
                 # raise an resource error
                 return False
             
@@ -426,7 +426,7 @@ class ChoosePinUrl(FormView, AjaxableResponseMixin):
     def form_valid(self, form):
         """If form is valid, redirect to find page."""
         url = form.cleaned_data['url']
-        print('url received in form: {}'.format(url))
+        #print('url received in form: {}'.format(url))
         return redirect(reverse_lazy('find_pin') + '?url={}'.format(
             urlquote_plus(url)))
 
@@ -440,7 +440,7 @@ class FindPin(TemplateView):
         # it seems that django automaticaly decode arguments.
         # for safety, encode non ascii char if any
         self.url = iri_to_uri(self.request.GET.get('url', ''))
-        print('url after iri_to_uri by find pin: {}'.format(self.url))
+        #print('url after iri_to_uri by find pin: {}'.format(self.url))
         # if url is not an absolute url
         if self.url[:4] != 'http':
             raise Http404        

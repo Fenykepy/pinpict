@@ -10,6 +10,7 @@ from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.http import Http404
+from django.utils.encoding import iri_to_uri
 
 from user.models import User
 from board.models import Board
@@ -285,16 +286,14 @@ class ResourceFactory(object):
         return file path otherwise.
         """
         # get file in tmp dir
-        #try:
-        print(url)
+        #print('get_file_ove_http, url: {}'.format(url))
+        url = iri_to_uri(url)
+        #print('get_file_ove_http, secure url: {}'.format(url))
         self.filepath, headers = urllib.request.urlretrieve(url)
-        #except:
-        #    print('error with urllib')
-        #    return False
         # if file is not an image, return false
         if not headers['Content-Type'].lower() in self.ALLOWED_MIME_TYPE:
-            print('file is not image type')
-            print(headers['Content-Type'])
+            #print('file is not image type')
+            #print(headers['Content-Type'])
             return False
         # else return file_path
         return self._get_file_sha1(self.filepath)
@@ -320,7 +319,7 @@ class ResourceFactory(object):
             clone = Resource.objects.get(sha1=sha1)
         except:
             return self._create_new_resource()
-        print('clone')
+        #print('clone')
         return clone
 
 
@@ -330,16 +329,16 @@ class ResourceFactory(object):
             type = img.format
         # in case of no result, try other way
         if not type:
-            print('type: {}'.format(type))
+            #print('type: {}'.format(type))
             type = imghdr.what(self.filepath)
         # last solution, take actual extension
         if not type:
-            print('type: {}'.format(type))
+            #print('type: {}'.format(type))
             basename, ext = os.path.splitext(self.filepath)
             type = ext.strip('.')
         # else use default unknown ext
         if not type:
-            print('type: {}'.format(type))
+            #print('type: {}'.format(type))
             type = 'unknown'
 
         return type.lower()
@@ -361,7 +360,7 @@ class ResourceFactory(object):
             return self.filepath
         # create type before opening file
         type = self._get_image_type()
-        print(type)
+        #print(type)
         with open(self.filepath, 'rb') as f:
             file = ImageFile(f)
             self.resource.source_file = file
