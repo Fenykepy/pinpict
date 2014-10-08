@@ -249,6 +249,7 @@ def scan_html_for_picts(url):
 
     # get resource from url
     h = httplib2.Http('.cache')
+    print('url used in html parser: {}'.format(url))
     response, content = h.request(url)
     # return in case of fail
     if response['status'] not in ('200', '304'):

@@ -10,7 +10,6 @@ from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.http import Http404
-from django.utils.http import urlquote
 
 from user.models import User
 from board.models import Board
@@ -233,10 +232,6 @@ class ResourceFactory(object):
         self.resource = Resource()
         self.resource.source_file_url = url[:2000]
         self.resource.user = user
-        # secure url
-        split = url.split('://', maxsplit=1)
-        split[1] = urlquote(split[1])
-        url = '://'.join(split)
 
         # get file from http
         return self._get_file_over_http(url)
