@@ -125,7 +125,7 @@
 #   - replace unfound previews with color image -> done in html / css
 #   - justify pins
 #       - justify again when window size changes
-    - test with firefox
+#    - test with firefox
 
 ==== CSS ====
 #   - inline block for all article.pin
