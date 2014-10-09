@@ -116,18 +116,21 @@ class ChoosePinOrigin(TemplateView, AjaxableResponseMixin):
 @login_required
 def create_pin(request):
     """View to create a pin."""
+
+    # from invalid pin_pict js button, redirect to find
     if (request.method == 'POST' and 'url' in request.POST
             and not 'src' in request.POST):
-        # from invalid pin_pict js button, redirect to find
         form = DownloadPinForm(request.POST)
         if form.is_valid():
             url = form.cleaned_data['url']
             return redirect(reverse_lazy('find_pin') + '?url={}'.format(
             urlquote_plus(url)))
 
+
+
+    # form arrive from pin_pict js button, or pin_find
     if (request.method == 'POST' and 'url' in request.POST
             and 'src' in request.POST):
-        # form arrive from pin_pict js button, or pin_find
         form = DownloadPinForm(request.POST)
         if form.is_valid():
             # set session variables
@@ -148,8 +151,8 @@ def create_pin(request):
                 'submit': 'Pin it',
             })
 
+    # form arrive from existing pin's pin it button
     if request.method == 'POST' and 'pin' in request.POST:
-        # form arrive from existing pin's pin it button
         form = RePinForm(request.POST)
         if form.is_valid():
             # set pin object
@@ -247,6 +250,7 @@ def create_pin(request):
     if request.method == 'GET':
         ## request arrive from upload pin with new uploaded file
         if request.session.get('pin_create_tmp_resource'):
+            print(request.session['pin_create_tmp_resource'])
             src = MEDIA_URL + request.session['pin_create_tmp_resource']
         ## request arrive from upload pin with no uploaded file (it exists)
         elif request.session.get('pin_create_resource'):

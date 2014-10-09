@@ -207,10 +207,11 @@ class UtilsTest(TestCase):
                 'href': 'https://lavilotte-rolle.fr/data/1.jpg',
                 'alt': 'https',
             },
-            {
-                'href': 'http://www.lavilotte-rolle.fr/data/1.jpg',
-                'alt': '',
-            },
+            # disappear with duplicate deletion function
+            #{
+            #    'href': 'http://www.lavilotte-rolle.fr/data/1.jpg',
+            #    'alt': '',
+            #},
             {
                 'href': 'http://data/1.jpg',
                 'alt': 'my link picture',
@@ -223,10 +224,11 @@ class UtilsTest(TestCase):
                 'href': 'http://www.lavilotte-rolle.fr/portfolio/999.jpg',
                 'alt': '',
             },
-            {
-                'href': 'http://www.lavilotte-rolle.fr/portfolio/999.jpg',
-                'alt': '',
-            },
+            # disappear with duplicate deletion function
+            #{
+            #    'href':'http://www.lavilotte-rolle.fr/portfolio/999.jpg',
+            #    'alt': '',
+            #},
             {
                 'href': 'http://www.lavilotte-rolle.fr/7.jpg',
                 'alt': '',
@@ -234,14 +236,9 @@ class UtilsTest(TestCase):
         ]
 
         
-        parser = PictureHTMLParser(convert_charrefs=True)
-        parser.pictures = []
-        parser.url = 'http://www.lavilotte-rolle.fr/portfolio/'
-        parser.protocol = 'http://'
-        parser.url_path = 'www.lavilotte-rolle.fr/portfolio/'
-        parser.root_url = 'http://www.lavilotte-rolle.fr'
+        parser = PictureHTMLParser(convert_charrefs=True, url='http://www.lavilotte-rolle.fr/portfolio/')
         parser.feed(html)
-
+        
         self.assertEqual(parser.pictures, result)
 
 

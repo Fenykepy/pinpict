@@ -51,13 +51,20 @@ def remove_empty_folders(path):
 
 class PictureHTMLParser(HTMLParser):
     """Scan for <a> and <img> tags."""
-    pictures = []
-    url = ''
-    root_url = ''
-    protocol = ''
-    url_path = ''
-
     IMAGES = ('jpg', 'svg', 'jpeg')
+
+    def __init__(self, url=None, *args, **kwargs):
+        super(PictureHTMLParser, self).__init__(*args, **kwargs)
+        if not url:
+            return False
+        self.url = url
+        split = url.split('//')
+        self.protocol = split[0] + '//' # 'http' or 'https'
+        self.url_path = split[1] # everything which follows 'http(s)://'
+        self.root_url = self.protocol + self.url_path.split('/')[0]
+        self.pictures = []
+        self.urls = set()
+
 
     def url_is_image(self, url):
         extension = url.split('.').pop().lower()
@@ -92,7 +99,7 @@ class PictureHTMLParser(HTMLParser):
             list = self.url_path.rstrip('/').split('/')
             if len(list) <= parent:
                 # error -> back way is longer than url
-                return None
+                return False
             # troncate list and split, get ['naiet', 'naiena']
             list = list[:-parent]
             split = split[parent:]
@@ -111,34 +118,36 @@ class PictureHTMLParser(HTMLParser):
             img tags goes to self.img list
             a tags goes to self.a list.
         """
-        if tag == 'a':
-            a = {
-                'href': '',
-                'alt': '',
-            }
+        if tag == 'a' or tag == 'img':
+            src = ''
+            alt = ''
+            title = ''
             for attr in attrs:
-                if attr[0] == 'href':
-                    a['href'] = self.build_absolute_url(attr[1])
-                if attr[0] == 'title':
-                    a['alt'] = attr[1]
-            if a['href'] and self.url_is_image(a['href']):
-                self.pictures.append(a)
+                # get url
+                if attr[0] == 'href' or attr[0] == 'src':
+                    src = self.build_absolute_url(attr[1])
 
-        if tag == 'img':
-            img = {
-                'href': '',
+                # get description (title or alt, with priority for alt)
+                if attr[0] == 'alt' and attr[1]:
+                    alt = attr[1]
+                if not alt and attr[0] == 'title' and attr[1]:
+                    title = attr[1]
+            # if src isn't an image return, or src is already in set
+            if not src or not self.url_is_image(src) or src in self.urls:
+                return
+            pict = {
+                'href': src,
                 'alt': '',
             }
-            for attr in attrs:
-                if attr[0] == 'src':
-                    img['href'] = self.build_absolute_url(attr[1])
-                if attr[0] == 'alt':
-                    if attr[1] != '':
-                        img['alt'] = attr[1]
-                if attr[0] == 'title' and img['alt'] == '':
-                    img['alt'] = attr[1]
-            if img['href'] and self.url_is_image(img['href']):
-                self.pictures.append(img)
+            # if we got an alt attribute, use it
+            if alt:
+                pict['alt'] = alt
+            # if we got a title attribute, use it
+            elif title:
+                pict['alt'] = title
+            # add pict to pictures list and set
+            self.urls.add(src)
+            self.pictures.append(pict)
 
 
 
@@ -278,18 +287,14 @@ def scan_html_for_picts(url):
     
     decoded = content.decode(charset, errors='replace')
 
-    split = url.split('//')
     # parse html
-    parser = PictureHTMLParser(convert_charrefs=True)
-    parser.pictures = []
-    parser.url = url
-    parser.protocol = split[0] + '//' # 'http' or 'https'
-    parser.url_path = split[1] # everything which follows 'http(s)://'
-    parser.root_url = parser.protocol + parser.url_path.split('/')[0]
+    parser = PictureHTMLParser(convert_charrefs=True, url=url)
     parser.feed(decoded)
+    
     
     # return pictures list
     return parser.pictures
+
 
 
 
