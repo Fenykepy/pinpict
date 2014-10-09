@@ -20,7 +20,7 @@
 #        - test it
 #    - user list_pins (publics or publics and privates)
 #        - add "pins" as forbidden slug for boards
-    - add some kind of sitemap for bots index
+#    - add some kind of sitemap for bots index
     - add pagination by 300 for user list_pins
         - or js infinite scroll
 #    - registration form
@@ -125,6 +125,7 @@
 #   - replace unfound previews with color image -> done in html / css
 #   - justify pins
 #       - justify again when window size changes
+    - test with firefox
 
 ==== CSS ====
 #   - inline block for all article.pin

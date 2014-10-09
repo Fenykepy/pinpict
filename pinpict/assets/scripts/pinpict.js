@@ -44,16 +44,6 @@ $(document).ready(function () {
         var index = 0;
         function next () {
             if (index < pins.length ) {
-                // compute colon number
-                var colon = index % n_colons;
-                var pin = pins.eq(index);
-                // get first img of pin
-                var img = pin.find('img').eq(0);
-                // if pin has no img (#create-pin)
-                if (img.length <= 0) {
-                    return justify();
-                }
-
                 function justify () {
                     // create image object to check width and height and see if it has correctly loaded :
                     // 403 status code are not in errors handler…
@@ -78,6 +68,16 @@ $(document).ready(function () {
                     index++;
                     return next();
                 }
+                // compute colon number
+                var colon = index % n_colons;
+                var pin = pins.eq(index);
+                // get first img of pin
+                var img = pin.find('img').eq(0);
+                // if pin has no img (#create-pin)
+                if (img.length <= 0) {
+                    return justify();
+                }
+
                 
                 function justify_errors () {
                     // remove error pin
