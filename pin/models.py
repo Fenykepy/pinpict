@@ -11,6 +11,7 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.http import Http404
 from django.utils.encoding import iri_to_uri
+from django.core.urlresolvers import reverse
 
 from user.models import User
 from board.models import Board
@@ -170,6 +171,11 @@ class Pin(models.Model):
 
     def __str__(self):
         return "%s" % self.description
+
+    def get_absolute_url(self):
+        return reverse('pin_view', kwargs={
+            'pk': self.pk,
+        })
 
     class Meta:
         ordering = ['date_created']

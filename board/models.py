@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
+from django.core.urlresolvers import reverse
 
 from pinpict.settings import BOARD_RESERVED_WORDS
 from user.models import User, has_changed
@@ -76,6 +77,12 @@ class Board(models.Model):
 
         # save object
         super(Board, self).save()
+
+    def get_absolute_url(self):
+        return reverse('board_view', kwargs={
+            'user': self.user.slug,
+            'board': self.slug,
+        })
 
 
     def __str__(self):

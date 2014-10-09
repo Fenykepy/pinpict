@@ -6,13 +6,22 @@ from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
+from django.contrib.sitemaps.views import sitemap
 
+from pinpict.sitemaps import UserSitemap, BoardSitemap, PinSitemap
 from board.views import *
 from user.views import LoginView, RegistrationView, ProfilView, \
         PasswordView, RecoveryView
 from pin.views import ListBoardPins, ListUserPins
 
 admin.autodiscover()
+
+sitemaps = {
+    'users': UserSitemap,
+    'boards': BoardSitemap,
+    'pins': PinSitemap,
+}
+
 
 urlpatterns = patterns('',
     # Examples:
@@ -21,6 +30,10 @@ urlpatterns = patterns('',
 
     ## administration
     url(r'^admin/', include(admin.site.urls)),
+
+    ## site map
+    url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap',
+        {'sitemaps': sitemaps}),
 
     ## user management
     ## login

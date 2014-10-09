@@ -7,6 +7,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
 
 from board.slug import unique_slugify
 from pinpict.settings import AVATAR_MAX_SIZE, MEDIA_ROOT
@@ -133,6 +134,10 @@ class User(AbstractUser):
 
     def get_n_public_boards(self):
         return self.board_set.filter(policy=1).count()
+
+    def get_absolute_url(self):
+        return reverse('boards_list', kwargs={
+            'user': self.slug})
 
     def save(self, **kwargs):
         """Make a unique slug from username then save."""
