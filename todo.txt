@@ -41,6 +41,7 @@
 #    - header with:
 #        - user info
         - search bar
+            - https://github.com/djangonauts/djorm-ext-pgfulltext 
 #    - board creation form
         - add a field for a cover pin/resource
 #    - board update form
@@ -145,6 +146,7 @@
     - review create_pin margin and padding to ensure img is at right place
 #    - put bigger line-height in pin descriptions
 #    - add a display block to source link under pins (if url is long, it overflows)
+    - fonts display in different browsers / os
 
 ==== Media creation ====
     - create a lock logo for private boards

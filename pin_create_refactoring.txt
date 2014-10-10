@@ -1,0 +1,57 @@
+ - Post depuis un pin it button invalide:
+    - request: POST
+        - url
+        - no src
+    - session: NO
+    - return: find_pin(url) (get)
+    - get returns 404
+    - form invalid returns 404
+
+
+ - Post depuis un pin it js button ou depuis pin_find
+    - request: POST
+        - url
+        - src
+        - description (optionnel)
+    - form:
+        - DownloadPinForm
+            - initial:
+                - session last_visited_board = board
+                - description = description
+    - session :
+        - set pin_create_source = url
+        - set pin_create_src = src
+    - return: pin_create.html with form (get)
+    - get returns 404
+    - form invalid returns 404
+
+
+ - Post depuis un pin existant
+    - request: POST
+        - pin
+    - form:
+        - PinForm
+            - initial:
+                - session last_visited_board = board
+                - description = description
+    - session:
+        - set pin_create_resource = pin.pk
+        - pin_create_source = pin.source
+        - pin_create_added_via = pin.pin_user.pk
+    - return: pin_create.html with form (get)
+    - get returns 404
+    - form invalid returns 404
+
+ - Post depuis pin_create (dernière étape)
+    - request: POST
+        - description
+    - return:
+        - 404:
+            - si l'user n'est pas le propriétaire du board
+            - s'il n'y a en session:
+                - ni pin_create_source
+                - ni pin_create_resource
+                - ni pin_create
+        - pin_create (get) si le formulaire est invalide (ex: pas de description)
+        - board view if pin has been created
+    
