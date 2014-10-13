@@ -1,0 +1,24 @@
+<article class="pin">
+    <div class="buttons-wrapper">
+    {% if owner == user %}
+        <a href="{% url 'update_pin' pin.pk %}" title="Edit pin"><button class="edit">Edit</button></a>
+    {% endif %}
+    <form method="post" action="{% url "create_pin" %}">
+        {% csrf_token %}
+        <input type="hidden" name="pin" value="{{ pin.pk }}" />
+        <input type="submit" value="Pin it" class="pinit" title="Pin it ! file is {{ pin.resource.width }} x {{ pin.resource.height }}px" />
+    </form>
+    <a href="{% url "pin_view" pin.pk %}" class="pin-link"><img src="{{ MEDIA_URL }}previews/236/{{ pin.resource.previews_path }}" alt="" /></a>
+    </div>
+    <p class="pin-description">
+    {{ pin.description }}
+    </p>
+    <footer>
+    {% if pin.source_domain %}
+     <a href="{{ pin.source }}" target="_blank">
+         <span>Pinned from</span><br />{{ pin.source_domain }}</a>
+    {% else %}
+    <a href=""><span>Uploaded to Pin Pict</span></a>
+    {% endif %}
+    </footer>
+</article>

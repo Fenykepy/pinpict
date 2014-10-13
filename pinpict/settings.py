@@ -50,7 +50,13 @@ BOARD_RESERVED_WORDS = (
 # if uploaded file is bigger, it will be resized.
 AVATAR_MAX_SIZE = 150
 
-
+# search engine configuration
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
+    },
+}
 
 # Application definition
 
@@ -63,6 +69,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.sitemaps',
+    'haystack',
     #'debug_toolbar', # comment for prod
     'user',
     'board',

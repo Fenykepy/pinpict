@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 from django.contrib.auth.decorators import login_required
 
 from pin.views import *
@@ -25,6 +25,9 @@ urlpatterns = patterns('',
         # select pin
         url(r'^find/$',
             login_required(FindPin.as_view()), name='find_pin'),
+
+        # search engine
+        url(r'^search/', include('haystack.urls')),
 
 
         ## view a pin

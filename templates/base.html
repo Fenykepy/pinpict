@@ -19,10 +19,15 @@
 <header id="banner-header" role="banner">
     <div id="header-wrapper">
     {% spaceless %}
-        <span class="accessibility-text">home</span>
-    </a>
-
     {# place search bar here :D #}
+        <div id="search-bar">
+            <form method="get" action="/pin/search/">
+                {% csrf_token %}
+                <input type="text" name="q" />
+                <input type="submit" value="search" />
+
+            </form>
+        </div>
     <h1 id="pinpict"><a href="{% url "home" %}"><span class="accessibility-text">Pinpict</span></a></h1>
     
     {% if user.is_authenticated %}

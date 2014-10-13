@@ -63,6 +63,15 @@ Run as `<my_user>`:
     $ pip3 manage.py test
 
 
+#### To set up search engine ####
+
+    $ python3 manage.py rebuild_index
+
+ * Add a cron job as often as you want :
+    
+    $ python3 manage.py update_index
+
+
 #### Launch development server ####
 
 Run as `<my_user>`:
@@ -406,3 +415,15 @@ Run as root
     # /etc/init.d/nginx restart
 
 Open http://pinpict.com (replacing `pinpict.com` by your domain, here and in each configuration files) in your favorite browser.
+
+
+
+#### To set up search engine ####
+
+    $ python3 manage.py rebuild_index
+
+ * Add a cron job as often as you want :
+    
+    $ python3 manage.py update_index
+
+

@@ -1,3 +1,5 @@
 django==1.7                     # django framework
 httplib2                        # Python alternative http librairy
 wand                            # Imaging librairy
+django-haystack
+whoosh
