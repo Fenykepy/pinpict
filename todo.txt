@@ -81,7 +81,7 @@
 #        - create login page and update test and pin.views
 #        - pass resource pk in session variable instead of url parameter
 #        - pass last visited board in session variable and put it as default in board select
-        - show warning if a pin exists on same board with same resource
+#        - show warning if a pin exists on same board with same resource
 #        - remove '------' in the board select
 #        - pin file upload form
 #        - pin source url form

@@ -117,6 +117,8 @@ class ChoosePinOrigin(TemplateView, AjaxableResponseMixin):
 def create_pin(request):
     """View to create a pin."""
 
+
+
     # from invalid pin_pict js button, redirect to find
     if (request.method == 'POST' and 'url' in request.POST
             and not 'src' in request.POST):
@@ -144,11 +146,16 @@ def create_pin(request):
             if request.session.get('last_visited_board'):
                 pin_form.initial['board'] = request.session['last_visited_board']
 
-
+            # search user's pins with this resource
+            pins = request.user.pin_user.filter(resource__source_file_url=form.cleaned_data['src'])
+            # get boards using this resource
+            boards = set([pin.board.title for pin in pins])
+            
             return render(request, 'pin/pin_create.html', {
                 'form': pin_form,
                 'src': form.cleaned_data['src'],
                 'submit': 'Pin it',
+                'boards': boards,
             })
 
     # form arrive from existing pin's pin it button
@@ -170,10 +177,16 @@ def create_pin(request):
             if request.session.get('last_visited_board'):
                 pin_form.initial['board'] = request.session['last_visited_board']
 
+            # search user's pins with this resource
+            pins = request.user.pin_user.filter(resource=pin.resource)
+            # get board using this resource
+            boards = set([pin.board.title for pin in pins])
+
             return render(request, 'pin/pin_create.html', {
                 'form': pin_form,
                 'resource': pin.resource,
                 'submit': 'Pin it',
+                'boards': boards,
             })
     
     ## final post to create the pin itself
@@ -254,7 +267,7 @@ def create_pin(request):
             form.initial['board'] = request.session['last_visited_board']
 
 
-
+    boards = None
     ## request arrive from upload pin with new uploaded file
     if request.session.get('pin_create_tmp_resource'):
         print(request.session['pin_create_tmp_resource'])
@@ -265,19 +278,29 @@ def create_pin(request):
             pk = request.session['pin_create_resource']
         )
         src = MEDIA_URL + 'previews/236/' + resource.previews_path
+        # search user's pins with this resource
+        pins = request.user.pin_user.filter(resource=resource)
+        # get board using this resource
+        boards = set([pin.board.title for pin in pins])
     ## pin arrives from find_pin or pin button
     elif request.session.get('pin_create_src'):
         src = request.session['pin_create_src']
+        # search user's pins with this resource
+        pins = request.user.pin_user.filter(resource__source_file_url=src)
+        # get boards using this resource
+        boards = set([pin.board.title for pin in pins])
 
     ## request is error
     else:
         # here should be some invalid form (no board in select or no description) handler !!!
         raise Http404
 
+    print(boards)
     return render(request, 'pin/pin_create.html', {
         'form': form,
         'src': src,
         'submit': 'Pin it',
+        'boards': boards,
     })
 
 

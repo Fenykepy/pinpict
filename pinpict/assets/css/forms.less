@@ -58,7 +58,7 @@ form {
     }
 }
 
-input, option, select, button, textarea, ul.errorlist li {
+input, option, select, button, textarea, ul.errorlist li, ul.warninglist li {
     width: 100%;
     border-radius: 4px;
     background: @58;
@@ -276,7 +276,24 @@ form ul.errorlist
         vertical-align: middle;
     }
 }
+// warning lists
 
+form ul.warninglist
+{
+    & + div.input_group input, & + div.input_group select {
+        box-shadow: 0 0 3px @orange;
+    }
+    li {
+        display: block;
+        margin-bottom: 15px;
+        border-color: @orange;
+        color: @orange;
+        height: 34px;
+        line-height: 20px;
+        .degrade(@orange-background + 10, @orange-background - 10, @orange-background);
+        vertical-align: middle;
+    }
+}
 
 div.input_group {
     display: table;

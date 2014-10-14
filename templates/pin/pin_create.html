@@ -21,6 +21,13 @@
 
         <div class="field_wrapper img">
             {{ form.board.label_tag }}<span class="red"> *</span>
+            {% if boards %}
+                <ul class="warninglist">
+                    {% for board in boards %}
+                    <li>This image is already in your board "{{ board }}"</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
             {{ form.board.errors }}
             {{ form.board }}
         </div>
