@@ -8,8 +8,11 @@ from board.models import Board
 class PinForm(ModelForm):
     """Pin creation and edition form."""
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
         super(PinForm, self).__init__(*args, **kwargs)
         self.fields['board'].empty_label = None
+        # take only user's boards
+        self.fields['board'].queryset = Board.objects.filter(user=self.user)
 
     class Meta:
         model = Pin

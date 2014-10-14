@@ -122,7 +122,7 @@ def create_pin(request):
     # from invalid pin_pict js button, redirect to find
     if (request.method == 'POST' and 'url' in request.POST
             and not 'src' in request.POST):
-        form = DownloadPinForm(request.POST)
+        form = DownloadPinForm(request.POST, user=request.user)
         if form.is_valid():
             url = form.cleaned_data['url']
             return redirect(reverse_lazy('find_pin') + '?url={}'.format(
@@ -138,8 +138,7 @@ def create_pin(request):
             # set session variables
             request.session['pin_create_source'] = form.cleaned_data['url']
             request.session['pin_create_src'] = form.cleaned_data['src']
-            pin_form = PinForm()
-            pin_form.fields["board"].queryset = Board.objects.filter(user=request.user)
+            pin_form = PinForm(user=request.user)
             pin_form.initial = {}
             if 'description' in form.cleaned_data:
                 pin_form.initial['description'] = form.cleaned_data['description']
@@ -170,8 +169,7 @@ def create_pin(request):
             if pin.pin_user and pin.pin_user != request.user:
                 request.session['pin_create_added_via'] = pin.pin_user.pk
 
-            pin_form = PinForm()
-            pin_form.fields["board"].queryset = Board.objects.filter(user=request.user)
+            pin_form = PinForm(user=request.user)
             pin_form.initial = {}
             pin_form.initial['description'] = pin.description
             if request.session.get('last_visited_board'):
@@ -191,7 +189,7 @@ def create_pin(request):
     
     ## final post to create the pin itself
     if request.method == 'POST':
-        form = PinForm(request.POST)
+        form = PinForm(request.POST, user=request.user)
         if form.is_valid():
             pin = form.save(commit=False)
 
@@ -260,8 +258,7 @@ def create_pin(request):
                 }))
 
     else:        
-        form = PinForm()
-        form.fields["board"].queryset = Board.objects.filter(user=request.user)
+        form = PinForm(user=request.user)
         form.initial = {}
         if request.session.get('last_visited_board'):
             form.initial['board'] = request.session['last_visited_board']
@@ -321,18 +318,35 @@ class UpdatePin(UpdateView, AjaxableResponseMixin):
 
     def get(self, request, *args, **kwargs):
         """
-        Handles get requests and instantiates a blank version of the form.
+        Handles GET requests and instantiates a blank version of the form.
         """
         self.object = self.get_object()
         # ensure user is pin's owner
         self.check_user()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        # ensure that only user's boards are listed
-        form.fields["board"].queryset = Board.objects.filter(user=request.user)
 
-        
         return self.render_to_response(self.get_context_data(form=form))
+
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for intantiating the form.
+        """
+
+        kwargs = {
+            'initial': self.get_initial(),
+            'prefix': self.get_prefix(),
+            'user': self.request.user,
+        }
+        if self.request.method in ('POST', 'PUT'):
+            kwargs.update({
+                'data': self.request.POST,
+                'files': self.request.FILES,
+            })
+        if hasattr(self, 'object'):
+            kwargs.update({'instance': self.object})
+        return kwargs
 
 
     def form_valid(self, form):
