@@ -95,8 +95,14 @@
     {% endwith %}
 </article>
 {% endif %}
-
-
+</section>
+<section id="pins">
+    <h1>Related pins</h1>
+    {% spaceless %}
+    {% for elem in mlt %}
+    {% include 'pin/pin_pin.html' with pin=elem %}
+    {% endfor %}
+    {% endspaceless %}
 </section>
 {% endwith %}
 {% endblock %}

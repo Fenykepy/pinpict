@@ -823,7 +823,8 @@ class PinUpdateTest(TestCase):
             'board': self.board2.pk,
             'description': 'New description',
         }, follow=True)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'pin/pin_create.html')
         # assert change hasn't been save in db
         pin = Pin.objects.get(pk=1)
         self.assertEqual(pin.board, self.board)
@@ -837,7 +838,8 @@ class PinUpdateTest(TestCase):
             'board': self.board2.pk,
             'description': 'New description',
         }, follow=True)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'pin/pin_create.html')
         # assert change hasn't been save in db
         pin = Pin.objects.get(pk=2)
         self.assertEqual(pin.description, 'Test pin for second board')

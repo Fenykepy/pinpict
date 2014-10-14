@@ -11,6 +11,8 @@ from django.utils.encoding import iri_to_uri
 from django.contrib.auth.decorators import login_required
 from django.core.files.images import ImageFile
 
+from haystack.query import SearchQuerySet
+
 from pinpict.settings import MEDIA_URL, MEDIA_ROOT
 from board.views import AjaxableResponseMixin
 from user.models import User
@@ -87,6 +89,12 @@ class PinView(DetailView):
                 raise Http404
 
         context = self.get_context_data(object=self.object)
+        # get more like this items
+        mlt_search = SearchQuerySet().more_like_this(self.object)[:20]
+        pk_list = [int(item.pk) for item in mlt_search]
+        mlt = Pin.objects.filter(pk__in=pk_list)
+        context['mlt'] = mlt
+        
         # get prev and next links
         board_pins = list(self.object.board.pin_set.values_list('id'))
         index = board_pins.index((self.object.id,))
@@ -122,7 +130,7 @@ def create_pin(request):
     # from invalid pin_pict js button, redirect to find
     if (request.method == 'POST' and 'url' in request.POST
             and not 'src' in request.POST):
-        form = DownloadPinForm(request.POST, user=request.user)
+        form = DownloadPinForm(request.POST)
         if form.is_valid():
             url = form.cleaned_data['url']
             return redirect(reverse_lazy('find_pin') + '?url={}'.format(
@@ -271,9 +279,12 @@ def create_pin(request):
         src = MEDIA_URL + request.session['pin_create_tmp_resource']
     ## request arrive from upload pin with no uploaded file (it exists)
     elif request.session.get('pin_create_resource'):
-        resource = Resource.objects.get(
-            pk = request.session['pin_create_resource']
-        )
+        try:
+            resource = Resource.objects.get(
+                pk = request.session['pin_create_resource']
+            )
+        except:
+            raise Http404
         src = MEDIA_URL + 'previews/236/' + resource.previews_path
         # search user's pins with this resource
         pins = request.user.pin_user.filter(resource=resource)
@@ -292,7 +303,6 @@ def create_pin(request):
         # here should be some invalid form (no board in select or no description) handler !!!
         raise Http404
 
-    print(boards)
     return render(request, 'pin/pin_create.html', {
         'form': form,
         'src': src,
