@@ -1,6 +1,3 @@
 {{ object.description }}
 {{ object.board.title }}
 {{ object.board.description }}
-{{ object.pin_user.username }}
-{{ object.pin_user.last_name }}
-{{ object.pin_user.first_name }}

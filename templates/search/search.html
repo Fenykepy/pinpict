@@ -6,7 +6,7 @@
 <section id="pins">
     {% for result in page.object_list %}
     {% with pin=result.object %}
-    {% include 'pin/pin_pin.html' %}
+    {% include 'pin/pin_pin.html' with display_user=True %}
     {% endwith %}
     {% empty %}
     <article id="error">

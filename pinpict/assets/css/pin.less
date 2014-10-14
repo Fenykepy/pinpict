@@ -104,9 +104,19 @@ article.pin, article.pin-standalone {
             overflow: hidden;
             text-overflow: ellipsis;
             display: block;
+            position: relative;
             height: 100%;
+            min-height: 34px;
             color: @22;
             line-height: 17px;
+            img {
+                box-shadow: 0 0 3px @00;
+                position: relative;
+                left: -7px;
+                width: 34px;
+                height: 34px;
+                float: left;
+            }
             &:hover, &:focus, &:hover {
                 background-color: @58;
                 color: @22;
