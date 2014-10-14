@@ -67,9 +67,6 @@ Run as `<my_user>`:
 
     $ python3 manage.py rebuild_index
 
- * Add a cron job as often as you want :
-    
-    $ python3 manage.py update_index
 
 
 #### Launch development server ####
@@ -421,6 +418,13 @@ Open http://pinpict.com (replacing `pinpict.com` by your domain, here and in eac
 #### To set up search engine ####
 
     $ python3 manage.py rebuild_index
+
+By default index get update at each Pin model save or delete.
+To set up a Timelaps between updates:
+
+ * comment this line in your `pinpict/prod_settings.py`
+
+    HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
  * Add a cron job as often as you want :
     

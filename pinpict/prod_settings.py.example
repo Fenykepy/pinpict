@@ -23,6 +23,10 @@ DEFAULT_FROM_EMAIL = 'pro@lavilotte-rolle.fr' # from email for normal messages
 SERVER_EMAIL = DEFAULT_FROM_EMAIL # from email for error messages
 EMAIL_SUBJECT_PREFIX = '[Pin Pict]'
 
+# search engine real time update by default
+# comment it and add a cron job as often as you want with following command:
+# python3 manage.py update_index
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 
 ## for production

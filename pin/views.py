@@ -177,7 +177,7 @@ def create_pin(request):
             })
     
     ## final post to create the pin itself
-    if (request.method == 'POST' and 'description' in request.POST):
+    if request.method == 'POST':
         form = PinForm(request.POST)
         if form.is_valid():
             pin = form.save(commit=False)
@@ -233,7 +233,6 @@ def create_pin(request):
 
                 del request.session['pin_create_tmp_resource']
             else:
-                #print('return false')
                 # raise an resource error
                 return False
             
@@ -246,38 +245,41 @@ def create_pin(request):
                     'user': request.user.slug,
                     'board': pin.board.slug
                 }))
-    
-    if request.method == 'GET':
-        ## request arrive from upload pin with new uploaded file
-        if request.session.get('pin_create_tmp_resource'):
-            print(request.session['pin_create_tmp_resource'])
-            src = MEDIA_URL + request.session['pin_create_tmp_resource']
-        ## request arrive from upload pin with no uploaded file (it exists)
-        elif request.session.get('pin_create_resource'):
-            resource = Resource.objects.get(
-                pk = request.session['pin_create_resource']
-            )
-            src = MEDIA_URL + 'previews/236/' + resource.previews_path
-            del request.session['pin_create_resource']
-        ## request is error
-        else:
-            # here should be some invalid form (no board in select or no description) handler !!!
-            raise Http404
-            
-        pin_form = PinForm()
-        pin_form.fields["board"].queryset = Board.objects.filter(user=request.user)
-        pin_form.initial = {}
+
+    else:        
+        form = PinForm()
+        form.fields["board"].queryset = Board.objects.filter(user=request.user)
+        form.initial = {}
         if request.session.get('last_visited_board'):
-            pin_form.initial['board'] = request.session['last_visited_board']
+            form.initial['board'] = request.session['last_visited_board']
 
-        return render(request, 'pin/pin_create.html', {
-            'form': pin_form,
-            'src': src,
-            'submit': 'Pin it',
-        })
 
-    # in all other cases return 404
-    raise Http404
+
+    ## request arrive from upload pin with new uploaded file
+    if request.session.get('pin_create_tmp_resource'):
+        print(request.session['pin_create_tmp_resource'])
+        src = MEDIA_URL + request.session['pin_create_tmp_resource']
+    ## request arrive from upload pin with no uploaded file (it exists)
+    elif request.session.get('pin_create_resource'):
+        resource = Resource.objects.get(
+            pk = request.session['pin_create_resource']
+        )
+        src = MEDIA_URL + 'previews/236/' + resource.previews_path
+    ## pin arrives from find_pin or pin button
+    elif request.session.get('pin_create_src'):
+        src = request.session['pin_create_src']
+
+    ## request is error
+    else:
+        # here should be some invalid form (no board in select or no description) handler !!!
+        raise Http404
+
+    return render(request, 'pin/pin_create.html', {
+        'form': form,
+        'src': src,
+        'submit': 'Pin it',
+    })
+
 
 
 
