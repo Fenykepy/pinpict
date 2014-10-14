@@ -38,6 +38,9 @@ DATABASES = {
     }
 }
 
+# search engine real time update for developpement
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '#v04u18pw)rsgry7fhw*7)t0^)nm!l6fod90fb7y8ckbu0u8yx'
 

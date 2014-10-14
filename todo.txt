@@ -40,8 +40,10 @@
 #    - remove '------' from board_create form policy select
 #    - header with:
 #        - user info
-        - search bar
-            - https://github.com/djangonauts/djorm-ext-pgfulltext 
+#        - search bar
+#            - https://github.com/djangonauts/djorm-ext-pgfulltext 
+            - keep searched text in form after submit
+            - test it
 #    - board creation form
         - add a field for a cover pin/resource
 #    - board update form

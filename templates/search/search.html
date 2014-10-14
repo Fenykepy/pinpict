@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block body %}
-
+{% spaceless %}
 <section id="pins">
     {% for result in page.object_list %}
     {% with pin=result.object %}
@@ -23,4 +23,5 @@
     </div>
     {% endif %}
 </section>
+{% endspaceless %}
 {% endblock %}

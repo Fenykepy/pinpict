@@ -37,6 +37,12 @@ var/
 *.swo
 *.swn
 
+# whoosh indexes
+pinpict/whoosh_index/*
+pinpict/whoosh_index/*/
+*.toc
+*.seg
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt

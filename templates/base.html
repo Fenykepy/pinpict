@@ -9,23 +9,20 @@
     {% load static %}
     
     {# PROD: compiled file #}
-    <link rel="stylesheet" href="{% static 'css/pinpict.min.css' %}" />{# PROD #}
+    {#<link rel="stylesheet" href="{% static 'css/pinpict.min.css' %}" />{# PROD #}
     
     {# DEVEL: less file #}
-    {#<link rel="stylesheet/less" href="{% static 'css/controller.less' %}" />{# DEVEL #}
+    <link rel="stylesheet/less" href="{% static 'css/controller.less' %}" />{# DEVEL #}
 </head>
 <body>
 {% block header %}
 <header id="banner-header" role="banner">
     <div id="header-wrapper">
     {% spaceless %}
-    {# place search bar here :D #}
         <div id="search-bar">
             <form method="get" action="/pin/search/">
-                {% csrf_token %}
                 <input type="text" name="q" />
-                <input type="submit" value="search" />
-
+                <input type="submit" value="S" />
             </form>
         </div>
     <h1 id="pinpict"><a href="{% url "home" %}"><span class="accessibility-text">Pinpict</span></a></h1>
