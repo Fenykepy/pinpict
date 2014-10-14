@@ -106,6 +106,7 @@
     
 #    - in case of 404 of one image, they other stay hidden in js script
 #    - user with no board sees all boards (which doesn't belong to him) in select
+    - user with no board sees all boards (which doesn't belong to him) in select, after error in form
 #    - user with no board see 404 instead of error messages in PinForm with only pin_description
 #        - split create_pin in differents urls (not visible for user) and classes (or functions)
 #    - add an error page, with "it seems that something went wrong, our engineers received a notification about it" and serve it in case of error scanning or adding pin. (instead of returning False)
