@@ -42,8 +42,8 @@
 #        - user info
 #        - search bar
 #            - https://github.com/djangonauts/djorm-ext-pgfulltext 
-            - keep searched text in form after submit
-            - test it
+#            - keep searched text in form after submit
+#            - test it
 #    - board creation form
         - add a field for a cover pin/resource
 #    - board update form
@@ -149,6 +149,8 @@
 #    - put bigger line-height in pin descriptions
 #    - add a display block to source link under pins (if url is long, it overflows)
     - fonts display in different browsers / os
+    - placeholder style for search form
+    - disposition of pagination of searchs
 
 ==== Media creation ====
     - create a lock logo for private boards

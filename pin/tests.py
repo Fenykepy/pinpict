@@ -1418,6 +1418,51 @@ class FindPinTest(TestCase):
         self.assertEqual(response.context['url'], 'http://lavilotte-rolle.fr/tmp/pinpict_tests/999.jpg')
 
 
+
+class PinSearchTest(TestCase):
+    """Test search for pins."""
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # create resources
+        create_test_resources(self)
+        # create test boards
+        create_test_boards(self)
+        # create pins
+        create_test_pins(self)
+        # launch client
+        self.client = Client()
+
+
+    def test_urls(self):
+        urls = [
+            # user should be connected
+            {
+                'url': '/pin/search/?q=toto',
+                'status': 200,
+                'template': 'search/search.html',
+            },
+            {
+                'url': '/pin/search/',
+                'status': 200,
+                'template': 'search/search.html',
+            },
+        ]
+        test_urls(self, urls)
+
+    def test_search_results(self):
+        response = self.client.get('/pin/search/?q=Test')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['page'].object_list), 2)
+
+        response = self.client.get('/pin/search/?q=secOnd')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['page'].object_list), 1)
+
+
+
+
+
 class PinPolicyTest(TestCase):
     """Test policy of pins."""
     def setUp(self):

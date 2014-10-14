@@ -21,7 +21,7 @@
     {% spaceless %}
         <div id="search-bar">
             <form method="get" action="/pin/search/">
-                <input type="text" name="q" />
+                <input type="text" name="q" placeholder="search" value="{{ query }}" />
                 <input type="submit" value="S" />
             </form>
         </div>
