@@ -428,7 +428,7 @@ class PinCreationTest(TestCase):
             'description': 'Description of pin',
         }, follow = True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'pin/pin_list.html')
+        self.assertEqual(response.templates[0].name, 'pin/pin_board_list.html')
         # assert pin is in db
         pins = Pin.objects.filter(board=self.board, description='Description of pin')
         self.assertEqual(len(pins), 1)
@@ -474,7 +474,7 @@ class PinCreationTest(TestCase):
             'description': 'Description of pin',
         }, follow = True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'pin/pin_list.html')
+        self.assertEqual(response.templates[0].name, 'pin/pin_board_list.html')
 
         # delete tmp file if still any (in case of error)
         if os.path.exists(tmp_path):
@@ -511,7 +511,7 @@ class PinCreationTest(TestCase):
             'description': 'Description of pin',
         }, follow = True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'pin/pin_list.html')
+        self.assertEqual(response.templates[0].name, 'pin/pin_board_list.html')
         # assert pin is in db
         pins = Pin.objects.filter(board=self.board, description='Description of pin')
         self.assertEqual(len(pins), 1)
@@ -552,7 +552,7 @@ class PinCreationTest(TestCase):
             'description': 'Description of pin',
         }, follow = True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'pin/pin_list.html')
+        self.assertEqual(response.templates[0].name, 'pin/pin_board_list.html')
         # assert pin is in db
         pins = Pin.objects.filter(board=self.board, description='Description of pin')
         self.assertEqual(len(pins), 1)
@@ -637,7 +637,7 @@ class PinCreationTest(TestCase):
             'description': 'Pinned from an url',
         }, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'pin/pin_list.html')
+        self.assertEqual(response.templates[0].name, 'pin/pin_board_list.html')
         # assert pin is now in db
         pins = Pin.objects.filter(board=self.board, description='Pinned from an url')
         self.assertEqual(len(pins), 1)
@@ -925,7 +925,7 @@ class PinDeleteTest(TestCase):
         response = self.client.post('/pin/1/delete/',
                 follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'pin/pin_list.html')
+        self.assertEqual(response.templates[0].name, 'pin/pin_board_list.html')
         
         # assert pin has been deleted
         n_pins = Pin.objects.all().count()
@@ -1060,11 +1060,31 @@ class PinViewTest(TestCase):
         ]
         test_urls(self, urls)
 
+        # make user2 staff member
+        self.user2.is_staff = True
+        self.user2.save()
+        # login with user2
+        login(self, self.user2)
+
+        urls = [
+            # private pin of other user should be accessible
+            {
+                'url': '/pin/3/',
+                'status': 200,
+                'template': 'pin/pin_view.html',
+            },
+        ]
+        test_urls(self, urls)
+
+
+
 
     def test_unlogged_pin_view(self):
         """Assert context shows good pin."""
         response = self.client.get('/pin/1/')
         self.assertEqual(response.context['pin'].pk, 1)
+        # test related pins
+        self.assertEqual(len(response.context['mlt']), 3)
         # test links to next and previous pins
         self.assertEqual(response.context['next'], False)
         self.assertEqual(response.context['prev'], False)
@@ -1166,6 +1186,24 @@ class ListUserPins(TestCase):
         response = self.client.get('/flr/pins/')
         self.assertEqual(len(response.context['pins']), 1)
 
+        # login with user owner
+        login(self, self.user)
+        response = self.client.get('/flr/pins/')
+        self.assertEqual(len(response.context['pins']), 3)
+        
+        # login with user2 (not owner)
+        login(self, self.user2)
+        response = self.client.get('/flr/pins/')
+        self.assertEqual(len(response.context['pins']), 1)
+
+        # pass user2 as staff
+        self.user2.is_staff = True
+        self.user2.save()
+        # login with user2
+        login(self, self.user2)
+        response = self.client.get('/flr/pins/')
+        self.assertEqual(len(response.context['pins']), 3)
+
 
 
 class ListBoardPins(TestCase):
@@ -1194,13 +1232,13 @@ class ListBoardPins(TestCase):
             {
                 'url': '/flr/user-board/',
                 'status': 200,
-                'template': 'pin/pin_list.html',
+                'template': 'pin/pin_board_list.html',
             },
             # private board's pins list !!! to change after creating login page !!!
             {
                 'url': '/flr/private-board/',
-                'status': 404,
-                'template': '404.html',
+                'status': 302,
+                'template': 'user/user_login.html',
             },
             # not existing board and user
             {
@@ -1233,19 +1271,19 @@ class ListBoardPins(TestCase):
             {
                 'url': '/flr/user-board/',
                 'status': 200,
-                'template': 'pin/pin_list.html',
+                'template': 'pin/pin_board_list.html',
             },
             # public board of other user
             {
                 'url': '/toto/user2-board/',
                 'status': 200,
-                'template': 'pin/pin_list.html',
+                'template': 'pin/pin_board_list.html',
             },
             # private board of user
             {
                 'url': '/flr/private-board/',
                 'status': 200,
-                'template': 'pin/pin_list.html',
+                'template': 'pin/pin_board_list.html',
             },
         ]
         test_urls(self, urls)
@@ -1259,6 +1297,22 @@ class ListBoardPins(TestCase):
                 'url': '/flr/private-board/',
                 'status': 404,
                 'template': '404.html',
+            },
+        ]
+        test_urls(self, urls)
+        
+        # create staff user
+        self.user2.is_staff = True
+        self.user2.save()
+        # login with staff user
+        login(self, self.user2)
+
+        urls = [
+            # should be able to access private board of other user
+            {
+                'url': '/flr/private-board/',
+                'status': 200,
+                'template': 'pin/pin_board_list.html',
             },
         ]
         test_urls(self, urls)

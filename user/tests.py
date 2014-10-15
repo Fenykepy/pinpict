@@ -112,7 +112,7 @@ class UserLoginTest(TestCase):
         self.assertTrue(response.context['user'].is_authenticated())
         # user is redirected to his board page
         self.assertEqual(response.templates[0].name,
-                'board/board_list.html')
+                'pin/pin_list.html')
 
 
     def test_login_with_wrong_password(self):

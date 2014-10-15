@@ -29,7 +29,7 @@ class ListBoardPins(ListView):
     """List all pins of a board."""
     model = Pin
     context_object_name = 'pins'
-    template_name = 'pin/pin_list.html'
+    template_name = 'pin/pin_board_list.html'
 
     def get_queryset(self):
         self.user = get_object_or_404(User, slug=self.kwargs['user'])
@@ -37,17 +37,31 @@ class ListBoardPins(ListView):
                 user=self.user)
         # add session variable to store last visited board
         self.request.session['last_visited_board'] = self.board.pk
-        # if board is private
-        if self.board.policy == 0:
-            # if user isn't logged in, redirect to login page
-            if not self.request.user.is_authenticated():
-                #redirect(LOGIN_URL)!!!
-                raise Http404
-            # if user isn't board owner, raise 404
-            elif self.board.user != self.request.user:
-                raise Http404
+        # if board is private and user is not board owner or staff member,
+        # raise 404
+        if (self.board.policy == 0 and self.request.user.is_authenticated()
+            and self.board.user != self.request.user and not self.request.user.is_staff):
+            raise Http404
         return self.board.pin_set.all()
 
+
+    def render_to_response(self, context, **response_kwargs):
+        """
+        Returns a response, using the `response_class` for this
+        view, with a template rendered with the given context.
+        If any keyword arguments are provided, they will be
+        passed to the constructor of the response class.
+        """
+        if self.board.policy == 0 and not self.request.user.is_authenticated():
+            # if board is private and user isn't logged in, redirect to login page
+            return redirect(reverse_lazy('user_login'))
+        response_kwargs.setdefault('content_type', self.content_type)
+        return self.response_class(
+            request=self.request,
+            template=self.get_template_names(),
+            context=context,
+            **response_kwargs
+        )
     def get_context_data(self, **kwargs):
         context = super(ListBoardPins, self).get_context_data(**kwargs)
         context['board'] = self.board
@@ -65,7 +79,8 @@ class ListUserPins(ListView):
 
     def get_queryset(self):
         self.user = get_object_or_404(User, slug=self.kwargs['user'])
-
+        if self.request.user == self.user or self.request.user.is_staff:
+            return self.user.pin_user.all().order_by('-date_created')
         return self.user.pin_user.filter(policy=1).order_by('-date_created')
 
     def get_context_data(self, **kwargs):
@@ -74,6 +89,18 @@ class ListUserPins(ListView):
 
         return context
 
+
+
+class ListLastPins(ListView):
+    """List last created pins."""
+    model = Pin
+    context_object_name = 'pins'
+    template_name = 'pin/pin_list.html'
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return Pin.objects.all().order_by('-date_created')[:200]
+        return Pin.objects.filter(policy=1).order_by('-date_created')[:200]
 
 
 class PinView(DetailView):
@@ -85,7 +112,8 @@ class PinView(DetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         if (self.object.board.policy == 0 
-            and self.object.board.user != self.request.user):
+            and self.object.board.user != self.request.user 
+            and not self.request.user.is_staff):
                 raise Http404
 
         context = self.get_context_data(object=self.object)

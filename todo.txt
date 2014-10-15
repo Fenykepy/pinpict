@@ -31,7 +31,7 @@
 #    - profil page
 #    - add link to navigate between pin views
 #    - add an article nder pin_view with a link to user pin was added via.
-    - add an article under pin_view with preview of other pins from board.
+#    - add an article under pin_view with preview of other pins from board.
     - add a field with 0-5 owner rating
 #    - redirect to pin_list and not board_list after pin_update or create cancel
 #    - redirect to pin_list and not board_list after pin_delete cancel
@@ -115,6 +115,9 @@
 #        or not, it fails with upload too :( works with sqlite
 #    - Encode url before retrieve if they are not
 #    - change pillow librairy for something better.
+    - add a last_pins (private and public if user is staff, public else) view as home page (and has background for login form if user isn't)
+    - add a new_user view for staff members
+    - allow staff members to see users private boards.
 
 
 ==== JavaScript ====
@@ -130,6 +133,7 @@
 #   - justify pins
 #       - justify again when window size changes
 #    - test with firefox
+    - add navigation with arrows in pin_view
 
 ==== CSS ====
 #   - inline block for all article.pin

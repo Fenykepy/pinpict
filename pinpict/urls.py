@@ -12,7 +12,7 @@ from pinpict.sitemaps import UserSitemap, BoardSitemap, PinSitemap
 from board.views import *
 from user.views import LoginView, RegistrationView, ProfilView, \
         PasswordView, RecoveryView
-from pin.views import ListBoardPins, ListUserPins
+from pin.views import ListBoardPins, ListUserPins, ListLastPins
 
 admin.autodiscover()
 
@@ -60,7 +60,7 @@ urlpatterns = patterns('',
         ListUserPins.as_view(), name='user_pins'),
 
     ## home page
-    url(r'^$', 'pinpict.views.home', name='home'),
+    url(r'^$', login_required(ListLastPins.as_view()), name='home'),
 
     ### board creation
     ## public board creation

@@ -35,8 +35,8 @@ class HomePageTest(TestCase):
             # should redirect to user page
             {
                 'url': '/',
-                'status': 302,
-                'template': 'board/board_list.html',
+                'status': 200,
+                'template': 'pin/pin_list.html',
             },
         ]
         test_urls(self, urls)

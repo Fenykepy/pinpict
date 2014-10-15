@@ -7,49 +7,10 @@
 {% block body %}
 {% spaceless %}
 <section id="pins">
-<header>
-    <h1>{{ board.title }}</h1>
-    {% if board.description %}
-        <p id="description">{{ board.description }}</p>
-    {% endif %}
-    <p id="n-pins">{{ board.n_pins }} pin{{ board.n_pins|pluralize }}</p>
-    {% if board.policy == 0 %}
-    <p id="private">This board is private</p>
-    {% endif %}
+    <h1>Last pins on Pin Pict</h1>
 </header>
-<div id="user-wrapper">
-<article id="user-compact">
-    {% if owner.avatar %}
-        <a href="{% url "boards_list" owner.username %}"><img src="{{ MEDIA_URL }}{{ owner.avatar }}" /></a>
-    {% else %}
-        <a href="{% url "boards_list" owner.username %}"><img src="{% static 'images/structure/default_avatar.png' %}" /></a>
-    {% endif %}
-    {% if user == owner %}
-    <a href="{% url "board_update" owner.slug board.slug %}" title="Edit board"><button>Edit board</button></a>
-    {% else %}
-        {# add follow link here #}
-    {% endif %}
-    <h2><a href="{% url "boards_list" owner.username %}">
-    {% if owner.first_name or owner.last_name %}
-    {{ owner.first_name }} {{ owner.last_name }}
-    {% else %}
-    {{ owner.username }}
-    {% endif %}</a></h2>
-    {% if owner.website %}
-    <div class="user-website"><a href="{{ owner.website }}" target="_blank">{{ owner.website }}</a></div>
-    {% endif %}
-</article>
-</div>
-{% if user.is_authenticated and user == owner %}
-<article id="create-pin" class="pin">
-    <a href="{% url "choose_origin_pin" %}">
-    <div class="plus"></div>
-    <h1>Add a pin</h1>
-    </a>
-</article>
-{% endif %}
-{% for pin in board.pin_set.all %}
-{% include 'pin/pin_pin.html' %}
+{% for pin in pins %}
+{% include 'pin/pin_pin.html' with display_user=True %}
 {% endfor %}
 {% endspaceless %}
 </section>

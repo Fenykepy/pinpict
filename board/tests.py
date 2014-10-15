@@ -514,4 +514,29 @@ class BoardListTest(TestCase):
         self.assertEqual(response.context['private_boards'][0].title,
                 'private board')
 
+    def test_board_list_with_staff_user(self):
+        # create a private board for user2
+        self.privateBoard2 = Board(
+            title='private board2',
+            description='user2 private board for tests',
+            policy=0,
+            user = self.user2)
+        self.privateBoard2.save()
+
+        # add a staff user
+        self.user2.is_staff = True
+        self.user2.save()
+        # login with user
+        login(self, self.user)
+
+        response = self.client.get('/toto/')
+        self.assertEqual(response.status_code, 200)
+        # assert we have public boards
+        self.assertEqual(len(response.context['boards']), 1)
+        self.assertEqual(response.context['boards'][0].title, 'user2 board')
+        # assert we have private boards
+        self.assertEqual(len(response.context['private_boards']), 1)
+        self.assertEqual(response.context['private_boards'][0].title,
+                'private board2')
+
 

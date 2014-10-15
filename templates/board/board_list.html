@@ -97,17 +97,19 @@
 </section>
 
 
-{% if user.is_authenticated and user == owner %}
+{% if user.is_authenticated and user == owner or user.is_staff %}
 {% spaceless %}
 <div id="private-boards-wrapper">
 <section id="private-boards">
     <h2>Private boards</h2>
+{% if user == owner %}
 <article class="create-board">
     <a href="{% url "private_board_create" %}">
         <div class="plus"></div>
     <h1>Create a private board</h1>
     </a>
 </article>
+{% endif %}
 {% for board in private_boards %}
 <article class="board" id="{{ board.id }}">
     <a class="board-previews" href="{% url "board_view" board.user.slug board.slug %}" title="More from {{ board.title }}">

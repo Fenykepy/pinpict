@@ -23,7 +23,7 @@ class ListBoards(ListView):
         context = super(ListBoards, self).get_context_data(**kwargs)
         #context['range4'] = [i+1 for i in range(4)]
         context['owner'] = self.user
-        if self.user == self.request.user:
+        if self.user == self.request.user or self.request.user.is_staff:
             context['private_boards'] = Board.privates.filter(user=self.user)
 
         return context
