@@ -42,6 +42,10 @@
         <ul id="user-menu">
             <li><a href="{% url "boards_list" user.slug %}">My boards</a></li>
             <li><a href="{% url "user_profil" %}">Profil</a></li>
+            {% if user.is_staff %}
+            <li><a href="/admin/">Admin</a></li>
+            {% endif %}
+            <hr />
             <li><a href="{% url "user_logout" %}">Logout</a></li>
         </ul>
     </div>

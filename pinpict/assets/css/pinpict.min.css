@@ -22,14 +22,14 @@ a,a:visited{color:#000}a:hover,a:visited:hover{color:#fff}
 #banner-header hr{height:1px;border:none;color:#444;margin:8px 0 0;background-color:#444}
 #header-wrapper{height:45px;position:relative}
 #search-bar{width:300px;position:absolute;top:11px;left:20px;margin:0}#search-bar form,#search-bar input{margin:0;display:inline-block}
-#search-bar input[type="submit"]{width:34px;border-radius:0 3px 3px 0}
-#search-bar input[type="text"]{width:266px;border:none;height:32px;border-radius:3px 0 0 3px;background-color:#505050;box-shadow:0 0 6px #313131 inset}#search-bar input[type="text"]:focus,#search-bar input[type="text"]:active{background-color:#585858}
+#search-bar input[type="submit"]{width:34px;padding:0;border-radius:0 3px 3px 0}
+#search-bar input[type="text"]{box-sizing:border-box;width:266px;border:none;height:32px;border-radius:3px 0 0 3px;background-color:#666;background:#666;background:-webkit-linear-gradient(#505050, #666);background:-moz-linear-gradient(#505050, #666);background:-ms-linear-gradient(#505050, #666);background:-o-linear-gradient(#505050, #666);background:linear-gradient(#505050, #666);box-shadow:0 0 3px #313131 inset}#search-bar input[type="text"]:focus,#search-bar input[type="text"]:active{background-color:#737373;background:#737373;background:-webkit-linear-gradient(#666, #737373);background:-moz-linear-gradient(#666, #737373);background:-ms-linear-gradient(#666, #737373);background:-o-linear-gradient(#666, #737373);background:linear-gradient(#666, #737373)}
 #user-bar,#login-button{width:200px;border-radius:3px;padding:3px 6px 3px 36px;position:absolute;top:11px;right:20px;background-color:#666;color:#000;height:32px;line-height:26px;vertical-align:middle;box-sizing:border-box;background:#666;background:-webkit-linear-gradient(#737373, #404040);background:-moz-linear-gradient(#737373, #404040);background:-ms-linear-gradient(#737373, #404040);background:-o-linear-gradient(#737373, #404040);background:linear-gradient(#737373, #404040)}#user-bar img,#login-button img{box-shadow:0 0 3px #000;position:absolute;width:22px;height:22px;top:5px;left:7px;margin-right:7px}
-#user-bar ul,#login-button ul{width:auto;line-height:30px;border:1px solid #222;border-radius:4px;background-color:#666;margin-top:3px;padding:10px 0}#user-bar ul a,#login-button ul a{display:block;padding:0 10px;height:100%;font-size:.9em}
+#user-bar ul,#login-button ul{position:absolute;top:29px;right:4px;width:190px;line-height:30px;border:1px solid #222;border-radius:0 0 4px 4px;background-color:#666;margin-top:3px;padding:5px 0}#user-bar ul a,#login-button ul a{display:block;padding:0 10px;height:100%;font-size:.9em}
 #user-bar ul a:hover,#login-button ul a:hover,#user-bar ul a:focus,#login-button ul a:focus,#user-bar ul a:active,#login-button ul a:active{color:#000;background-color:#585858}
 #login-button{width:90px;padding:3px 6px;text-align:center}
 #pinpict{background:url("../images/structure/pinpict.png") center bottom no-repeat}
-#user-menu{position:relative;display:none;z-index:100;background:#666;border-radius:0 3px 0 3px}
+#user-menu{display:none;z-index:100;background:#666}#user-menu hr{margin:6px 0}
 #user-bar:hover>#user-menu{display:block}
 #error{padding:10px;font-size:1.2em;text-align:center}#error h1{font-size:6em;font-weight:bold;margin-top:50px;margin-bottom:20px}
 .arrow{content:"";position:absolute;height:0;width:0}

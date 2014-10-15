@@ -115,9 +115,17 @@
 #        or not, it fails with upload too :( works with sqlite
 #    - Encode url before retrieve if they are not
 #    - change pillow librairy for something better.
-    - add a last_pins (private and public if user is staff, public else) view as home page (and has background for login form if user isn't)
+#    - add a last_pins (private and public if user is staff, public else) view as home page
+        - and has background for login form if user isn't
     - add a new_user view for staff members
-    - allow staff members to see users private boards.
+#    - allow staff members to see users private boards.
+    - add search tabs links in top of search page results 
+        - all pins
+        - your pins
+        - boards
+        - users
+#    - add a link to admin page in user menu if he is staff member
+
 
 
 ==== JavaScript ====
@@ -156,6 +164,7 @@
     - fonts display in different browsers / os
     - placeholder style for search form
     - disposition of pagination of searchs
+#    - title of last pins list.
 
 ==== Media creation ====
     - create a lock logo for private boards
