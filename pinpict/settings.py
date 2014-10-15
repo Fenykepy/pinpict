@@ -39,11 +39,13 @@ RESERVED_WORDS = (
         'profil',
         'register',
         'recovery',
+        'page',
 )
 
 # words that can't be used as board name
 BOARD_RESERVED_WORDS = (
         'pins',
+        'page',
 )
 
 # max size for avatar img (side in px)
@@ -85,6 +87,16 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     #'debug_toolbar.middleware.DebugToolbarMiddleware', # comment for prod
+)
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.core.context_processors.tz",
+    "django.contrib.messages.context_processors.messages",
+    'django.core.context_processors.request',
 )
 
 ROOT_URLCONF = 'pinpict.urls'

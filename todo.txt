@@ -22,7 +22,7 @@
 #        - add "pins" as forbidden slug for boards
 #    - add some kind of sitemap for bots index
     - add pagination by 300 for user list_pins
-        - or js infinite scroll
+        - or js infinite scroll by 50
 #    - registration form
 #    - password recovery
 #    - profil form

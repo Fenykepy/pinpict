@@ -54,6 +54,11 @@ urlpatterns = patterns('',
 
     ## password changement
     url(r'^profil/password/$', login_required(PasswordView.as_view()), name='user_password'),
+    
+    ## home page with pagination
+    url(r'^page/(?P<page>\d+)/$',
+        login_required(ListLastPins.as_view()), name='home'),
+
 
     ## user pins list
     url(r'^(?P<user>[-\w]+)/pins/$',

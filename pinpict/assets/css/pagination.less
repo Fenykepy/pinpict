@@ -1,0 +1,40 @@
+#pagination {
+    padding: 30px 5%;
+    margin: 14px auto;
+    box-shadow: 0 0 8px #000;
+    background-color: @articles-bg;
+    border-radius: 4px;
+    text-align: center;
+    hr {
+        height: 0px;
+        border: none;
+        border-top: 1px solid @31;
+        border-bottom: 1px solid @66 + 20;
+    }
+    li {
+        color: @22;
+        height: 40px;
+        line-height: 40px;
+        min-width: 20px;
+        padding: 0 10px;
+        display: inline-block;
+        vertical-align: middle;
+        margin: 0.5em;
+        border: 1px solid @31;
+        box-shadow: 1px 1px 0 @66 + 20, inset 0px 0px 8px 2px @66 - 20;
+        border-radius: 4px;
+    }
+    li#actual, a:hover li, a:active li, a:focus li {
+        border: 1px solid @00;
+        .degrade(@40, @22, @44);
+        color: @CC;
+        box-shadow: 0 0 1px @00;
+    }
+    a:hover li, a:focus li {
+        color: @FF;
+    }
+    a:active li {
+        color: @FF;
+        box-shadow: 0 0 3px @00;
+    }
+}

@@ -3,6 +3,7 @@ import os
 from django.views.generic import ListView, DetailView, \
         CreateView, UpdateView, DeleteView, TemplateView, \
         FormView
+from django.views.generic.base import ContextMixin
 from django.core.urlresolvers import reverse_lazy
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
@@ -22,14 +23,29 @@ from pin.forms import PinForm, UploadPinForm, PinUrlForm, DownloadPinForm,\
         RePinForm
 from pin.utils import get_sha1_hexdigest, scan_html_for_picts
 
+MAX_PIN_PER_PAGE = 3
 
 
+class ListPinsMixin(ContextMixin):
+    """Mixin to get common context for list pin views."""
+    def get_context_data(self, **kwargs):
+        context = super(ListPinsMixin, self).get_context_data(**kwargs)
 
-class ListBoardPins(ListView):
+        # for pagination links max and min
+        if 'page' in self.kwargs:
+            page = int(self.kwargs['page'])
+            context['slice'] = "{}:{}".format(page - 4, page + 3)
+            print(context['slice'])
+        
+        return context
+
+
+class ListBoardPins(ListView, ListPinsMixin):
     """List all pins of a board."""
     model = Pin
     context_object_name = 'pins'
     template_name = 'pin/pin_board_list.html'
+    paginate_by = MAX_PIN_PER_PAGE
 
     def get_queryset(self):
         self.user = get_object_or_404(User, slug=self.kwargs['user'])
@@ -62,20 +78,23 @@ class ListBoardPins(ListView):
             context=context,
             **response_kwargs
         )
+
+
     def get_context_data(self, **kwargs):
         context = super(ListBoardPins, self).get_context_data(**kwargs)
         context['board'] = self.board
         context['owner'] = self.user
-
+        
         return context
 
 
 
-class ListUserPins(ListView):
+class ListUserPins(ListView, ListPinsMixin):
     """List all pins of a user."""
     model = Pin
     context_object_name = 'pins'
     template_name = 'pin/pin_user_list.html'
+    paginate_by = MAX_PIN_PER_PAGE
 
     def get_queryset(self):
         self.user = get_object_or_404(User, slug=self.kwargs['user'])
@@ -91,11 +110,12 @@ class ListUserPins(ListView):
 
 
 
-class ListLastPins(ListView):
+class ListLastPins(ListView, ListPinsMixin):
     """List last created pins."""
     model = Pin
     context_object_name = 'pins'
     template_name = 'pin/pin_list.html'
+    paginate_by = MAX_PIN_PER_PAGE
 
     def get_queryset(self):
         if self.request.user.is_staff:

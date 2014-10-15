@@ -1,0 +1,125 @@
+<div id="pagination">
+    <hr />
+    <ul>
+        {# first page link #}
+        {% if page_obj.has_previous %}
+        <a href="{% url request.resolver_match.url_name   %}" title="First page">
+            <li><span class="accessibility-text">First</span>&lt;&lt;</li>
+        </a>
+        {% else %}
+        <li><span class="accessibility-text">First</span>&lt;&lt;</li>
+        {% endif %}
+
+        {# previous page link #}
+        {% if page_obj.has_previous %}
+        <a href="{% url request.resolver_match.url_name page_obj.previous_page_number %}" title="Previous page" rel="prev">
+            <li><span class="accessibility-text">Previous</span>&lt;</li>
+        </a>
+        {% else %}
+            <li><span class="accessibility-text">Previous</span>&lt;</li>
+        {% endif %}
+
+        {% comment %}
+        {# to get: page 2/5 #}
+        <li>{{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}</li>
+        {% endcomment %}
+         
+        {% if page_obj.paginator.num_pages > 9 %}
+            {% if page_obj.number < 6 %}
+                {% for page in page_obj.paginator.page_range|slice:":8" %}
+                    {% if page == page_obj.number %}
+                        <li id="actual">{{ page }}</li>
+                    {% else %}
+                    <a href="{% url request.resolver_match.url_name page %}" title="page number {{ page }}">
+                            <li>{{ page }}</li>
+                        </a>
+                    {% endif %}
+                {% endfor %}
+                <li>…</li>
+            {% elif page_obj.number|add:"5" > page_obj.paginator.num_pages %}
+                <li>…</li>
+                {% for page in page_obj.paginator.page_range|slice:"-8:" %}
+                    {% if page == page_obj.number %}
+                        <li id="actual">{{ page }}</li>
+                    {% else %}
+                    <a href="{% url request.resolver_match.url_name page %}" title="page number {{ page }}">
+                            <li>{{ page }}</li>
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <li>…</li>
+                {% for page in page_obj.paginator.page_range|slice:slice %}
+                    {% if page == page_obj.number %}
+                        <li id="actual">{{ page }}</li>
+                    {% else %}
+                    <a href="{% url request.resolver_match.url_name page %}" title="page number {{ page }}">
+                            <li>{{ page }}</li>
+                        </a>
+                    {% endif %}
+                {% endfor %}
+                <li>…</li>
+            {% endif %}
+        {% else %}
+            {% for page in page_obj.paginator.page_range %}
+                {% if page == page_obj.number %}
+                    <li id="actual">{{ page }}</li>
+                {% else %}
+                <a href="{% url request.resolver_match.url_name page %}" title="page number {{ page }}">
+                        <li>{{ page }}</li>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+
+
+        {# next page link #}
+        {% if page_obj.has_next %}
+        <a href="{% url request.resolver_match.url_name page_obj.next_page_number %}" title="Next page" rel="next">
+            <li><span class="accessibility-text">Next</span>&gt;</li>
+        </a>
+        {% else %}
+            <li><span class="accessibility-text">Next</span>&gt;</li>
+        {% endif %}
+
+        {# last page link #}
+        {% if page_obj.has_next %}
+        <a href="{% url request.resolver_match.url_name page_obj.paginator.num_pages %}" title="Last page">
+            <li><span class="accessibility-text">Last</span>&gt;&gt;</li>
+        </a>
+        {% else %}
+        <li><span class="accessibility-text">Last</span>&gt;&gt;</li>
+        {% endif %}
+
+    </ul>
+    <hr />
+</div>
+
+
+{% comment %}
+résultat voulu :
+
+if nb_page > 9:
+    
+   if num_page < 6 :
+
+   | << | < | 1 | 2 | 3 | 4 |   5   | 6 | 7 | 8 | … | > | >> |
+
+   if (num_page + 5) > nb_page:
+
+   | << | < | … | 5 | 6 | 7 |   8   | 9 | 10 | 11 | 12 | > | >> |
+
+
+   else:
+   | << | < | … | 5 | 6 | 7 |   8   | 9 | 10 | 11 | … | > | >> |
+
+
+
+else:
+   | << | < | 1 | 2 | 3 | 4 | 5 | 6 | 7 |   8   | 9 | > | >> |
+
+
+
+{% endcomment %}
+
