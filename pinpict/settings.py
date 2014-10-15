@@ -121,6 +121,7 @@ USE_TZ = True
 STATIC_ROOT = ''
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'pinpict/assets-root')
 STATICFILES_DIRS = (
         os.path.join(BASE_DIR, 'pinpict/assets/'),
 )
@@ -131,6 +132,8 @@ PREVIEWS_ROOT = os.path.join(MEDIA_ROOT, 'previews')
 
 MEDIA_URL = '/media/'
 
+STATICFILES_FINDERS = ("django.contrib.staticfiles.finders.FileSystemFinder",
+ "django.contrib.staticfiles.finders.AppDirectoriesFinder")
 
 # import environment specific configuration
 try:

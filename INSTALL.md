@@ -358,7 +358,7 @@ Run as root
         error_log /var/log/nginx/pinpict-error.log;
         
         location /static/ {
-            alias /var/www/pinpict_env/pinpict/pinpict/assets/;
+            alias /var/www/pinpict_env/pinpict/pinpict/assets-root/;
         }   
         
         location /media/ {
@@ -430,4 +430,6 @@ To set up a Timelaps between updates:
     
     $ python3 manage.py update_index
 
+#### To get static files ####
 
+    $ python3 manage.py collectstatic
