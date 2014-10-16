@@ -48,7 +48,7 @@
     </a>
 </article>
 {% endif %}
-{% for pin in board.pin_set.all %}
+{% for pin in pins %}
 {% include 'pin/pin_pin.html' %}
 {% endfor %}
 {% endspaceless %}
