@@ -84,6 +84,8 @@ urlpatterns = patterns('',
         ListBoards.as_view(), name='boards_list'),
 
     ## pin list
+    url(r'^(?P<user>[-\w]+)/(?P<board>[-\w]+)/page/(?P<page>\d+)/$',
+        ListBoardPins.as_view(), name='board_view'),
     url(r'^(?P<user>[-\w]+)/(?P<board>[-\w]+)/$',
         ListBoardPins.as_view(), name='board_view'),
 

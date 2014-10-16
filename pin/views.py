@@ -35,7 +35,6 @@ class ListPinsMixin(ContextMixin):
         if 'page' in self.kwargs:
             page = int(self.kwargs['page'])
             context['slice'] = "{}:{}".format(page - 4, page + 3)
-            print(context['slice'])
         
         return context
 
@@ -323,7 +322,7 @@ def create_pin(request):
     boards = None
     ## request arrive from upload pin with new uploaded file
     if request.session.get('pin_create_tmp_resource'):
-        print(request.session['pin_create_tmp_resource'])
+        #print(request.session['pin_create_tmp_resource'])
         src = MEDIA_URL + request.session['pin_create_tmp_resource']
     ## request arrive from upload pin with no uploaded file (it exists)
     elif request.session.get('pin_create_resource'):
