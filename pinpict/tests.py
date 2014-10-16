@@ -38,6 +38,11 @@ class HomePageTest(TestCase):
                 'status': 200,
                 'template': 'pin/pin_list.html',
             },
+            {
+                'url': '/page/1/',
+                'status': 200,
+                'template': 'pin/pin_list.html',
+            },
         ]
         test_urls(self, urls)
 

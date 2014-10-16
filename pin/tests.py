@@ -1174,6 +1174,11 @@ class ListUserPins(TestCase):
                 'template': 'pin/pin_user_list.html',
             },
             {
+                'url': '/flr/pins/page/1/',
+                'status': 200,
+                'template': 'pin/pin_user_list.html',
+            },
+            {
                 'url': '/tartempion/pins/',
                 'status': 404,
                 'template': '404.html',
@@ -1231,6 +1236,11 @@ class ListBoardPins(TestCase):
             # public board's pins list
             {
                 'url': '/flr/user-board/',
+                'status': 200,
+                'template': 'pin/pin_board_list.html',
+            },
+            {
+                'url': '/flr/user-board/page/1/',
                 'status': 200,
                 'template': 'pin/pin_board_list.html',
             },

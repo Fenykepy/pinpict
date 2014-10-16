@@ -14,7 +14,7 @@ from django.core.files.images import ImageFile
 
 from haystack.query import SearchQuerySet
 
-from pinpict.settings import MEDIA_URL, MEDIA_ROOT
+from pinpict.settings import MEDIA_URL, MEDIA_ROOT, MAX_PIN_PER_PAGE
 from board.views import AjaxableResponseMixin
 from user.models import User
 from pin.models import Pin, Resource, ResourceFactory
@@ -23,7 +23,6 @@ from pin.forms import PinForm, UploadPinForm, PinUrlForm, DownloadPinForm,\
         RePinForm
 from pin.utils import get_sha1_hexdigest, scan_html_for_picts
 
-MAX_PIN_PER_PAGE = 3
 
 
 class ListPinsMixin(ContextMixin):

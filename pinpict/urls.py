@@ -61,6 +61,8 @@ urlpatterns = patterns('',
 
 
     ## user pins list
+    url(r'^(?P<user>[-\w]+)/pins/page/(?P<page>\d+)/$',
+        ListUserPins.as_view(), name='user_pins'),
     url(r'^(?P<user>[-\w]+)/pins/$',
         ListUserPins.as_view(), name='user_pins'),
 

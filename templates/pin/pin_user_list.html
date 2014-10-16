@@ -34,4 +34,9 @@
 {% endfor %}
 {% endspaceless %}
 </section>
+{% if page_obj.paginator.num_pages > 1 %}
+<section id="navigation">
+        {% include 'pagination/pagination.html' %}
+</section>
+{% endif %}
 {% endblock body %}

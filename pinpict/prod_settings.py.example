@@ -28,6 +28,9 @@ EMAIL_SUBJECT_PREFIX = '[Pin Pict]'
 # python3 manage.py update_index
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
+# pagination settings
+MAX_PIN_PER_PAGE = 100
+MAX_BOARD_PER_PAGE = 100
 
 ## for production
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
