@@ -69,17 +69,11 @@ urlpatterns = patterns('',
     ## home page
     url(r'^$', login_required(ListLastPins.as_view()), name='home'),
 
-    ### board creation
-    ## public board creation
-    url(r'^board/create/$', login_required(CreateBoard.as_view()),
-        name='board_create'),
-
-    ## private board creation
-    url(r'^board/create/private/$', login_required(CreatePrivateBoard.as_view()),
-        name='private_board_create'),
-
     ## pin urls
     url(r'^pin/', include('pin.urls')),
+
+    ## board urls
+    url(r'^board/', include('board.urls')),
 
     ## board list
     url(r'^(?P<user>[-\w]+)/$',

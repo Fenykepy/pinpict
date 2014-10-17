@@ -30,9 +30,15 @@ urlpatterns = patterns('',
             login_required(FindPin.as_view()), name='find_pin'),
 
         # search engine
+        url(r'^search/page/(?P<page>\d+)/', search_view_factory(
+                view_class=SearchView,
+                template='pin/pin_search.html',
+                form_class=PinSearchForm
+            ),
+            name='pin_search'),
         url(r'^search/', search_view_factory(
                 view_class=SearchView,
-                template='search/search.html',
+                template='pin/pin_search.html',
                 form_class=PinSearchForm
             ),
             name='pin_search'),

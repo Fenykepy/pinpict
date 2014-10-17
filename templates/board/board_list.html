@@ -40,58 +40,7 @@
 </article>
 {% endif %}
 {% for board in boards %}
-<article class="board" id="{{ board.id }}">
-    <a class="board-previews" href="{% url "board_view" board.user.slug board.slug %}" title="More from {{ board.title }}">
-    <header>
-        <h1>{{ board.title }}</h1>
-    </header>
-        {% with first=board.pin_set.all.0 %}
-        {% if first %}
-            <img class="board-main-preview" src="{{ MEDIA_URL }}previews/216-160/{{ first.resource.previews_path }}" alt="{{ board.title }}" />
-        {% else %}
-            <img class="board-main-preview" src="{% static 'images/structure/grey58.png' %}" alt="" />
-        {% endif %}
-        {% endwith %}
-        <ul>
-        {% with previews=board.pin_set.all|slice:"1:5" %}
-        <li>
-        {% if previews.0 %}
-            <img class="board-small-preview" src="{{ MEDIA_URL }}previews/50/{{ previews.0.resource.previews_path }}" alt="{{ board.title }}" />
-        {% else %}
-            <img class="board-small-preview" src="{% static 'images/structure/grey58.png' %}" alt="" />
-        {% endif %}
-        </li>
-        <li>
-        {% if previews.1 %}
-            <img class="board-small-preview" src="{{ MEDIA_URL }}previews/50/{{ previews.1.resource.previews_path }}" alt="{{ board.title }}" />
-        {% else %}
-            <img class="board-small-preview" src="{% static 'images/structure/grey58.png' %}" alt="" />
-        {% endif %}
-        </li>
-        <li>
-        {% if previews.2 %}
-            <img class="board-small-preview" src="{{ MEDIA_URL }}previews/50/{{ previews.2.resource.previews_path }}" alt="{{ board.title }}" />
-        {% else %}
-            <img class="board-small-preview" src="{% static 'images/structure/grey58.png' %}" alt="" />
-        {% endif %}
-        </li>
-        <li>
-        {% if previews.3 %}
-            <img class="board-small-preview" src="{{ MEDIA_URL }}previews/50/{{ previews.3.resource.previews_path }}" alt="{{ board.title }}" />
-        {% else %}
-            <img class="board-small-preview" src="{% static 'images/structure/grey58.png' %}" alt="" />
-        {% endif %}
-        </li>
-        {% endwith %}
-        </ul>
-        <div class="board-n-pins">{{ board.n_pins }} Pin{{ board.n_pins|pluralize }}</div>
-    </a>
-{% if user.is_authenticated and user == owner %}
-<a href="{% url "board_update" owner.slug board.slug %}" title="Edit board"><button type="button">Edit</button></a>
-{% else %}
-<a href="{% url "board_view" board.user.slug board.slug %}" title="View board"><button type="button">View</button></a>
-{% endif %}
-</article>
+{% include 'board/board_board.html' %}
 {% endfor %}
 {% endspaceless %}
 </section>
@@ -111,54 +60,7 @@
 </article>
 {% endif %}
 {% for board in private_boards %}
-<article class="board" id="{{ board.id }}">
-    <a class="board-previews" href="{% url "board_view" board.user.slug board.slug %}" title="More from {{ board.title }}">
-    <header>
-        <h1>{{ board.title }}</h1>
-    </header>
-        {% with first=board.pin_set.all.0 %}
-        {% if first %}
-            <img class="board-main-preview" src="{{ MEDIA_URL }}previews/216-160/{{ first.resource.previews_path }}" alt="{{ board.title }}" />
-        {% else %}
-            <img class="board-main-preview" src="{% static 'images/structure/grey58.png' %}" alt="" />
-        {% endif %}
-        {% endwith %}
-        <ul>
-        {% with previews=board.pin_set.all|slice:"1:5" %}
-        <li>
-        {% if previews.0 %}
-            <img class="board-small-preview" src="{{ MEDIA_URL }}previews/50/{{ previews.0.resource.previews_path }}" alt="{{ board.title }}" />
-        {% else %}
-            <img class="board-small-preview" src="{% static 'images/structure/grey58.png' %}" alt="" />
-        {% endif %}
-        </li>
-        <li>
-        {% if previews.1 %}
-            <img class="board-small-preview" src="{{ MEDIA_URL }}previews/50/{{ previews.1.resource.previews_path }}" alt="{{ board.title }}" />
-        {% else %}
-            <img class="board-small-preview" src="{% static 'images/structure/grey58.png' %}" alt="" />
-        {% endif %}
-        </li>
-        <li>
-        {% if previews.2 %}
-            <img class="board-small-preview" src="{{ MEDIA_URL }}previews/50/{{ previews.2.resource.previews_path }}" alt="{{ board.title }}" />
-        {% else %}
-            <img class="board-small-preview" src="{% static 'images/structure/grey58.png' %}" alt="" />
-        {% endif %}
-        </li>
-        <li>
-        {% if previews.3 %}
-            <img class="board-small-preview" src="{{ MEDIA_URL }}previews/50/{{ previews.3.resource.previews_path }}" alt="{{ board.title }}" />
-        {% else %}
-            <img class="board-small-preview" src="{% static 'images/structure/grey58.png' %}" alt="" />
-        {% endif %}
-        </li>
-        {% endwith %}
-        </ul>
-        <div class="board-n-pins">{{ board.n_pins }} Pin{{ board.n_pins|pluralize }}</div>
-    </a>
-<a href="{% url "board_update" owner.slug board.slug %}" title="Edit board"><button type="button">Edit</button></a>
-</article>
+{% include 'board/board_board.html' %}
 {% endfor %}
 {% endspaceless %}
 {% endif %}

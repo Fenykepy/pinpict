@@ -201,3 +201,39 @@ a, a:visited {
     font-size: 1.2em;
     text-align: center;
 }
+
+#search-filters {
+    li {
+        display: inline-block;
+        height: 30px;
+        width: 100px;
+        line-height: 30px;
+        vertical-align: middle;
+        padding: 0;
+        text-align: center;
+        border: 1px solid @00;
+        //border-right: none;
+        .degrade(@40, @22, @44);
+        font-size: 0.9em;
+        &:first-child {
+            border-radius: 18px 0 0 18px;
+        }
+        &:last-child {
+            border-radius: 0 18px 18px 0;
+            border-right: 1px solid @00;
+        }
+        &:not(.unactivated):active, &:not(.unactivated):focus, &:not(.unactivated):hover {
+            box-shadow: 0 0 3px #000;
+            //border-right: 1px solid @00;
+            a {
+                color: @FF;
+            }
+        }
+        a {
+            color: @CC;
+            display: block;
+            height: 100%;
+        }
+    }
+
+}

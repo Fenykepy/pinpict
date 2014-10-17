@@ -48,6 +48,7 @@ SECRET_KEY = '#v04u18pw)rsgry7fhw*7)t0^)nm!l6fod90fb7y8ckbu0u8yx'
 # pagination settings
 MAX_PIN_PER_PAGE = 100
 MAX_BOARD_PER_PAGE = 100
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 2
 
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
