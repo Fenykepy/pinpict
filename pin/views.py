@@ -117,8 +117,8 @@ class ListLastPins(ListView, ListPinsMixin):
 
     def get_queryset(self):
         if self.request.user.is_staff:
-            return Pin.objects.all().order_by('-date_created')[:200]
-        return Pin.objects.filter(policy=1).order_by('-date_created')[:200]
+            return Pin.objects.all().order_by('-date_created')
+        return Pin.objects.filter(policy=1).order_by('-date_created')
 
 
 class PinView(DetailView):

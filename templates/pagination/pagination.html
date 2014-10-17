@@ -1,11 +1,10 @@
 {% load extra_tag %}
-{% with current=request.resolver_match %}
 <div id="pagination">
     <hr />
     <ul>
         {# first page link #}
         {% if page_obj.has_previous %}
-        <a href="{{ current|get_paginate_url:"" }}" title="First page">
+        <a href="{{ request|get_paginate_url:"" }}" title="First page">
             <li><span class="accessibility-text">First</span>&lt;&lt;</li>
         </a>
         {% else %}
@@ -14,7 +13,7 @@
 
         {# previous page link #}
         {% if page_obj.has_previous %}
-        <a href="{{ current|get_paginate_url:page_obj.previous_page_number }}" title="Previous page" rel="prev">
+        <a href="{{ request|get_paginate_url:page_obj.previous_page_number }}" title="Previous page" rel="prev">
             <li><span class="accessibility-text">Previous</span>&lt;</li>
         </a>
         {% else %}
@@ -32,7 +31,7 @@
                     {% if page == page_obj.number %}
                         <li id="actual">{{ page }}</li>
                     {% else %}
-                    <a href="{{ current|get_paginate_url:page }}" title="page number {{ page }}">
+                    <a href="{{ request|get_paginate_url:page }}" title="page number {{ page }}">
                             <li>{{ page }}</li>
                         </a>
                     {% endif %}
@@ -44,7 +43,7 @@
                     {% if page == page_obj.number %}
                         <li id="actual">{{ page }}</li>
                     {% else %}
-                    <a href="{{ current|get_paginate_url:page }}" title="page number {{ page }}">
+                    <a href="{{ request|get_paginate_url:page }}" title="page number {{ page }}">
                             <li>{{ page }}</li>
                         </a>
                     {% endif %}
@@ -55,7 +54,7 @@
                     {% if page == page_obj.number %}
                         <li id="actual">{{ page }}</li>
                     {% else %}
-                    <a href="{{ current|get_paginate_url:page }}" title="page number {{ page }}">
+                    <a href="{{ request|get_paginate_url:page }}" title="page number {{ page }}">
                             <li>{{ page }}</li>
                         </a>
                     {% endif %}
@@ -67,7 +66,7 @@
                 {% if page == page_obj.number %}
                     <li id="actual">{{ page }}</li>
                 {% else %}
-                <a href="{{ current|get_paginate_url:page }}" title="page number {{ page }}">
+                <a href="{{ request|get_paginate_url:page }}" title="page number {{ page }}">
                         <li>{{ page }}</li>
                     </a>
                 {% endif %}
@@ -76,7 +75,7 @@
 
         {# next page link #}
         {% if page_obj.has_next %}
-        <a href="{{ current|get_paginate_url:page_obj.next_page_number }}" title="Next page" rel="next">
+        <a href="{{ request|get_paginate_url:page_obj.next_page_number }}" title="Next page" rel="next">
             <li><span class="accessibility-text">Next</span>&gt;</li>
         </a>
         {% else %}
@@ -85,7 +84,7 @@
 
         {# last page link #}
         {% if page_obj.has_next %}
-        <a href="{{ current|get_paginate_url:page_obj.paginator.num_pages }}" title="Last page">
+        <a href="{{ request|get_paginate_url:page_obj.paginator.num_pages }}" title="Last page">
             <li><span class="accessibility-text">Last</span>&gt;&gt;</li>
         </a>
         {% else %}
@@ -95,7 +94,6 @@
     </ul>
     <hr />
 </div>
-{% endwith %}
 
 
 
