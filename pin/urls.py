@@ -1,6 +1,9 @@
 from django.conf.urls import patterns, url, include
 from django.contrib.auth.decorators import login_required
 
+from haystack.views import SearchView, search_view_factory
+
+from pin.forms import PinSearchForm
 from pin.views import *
 
 urlpatterns = patterns('',
@@ -27,7 +30,12 @@ urlpatterns = patterns('',
             login_required(FindPin.as_view()), name='find_pin'),
 
         # search engine
-        url(r'^search/', include('haystack.urls')),
+        url(r'^search/', search_view_factory(
+                view_class=SearchView,
+                template='search/search.html',
+                form_class=PinSearchForm
+            ),
+            name='pin_search'),
 
 
         ## view a pin

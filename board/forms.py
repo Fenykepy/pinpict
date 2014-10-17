@@ -1,5 +1,7 @@
 from django import forms
+from django.db import models
 
+from haystack.forms import ModelSearchForm
 from board.models import Board
 
 
@@ -35,4 +37,8 @@ class BoardForm(ModelForm):
         model = Board
         fields = ('title', 'description')
 
+class BoardSearchForm(ModelSearchForm):
+    """Board search form."""
 
+    def get_models(self):
+        return [models.get_model('board.board')]

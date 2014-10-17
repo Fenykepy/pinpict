@@ -20,7 +20,7 @@
     <div id="header-wrapper">
     {% spaceless %}
         <div id="search-bar">
-            <form method="get" action="/pin/search/">
+            <form method="get" action="{% url 'pin_search' %}">
                 <input type="text" name="q" placeholder="search" value="{{ query }}" />
                 <input type="submit" value="Q" title="search" />
             </form>

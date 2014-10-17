@@ -1,14 +1,14 @@
 from haystack import indexes
-from pin.models import Pin
+from user.models import User
 
-class PinIndex(indexes.SearchIndex, indexes.Indexable):
+class UserIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     #description = indexes.CharField(model_attr='description')
 
     def get_model(self):
-        return Pin
+        return User
 
     def index_queryset(self, using=None):
         """Used when the entire index for model is updated."""
-        return self.get_model().objects.filter(policy=1)
+        return self.get_model().objects.all()
 

@@ -1,6 +1,8 @@
 from django import forms
+from django.db import models
 
 from board.forms import Form, ModelForm
+from haystack.forms import ModelSearchForm
 
 from pin.models import Pin, Resource
 from board.models import Board
@@ -62,6 +64,14 @@ class PinUrlForm(Form):
         'required': 'required',
         'placeholder': 'http://'
     }))
+
+
+
+class PinSearchForm(ModelSearchForm):
+    """Pin search form."""
+
+    def get_models(self):
+        return [models.get_model('pin.pin')]
 
 
 

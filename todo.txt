@@ -126,6 +126,7 @@
         - boards
         - users
 #    - add a link to admin page in user menu if he is staff member
+#    - handle query strings in pagination.
 
 
 
