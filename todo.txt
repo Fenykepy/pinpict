@@ -121,10 +121,11 @@
     - add a new_user view for staff members
 #    - allow staff members to see users private boards.
     - add search tabs links in top of search page results 
-        - all pins
-        - your pins
-        - boards
+#        - all pins
+        - your pins (only display to login users
+#        - boards
         - users
+        - add a context variable to remember which model was search in (and replace good url in search form)
 #    - add a link to admin page in user menu if he is staff member
 #    - handle query strings in pagination.
 

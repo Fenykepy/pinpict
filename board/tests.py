@@ -540,3 +540,13 @@ class BoardListTest(TestCase):
                 'private board2')
 
 
+    def test_board_search(self):
+        response = self.client.get('/board/search/?q=user')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'board/board_search.html')
+        self.assertEqual(len(response.context['page'].object_list), 1)
+        
+        # quick test of pagination 
+        response = self.client.get('/board/search/?q=user&page=1')
+        self.assertEqual(response.status_code, 200)
+

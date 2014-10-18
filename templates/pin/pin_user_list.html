@@ -14,11 +14,7 @@
     {% else %}
     <img src="{% static 'images/structure/default_avatar.png' %}" alt="{{ owner.username }}" />
     {% endif %}
-    {% if owner.first_name or owner.last_name %}
-        <h1>{{ owner.first_name }} {{ owner.last_name }}</h1>
-    {% else %}
-        <h1>{{ owner.username }}</h1>
-    {% endif %}
+        <h1>{{ owner.get_full_name }}</h1>
     <hr />
     {% if owner.website %}
     <div class="user-website"><a href="{{ owner.website }}" target="_blank">{{ owner.website }}</a></div>

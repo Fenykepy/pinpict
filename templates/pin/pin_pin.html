@@ -23,11 +23,7 @@
         <img src="{% static 'images/structure/default_avatar.png' %}" />
     {% endif %}
     <span>
-    {% if pin.pin_user.first_name and pin.pin_user.last_name %}
-        {{ pin.pin_user.first_name }} {{ pin.pin_user.last_name }}
-    {% else %}
-        {{ pin.pin_user.username }}
-    {% endif %}
+        {{ pin.pin_user.get_full_name }}
     </span><br />{{ pin.board.title }}</a>
     {% else %}
     {% if pin.source_domain %}

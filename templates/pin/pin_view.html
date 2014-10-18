@@ -53,7 +53,7 @@
 <a href="{{ pin.source }}" target="_blank"><span>Found on</span> {{ pin.source_domain }}</a>
 {% else %}
 {% with resource_user=pin.resource.user %}
-<a href="{#{% url "boards_list" resource_user.slug %}#}" target="_blank"><span>Uploaded to Pinpict by</span> {% if resource_user.first_name or resource.user.last_name %}{{ resource_user.first_name }} {{ resource_user.last_name }}{% else %}{{ resource_user.username }}{% endif %}</a>
+<a href="{#{% url "boards_list" resource_user.slug %}#}" target="_blank"><span>Uploaded to Pinpict by</span> {{resource_user.get_full_name }}</a>
 {% endwith %}
 {% endif %}
 </footer>
@@ -69,11 +69,8 @@
     {% endif %}
     <p><a href="{% url "boards_list" owner.slug %}">
         <span>Added by</span><br /><strong>
-        {% if owner.first_name or owner.last_name %}
-        {{ owner.first_name }} {{ owner.last_name }}
-        {% else %}
-        {{ owner.username }}
-        {% endif %}</strong></a> <span class="date">&#149; {{ pin.date_created|naturaltime }}</span></p>
+            {{ owner.get_full_name }}
+        </strong></a> <span class="date">&#149; {{ pin.date_created|naturaltime }}</span></p>
 </article>
 
 
@@ -87,11 +84,8 @@
     {% endif %}
     <p><a href="{% url "boards_list" via.slug %}">
         <span>Added via</span><br /><strong>
-        {% if via.first_name or via.last_name %}
-        {{ via.first_name }} {{ via.last_name }}
-        {% else %}
-        {{ via.username }}
-        {% endif %}</strong></a></p>
+        {{ via.get_full_name }}
+        </strong></a></p>
     {% endwith %}
 </article>
 {% endif %}

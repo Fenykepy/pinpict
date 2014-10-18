@@ -102,6 +102,17 @@ class User(AbstractUser):
     n_public_boards = models.PositiveIntegerField(default=0,
             verbose_name="Public Boards'number")
 
+    def get_short_name(self):
+        if self.first_name:
+            return self.first_name
+        return self.username
+
+
+    def get_full_name(self):
+        if self.first_name and self.last_name:
+            return '{} {}'.format(self.first_name, self.last_name)
+        return self.get_short_name()
+
 
     def send_mail(self, subject, message):
         """send a mail to user."""

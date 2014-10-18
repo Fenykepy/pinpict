@@ -3,25 +3,23 @@
 
 {% block body %}
 {% spaceless %}
-<section id="pins">
+<section id="boards">
     <header>
         <ul id="search-filters">
-            <li class="unactivated">Pins</li>
+            <li><a href="{% url "pin_search" %}?q={{ query }}" title="Search only pins">Pins</a></li>
             {% if user.is_authenticated %}
             <li><a href="{#{% url "your_pin_search" %}#}?q={{ query }}" title="Search only in your pins">Your Pins</a></li>
             {% endif %}
             <li><a href="{% url "board_search" %}?q={{ query }}" title="Search only boards">Boards</a></li>
             {% if user.is_authenticated %}
-            <li><a href="{% url "user_search" %}?q={{ query }}" title="Search only users">Users</a></li>
+            <li class="unactivated">Users</li>
             {% endif %}
         </ul>
     </header>
     {% for result in page.object_list %}
-    {% with pin=result.object %}
-    {% if pin %}
-    {% include 'pin/pin_pin.html' with display_user=True %}
+    {% if result %}
+    {% include 'user/user_user.html' with owner=result.object %}
     {% endif %}
-    {% endwith %}
     {% empty %}
     <article id="error">
         <p class="center-align">

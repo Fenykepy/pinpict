@@ -1084,7 +1084,7 @@ class PinViewTest(TestCase):
         response = self.client.get('/pin/1/')
         self.assertEqual(response.context['pin'].pk, 1)
         # test related pins
-        self.assertEqual(len(response.context['mlt']), 3)
+        self.assertEqual(len(response.context['mlt']), 4)
         # test links to next and previous pins
         self.assertEqual(response.context['next'], False)
         self.assertEqual(response.context['prev'], False)
@@ -1506,12 +1506,12 @@ class PinSearchTest(TestCase):
             {
                 'url': '/pin/search/?q=toto',
                 'status': 200,
-                'template': 'search/search.html',
+                'template': 'pin/pin_search.html',
             },
             {
                 'url': '/pin/search/',
                 'status': 200,
-                'template': 'search/search.html',
+                'template': 'pin/pin_search.html',
             },
         ]
         test_urls(self, urls)

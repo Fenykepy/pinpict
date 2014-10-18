@@ -2,6 +2,9 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.db import models
+
+from haystack.forms import ModelSearchForm
 
 from board.forms import Form, ModelForm
 from user.models import User
@@ -183,3 +186,10 @@ class PasswordRecoveryForm(Form):
                 'Invalid username.'
             )
         return username
+
+
+class UserSearchForm(ModelSearchForm):
+    """User search form."""
+
+    def get_models(self):
+        return [models.get_model('user.user')]

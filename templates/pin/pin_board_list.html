@@ -30,11 +30,8 @@
         {# add follow link here #}
     {% endif %}
     <h2><a href="{% url "boards_list" owner.username %}">
-    {% if owner.first_name or owner.last_name %}
-    {{ owner.first_name }} {{ owner.last_name }}
-    {% else %}
-    {{ owner.username }}
-    {% endif %}</a></h2>
+    {{ owner.get_full_name }}
+    </a></h2>
     {% if owner.website %}
     <div class="user-website"><a href="{{ owner.website }}" target="_blank">{{ owner.website }}</a></div>
     {% endif %}

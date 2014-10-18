@@ -34,13 +34,10 @@
     {% else %}
         <img src="{% static 'images/structure/default_avatar.png' %}" height="22px" width="22px" />
     {% endif %}
-        {% if user.first_name %}
-            {{ user.first_name }}
-        {% else %}
-            {{ user.username }}
-        {% endif %}
+            {{ user.get_short_name }}
         <ul id="user-menu">
             <li><a href="{% url "boards_list" user.slug %}">My boards</a></li>
+            <li><a href="{% url "user_pins" user.slug %}">My pins</a></li>
             <li><a href="{% url "user_profil" %}">Profil</a></li>
             {% if user.is_staff %}
             <li><a href="/admin/">Admin</a></li>
