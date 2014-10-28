@@ -12,7 +12,7 @@
         <img class="user-avatar" src="{% static 'images/structure/default_avatar.png' %}" />
     {% endif %}
     <ul>
-    {% for board in owner.board_publics.all|slice:":4" %}
+    {% for board in owner.get_public_boards|slice:":4" %}
         <li>
         {% with preview=board.pin_set.first %}
         {% if preview %}

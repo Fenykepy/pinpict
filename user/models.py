@@ -102,6 +102,11 @@ class User(AbstractUser):
     n_public_boards = models.PositiveIntegerField(default=0,
             verbose_name="Public Boards'number")
 
+
+    def get_public_boards(self):
+        return self.board_set.filter(policy=1)
+
+
     def get_short_name(self):
         if self.first_name:
             return self.first_name
