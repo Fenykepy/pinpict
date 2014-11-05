@@ -1,3 +1,4 @@
 {{ object.description }}
 {{ object.board.title }}
 {{ object.board.description }}
+{{ object.pin_user.username }}

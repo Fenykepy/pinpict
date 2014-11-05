@@ -2,9 +2,12 @@ from django.conf.urls import patterns, url, include
 from django.contrib.auth.decorators import login_required
 
 from haystack.views import SearchView, search_view_factory
+from haystack.query import SearchQuerySet
+from haystack.forms import ModelSearchForm
 
 from pin.forms import PinSearchForm
 from pin.views import *
+from pin.models import Pin
 
 urlpatterns = patterns('',
 
@@ -30,6 +33,22 @@ urlpatterns = patterns('',
             login_required(FindPin.as_view()), name='find_pin'),
 
         # search engine
+        url(r'^my_pins/search/page/(?P<page>\d+)/', search_view_factory(
+                view_class=UserSearchView,
+                template='pin/pin_my_search.html',
+                form_class=PinSearchForm,
+                searchqueryset=SearchQuerySet().models(Pin),
+            ),
+            name='my_pin_search'),
+        url(r'^my_pins/search/', search_view_factory(
+                view_class=UserSearchView,
+                template='pin/pin_my_search.html',
+                form_class=PinSearchForm,
+                searchqueryset=SearchQuerySet().models(Pin),
+            ),
+            name='my_pin_search'),
+
+
         url(r'^search/page/(?P<page>\d+)/', search_view_factory(
                 view_class=SearchView,
                 template='pin/pin_search.html',
@@ -42,7 +61,6 @@ urlpatterns = patterns('',
                 form_class=PinSearchForm
             ),
             name='pin_search'),
-
 
         ## view a pin
         url(r'^(?P<pk>\d+)/$',

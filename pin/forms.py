@@ -74,4 +74,3 @@ class PinSearchForm(ModelSearchForm):
         return [models.get_model('pin.pin')]
 
 
-

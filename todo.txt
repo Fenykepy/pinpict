@@ -117,14 +117,14 @@
 #    - Encode url before retrieve if they are not
 #    - change pillow librairy for something better.
 #    - add a last_pins (private and public if user is staff, public else) view as home page
-        - and has background for login form if user isn't
+        - and as background for login form if user isn't
     - add a new_user view for staff members
 #    - allow staff members to see users private boards.
     - add search tabs links in top of search page results 
 #        - all pins
         - your pins (only display to login users
 #        - boards
-        - users
+#        - users
         - add a context variable to remember which model was search in (and replace good url in search form)
 #    - add a link to admin page in user menu if he is staff member
 #    - handle query strings in pagination.

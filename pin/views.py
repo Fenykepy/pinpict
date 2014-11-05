@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.images import ImageFile
 
 from haystack.query import SearchQuerySet
+from haystack.views import SearchView
 
 from pinpict.settings import MEDIA_URL, MEDIA_ROOT, MAX_PIN_PER_PAGE
 from board.views import AjaxableResponseMixin
@@ -556,5 +557,16 @@ class FindPin(TemplateView):
 
 
         return context
+
+class UserSearchView(SearchView):
+    """To filter a search with a given user."""
+    def build_form(self, form_kwargs=None):
+        print(self.searchqueryset)
+        from pprint import pprint
+        pprint(self.searchqueryset[0].__dict__)
+        self.searchqueryset = self.searchqueryset.filter(user=self.request.user.username)
+        print(self.searchqueryset)
+
+        return super(UserSearchView, self).build_form(form_kwargs)
 
 

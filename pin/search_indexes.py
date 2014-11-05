@@ -3,6 +3,7 @@ from pin.models import Pin
 
 class PinIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
+    user = indexes.CharField(model_attr='pin_user')
     #description = indexes.CharField(model_attr='description')
 
     def get_model(self):
