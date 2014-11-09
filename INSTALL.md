@@ -26,7 +26,7 @@ Run as `<my_user>`:
     $ cd /var/www/pinpict_env
     $ virtualenv .
 
-    New python executable in hello_django/bin/python
+    New python executable in pinpict_env/bin/python
     Installing distribute..............done.
     Installing pip.....................done.
 
@@ -229,7 +229,7 @@ Use ctrl + c to quit when you're done.
 
 Create a shell script to launch gunicorn with some parameters:
 
-    $ vim /var/www/pinpict_env/bin/gunicorn_start:
+    $ vim /var/www/pinpict_env/bin/gunicorn_start
 
  * Complete it as follow:
 
@@ -334,16 +334,6 @@ Run as root
         # single worker for timing out).
 
         server unix:/var/www/pinpict_env/run/gunicorn.sock fail_timeout=0;
-
-    }
-
-
-    upstream pinpict_app_server {
-        # fail_timeout=0 means we always retry an upstream even if it failed
-        # to return a good HTTP response (in case the Unicorn master nukes a
-        # single worker for timing out).
-
-        server unix:/home/fred/sites/pinpict-env/run/gunicorn.sock fail_timeout=0;
 
     }
 
