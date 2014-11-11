@@ -118,9 +118,9 @@ Run as root:
     postgres@server:~$ logout
 
 
-Fix those options in `/etc/postgresql/9.1/main/postgresql.conf`:
+Fix those options in `/etc/postgresql/9.4/main/postgresql.conf`:
 
-     # vim /etc/postgresql/9.1/main/postgresql.conf
+     # vim /etc/postgresql/9.4/main/postgresql.conf
 
      #----------------------
      # DJANGO CONFIGURATION
