@@ -128,6 +128,7 @@
         - add a context variable to remember which model was search in (and replace good url in search form)
 #    - add a link to admin page in user menu if he is staff member
 #    - handle query strings in pagination.
+    - use a HEAD request to ensure link is an image in parser
 
 
 

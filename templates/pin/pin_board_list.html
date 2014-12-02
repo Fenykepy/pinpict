@@ -20,16 +20,16 @@
 <div id="user-wrapper">
 <article id="user-compact">
     {% if owner.avatar %}
-        <a href="{% url "boards_list" owner.username %}"><img src="{{ MEDIA_URL }}{{ owner.avatar }}" /></a>
+        <a href="{% url "boards_list" owner.slug %}"><img src="{{ MEDIA_URL }}{{ owner.avatar }}" /></a>
     {% else %}
-        <a href="{% url "boards_list" owner.username %}"><img src="{% static 'images/structure/default_avatar.png' %}" /></a>
+        <a href="{% url "boards_list" owner.slug %}"><img src="{% static 'images/structure/default_avatar.png' %}" /></a>
     {% endif %}
     {% if user == owner %}
     <a href="{% url "board_update" owner.slug board.slug %}" title="Edit board"><button>Edit board</button></a>
     {% else %}
         {# add follow link here #}
     {% endif %}
-    <h2><a href="{% url "boards_list" owner.username %}">
+    <h2><a href="{% url "boards_list" owner.slug %}">
     {{ owner.get_full_name }}
     </a></h2>
     {% if owner.website %}
