@@ -199,6 +199,12 @@ def update_n_pins(sender, instance, **kwargs):
     instance.board.n_pins = instance.board.pin_set.all().count()
     instance.board.save()
 
+    # update user's boards n_pins
+    boards = Board.objects.filter(user=instance.board.user)
+    for board in boards:
+        board.n_pins = board.pin_set.all().count()
+        board.save()
+
     # update resource n_pins
     instance.resource.n_pins = instance.resource.pin_set.all().count()
     instance.resource.save()

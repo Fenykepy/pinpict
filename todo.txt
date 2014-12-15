@@ -130,6 +130,7 @@
 #    - handle query strings in pagination.
     - use a HEAD request to ensure link is an image in parser
     - to avoid problems with different pin_create_* set at the same time reinitialise them
+    - user appears as not login in error pages.
 
 
 

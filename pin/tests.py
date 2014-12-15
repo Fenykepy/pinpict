@@ -845,6 +845,38 @@ class PinUpdateTest(TestCase):
         self.assertEqual(pin.description, 'Test pin for second board')
 
 
+    def test_pin_update_change_board(self):
+        # create a new test board
+        board = Board(
+            title='user2 second board',
+            description='user board for tests',
+            policy=1,
+            user = self.user2)
+        board.save()
+
+        # login with user 2
+        login(self, self.user2)
+
+        # store board2 number of pins (normally one)
+        board2_n_pins = self.board2.n_pins
+        print(self.board2.n_pins)
+
+        response = self.client.post('/pin/2/edit/', {
+            'board': board.pk,
+            'description': 'Test pin for second board',
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'pin/pin_view.html'),
+        # assert change has been saved in db
+        pin = Pin.objects.get(pk=2)
+        self.assertEqual(pin.board, board)
+        # assert new board n_pins has been incremented by one
+        self.assertEqual(pin.board.n_pins, 1)
+        # assert old board number of pins has been decreased by one
+        board2 = Board.objects.get(pk=2)
+        self.assertEqual(board2.n_pins, board2_n_pins - 1)
+
+
 
 class PinDeleteTest(TestCase):
     """Pin deletion test class."""

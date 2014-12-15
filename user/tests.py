@@ -735,8 +735,12 @@ class UserPasswordRecoveryTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'user/user_recovery.html')
+        print(response.templates[0].name)
+        print(response.templates[1].name)
+        print(response.templates[2].name)
 
+
+        self.assertEqual(response.templates[0].name, 'user/user_recovery.html')
         # assert mail has been sent
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to, ([self.user.email]))
