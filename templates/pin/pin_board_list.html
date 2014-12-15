@@ -10,7 +10,7 @@
 <header>
     <h1>{{ board.title }}</h1>
     {% if board.description %}
-        <p id="description">{{ board.description }}</p>
+        <p id="description">{{ board.description|linebreaksbr }}</p>
     {% endif %}
     <p id="n-pins">{{ board.n_pins }} pin{{ board.n_pins|pluralize }}</p>
     {% if board.policy == 0 %}

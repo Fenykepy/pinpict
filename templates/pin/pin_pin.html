@@ -12,7 +12,7 @@
     <a href="{% url "pin_view" pin.pk %}" class="pin-link"><img src="{{ MEDIA_URL }}previews/236/{{ pin.resource.previews_path }}" alt="" /></a>
     </div>
     <p class="pin-description">
-    {{ pin.description }}
+    {{ pin.description|linebreaksbr }}
     </p>
     <footer>
     {% if display_user %}

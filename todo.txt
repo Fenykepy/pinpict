@@ -129,6 +129,7 @@
 #    - add a link to admin page in user menu if he is staff member
 #    - handle query strings in pagination.
     - use a HEAD request to ensure link is an image in parser
+    - to avoid problems with different pin_create_* set at the same time reinitialise them
 
 
 
