@@ -259,9 +259,11 @@ def scan_html_for_picts(url):
     # get resource from url
     h = httplib2.Http('.cache')
     #print('url used in html parser: {}'.format(url))
-    response, content = h.request(url)
+    response, content = h.request(url, headers={
+            'User-agent': 'Mozilla/5.0'})
+
     # return in case of fail
-    if response['status'] not in ('200', '304'):
+    if not response.status in (200, 304, 302):
         return []
     # if resource itself is an image return its url
     if response['content-type'][:5] == 'image':

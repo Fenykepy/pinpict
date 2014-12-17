@@ -859,7 +859,6 @@ class PinUpdateTest(TestCase):
 
         # store board2 number of pins (normally one)
         board2_n_pins = self.board2.n_pins
-        print(self.board2.n_pins)
 
         response = self.client.post('/pin/2/edit/', {
             'board': board.pk,

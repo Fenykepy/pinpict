@@ -1,6 +1,7 @@
 import os
-import urllib.request
 import imghdr
+import httplib2
+from uuid import uuid4
 
 from wand.image import Image
 
@@ -301,12 +302,26 @@ class ResourceFactory(object):
         #print('get_file_ove_http, url: {}'.format(url))
         url = iri_to_uri(url)
         #print('get_file_ove_http, secure url: {}'.format(url))
-        self.filepath, headers = urllib.request.urlretrieve(url)
+        # set cache
+        h = httplib2.Http('.cache')
+        # request image
+        response, content = h.request(url, headers={
+            'User-agent': 'Mozilla/5.0'})
         # if file is not an image, return false
-        if not headers['Content-Type'].lower() in self.ALLOWED_MIME_TYPE:
+        if not response['content-type'].lower() in self.ALLOWED_MIME_TYPE:
             print('file is not image type')
-            print(headers['Content-Type'])
+            print(response['Content-Type'])
             return False
+        # if error in status code (404, 403, etc.)
+        if not response.status in (200, 302, 304):
+            return false
+        # set unique filename
+        self.filepath = '/tmp/{}'.format(uuid4())
+        # save image
+        with open(self.filepath, mode='wb') as file:
+            file.write(content)
+
+
         # else return file_path
         return self._get_file_sha1(self.filepath)
 
