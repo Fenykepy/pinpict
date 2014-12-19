@@ -28,7 +28,7 @@ class UpdateBoardForm(ModelForm):
 
     class Meta:
         model = Board
-        fields = ('title', 'description', 'policy')
+        fields = ('title', 'description', 'pin_default_description', 'policy')
 
 
 class BoardForm(ModelForm):

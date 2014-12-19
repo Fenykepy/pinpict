@@ -45,6 +45,10 @@ class Board(models.Model):
             verbose_name="Slug")
     description = models.TextField(null=True, blank=True,
             verbose_name="Board description")
+    pin_default_description = models.TextField(null=True, blank=True,
+            verbose_name="Default description",
+            help_text=("Pin default description used if pinned image "
+                "has no alt attribute."))
     n_pins = models.PositiveIntegerField(default=0,
             verbose_name="Pins number")
     policy = models.PositiveIntegerField(

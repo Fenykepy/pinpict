@@ -195,10 +195,13 @@ def create_pin(request):
             request.session['pin_create_src'] = form.cleaned_data['src']
             pin_form = PinForm(user=request.user)
             pin_form.initial = {}
+            if request.session.get('last_visited_board'):
+                pk = request.session['last_visited_board']
+                pin_form.initial['board'] = pk
+                board = Board.objects.get(pk=pk)
+                pin_form.initial['description'] = board.pin_default_description
             if 'description' in form.cleaned_data:
                 pin_form.initial['description'] = form.cleaned_data['description']
-            if request.session.get('last_visited_board'):
-                pin_form.initial['board'] = request.session['last_visited_board']
 
             # search user's pins with this resource
             pins = request.user.pin_user.filter(resource__source_file_url=form.cleaned_data['src'])
@@ -316,7 +319,10 @@ def create_pin(request):
         form = PinForm(user=request.user)
         form.initial = {}
         if request.session.get('last_visited_board'):
-            form.initial['board'] = request.session['last_visited_board']
+            pk = request.session['last_visited_board']
+            form.initial['board'] = pk
+            board = Board.objects.get(pk=pk)
+            form.initial['description'] = board.pin_default_description
 
 
     boards = None
