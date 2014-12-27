@@ -124,7 +124,7 @@ article.pin-standalone{float:right;margin:0 0 0 15px}
 #user-compact,.user-compact{height:60px}#user-compact img,.user-compact img{width:40px;height:40px}
 #user-compact h2,.user-compact h2{font-size:1.1em;font-weight:bold}#user-compact h2 a:hover,.user-compact h2 a:hover,#user-compact h2 a:focus,.user-compact h2 a:focus,#user-compact h2 a:active,.user-compact h2 a:active{color:#222}
 #user-compact button,.user-compact button{float:right;margin:13px 10px;width:auto}
-section#pin{padding-bottom:50px}section#pin article{position:relative;background:#666;box-shadow:0 0 8px #000;border:1px solid #222;border-radius:4px;width:736px;margin:50px auto 14px;overflow:hidden}section#pin article header{height:60px;padding:0 8px;border-bottom:1px solid #313131}section#pin article header form{margin:0;float:right}
+section#pin{padding-bottom:50px}section#pin article{position:relative;background:#666;box-shadow:0 0 8px #000;border:1px solid #222;border-radius:4px;width:736px;margin:50px auto 14px}section#pin article header{height:60px;padding:0 8px;border-bottom:1px solid #313131}section#pin article header form{margin:0;float:right}
 section#pin article header button,section#pin article header input[type="submit"]{width:80px;margin-top:10px;height:40px}
 section#pin article a:hover div#image-wrapper,section#pin article a:focus div#image-wrapper,section#pin article a:active div#image-wrapper{background-color:#585858}
 section#pin article a#back-to-board{position:fixed;display:block;top:80px;right:0;height:80px;width:80px;box-shadow:0 0 8px #222;border:1px solid #222;background-color:#404040;border-radius:4px 0 0 4px}section#pin article a#back-to-board:hover,section#pin article a#back-to-board:focus,section#pin article a#back-to-board:active{background-color:#585858}
