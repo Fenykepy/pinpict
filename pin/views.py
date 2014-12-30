@@ -169,6 +169,22 @@ class ChoosePinOrigin(TemplateView, AjaxableResponseMixin):
 
 
 @login_required
+def rate_pin(request, pk, rate):
+    """View to rate a pin."""
+#    if not request.is_ajax():
+#        raise Http404
+    pin = get_object_or_404(Pin, pk=pk)
+    if pin.pin_user != request.user:
+        raise Http404
+    pin.owner_rate = int(rate)
+    pin.save()
+    return render(request,
+            'pin/pin_rate.html',
+            {'pin': pin})
+
+
+
+@login_required
 def create_pin(request):
     """View to create a pin."""
 

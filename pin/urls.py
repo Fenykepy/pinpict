@@ -73,4 +73,9 @@ urlpatterns = patterns('',
         ## delete a pin
         url(r'^(?P<pk>\d+)/delete/$',
             login_required(DeletePin.as_view()), name='pin_delete'),
+
+        ## rate a pin
+        url(r'^(?P<pk>\d+)/rate/(?P<rate>[0-5])/$',
+            'pin.views.rate_pin', name="pin_rate"),
+
 )

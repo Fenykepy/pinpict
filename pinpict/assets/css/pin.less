@@ -422,3 +422,33 @@ article#form-pin-from {
         border-right: none;
     }
 }
+
+
+// rating
+ul.rate {
+    text-align: center;
+    height: 25px;
+    border-top: 1px solid @50;
+    li {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+        height: 25px;
+        width: 25px;
+        border: none;
+        a {
+            padding: 0;
+            height: 25px;
+            min-height: 25px;
+            &:hover, &:focus, &:active {
+                background-color: @66;
+            }
+        }
+        a.point {
+            background-image: url('@{base-image}structure/point.png');
+        }
+        a.star {
+            background-image: url('@{base-image}structure/star.png');
+        }
+    }
+}
