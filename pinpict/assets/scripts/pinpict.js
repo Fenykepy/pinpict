@@ -47,6 +47,56 @@ $(document).ready(function () {
         });
     };
 
+    function isInArray(value, array) {
+        return array.indexOf(value) > -1;
+    }
+
+    // keyboard navigation
+    var keyboard_nav = function() {
+        var next = [
+            39, // right arrow
+            32, // space key
+        ];
+        var prev = [
+            37, // left arrow
+            8, // backspace
+        ];
+        var quit = [
+            27, // escpace key
+            81, // q key
+        ];
+        var E = ''; // e, open edit form
+        var P = 80; // p, open pinit form
+        
+        $(document).on('keydown', function(event) {
+            console.log(event.keyCode);
+            if (isInArray(event.keyCode, next)) {
+                // go to next item
+                var link = $('[rel="next"]').attr('href');
+                if (link) {
+                    window.location = link;
+                }
+            }
+            else if (isInArray(event.keyCode, prev)) {
+                // go to prev item
+                var link = $('[rel="prev"]').attr('href');
+                if (link) {
+                    window.location = link;
+                }
+            }
+            else if (isInArray(event.keyCode, quit)) {
+                // quit
+            }
+            else if (event.keyCode == E) {
+                // open edition form
+            }
+            else if (event.keyCode == P) {
+                // open pinit form
+            }
+
+        });
+    };
+
 
 
 
@@ -160,8 +210,11 @@ $(document).ready(function () {
     
     // justify pins
     justify_pins();
-    rate_pins();
     $(window).resize(justify_pins);
+    // enable rating
+    rate_pins();
+    // enable keyboard navigation
+    keyboard_nav();
 
     // get found images width and height, show it.
     $('article.pin.find').each(function() {

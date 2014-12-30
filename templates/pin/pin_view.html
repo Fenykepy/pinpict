@@ -56,6 +56,11 @@
 <a href="{#{% url "boards_list" resource_user.slug %}#}" target="_blank"><span>Uploaded to Pinpict by</span> {{resource_user.get_full_name }}</a>
 {% endwith %}
 {% endif %}
+{% if owner == user %}
+<ul class="rate">
+{% include 'pin/pin_rate.html' %}
+</ul>
+{% endif %}
 </footer>
 </article>
 
