@@ -1,40 +1,40 @@
 {% load static %}
 {% spaceless %}
 {% if pin.owner_rate == 0 %}
-    <li><a href="{% url "pin_rate" pin.id 1 %}" class="point"><span class="accessibility-text">1 étoile</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 2 %}" class="point"><span class="accessibility-text">2 étoiles</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 3 %}" class="point"><span class="accessibility-text">3 étoiles</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 4 %}" class="point"><span class="accessibility-text">4 étoiles</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 5 %}" class="point"><span class="accessibility-text">5 étoiles</span></a></li>
+    <li><a href="{% url "pin_rate" pin.id 1 %}" title="1 star rating" class="point"><span class="accessibility-text">1 étoile</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 2 %}" title="2 star rating" class="point"><span class="accessibility-text">2 étoiles</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 3 %}" title="3 star rating" class="point"><span class="accessibility-text">3 étoiles</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 4 %}" title="4 star rating" class="point"><span class="accessibility-text">4 étoiles</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 5 %}" title="5 star rating" class="point"><span class="accessibility-text">5 étoiles</span></a></li>
 {% elif pin.owner_rate == 1 %}
-	<li><a href="{% url "pin_rate" pin.id 0 %}" class="star"><span class="accessibility-text">0 étoile</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 2 %}" class="point"><span class="accessibility-text">2 étoiles</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 3 %}" class="point"><span class="accessibility-text">3 étoiles</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 4 %}" class="point"><span class="accessibility-text">4 étoiles</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 5 %}" class="point"><span class="accessibility-text">5 étoiles</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 0 %}" title="0 star rating" class="star"><span class="accessibility-text">0 étoile</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 2 %}" title="2 star rating" class="point"><span class="accessibility-text">2 étoiles</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 3 %}" title="3 star rating" class="point"><span class="accessibility-text">3 étoiles</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 4 %}" title="4 star rating" class="point"><span class="accessibility-text">4 étoiles</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 5 %}" title="5 star rating" class="point"><span class="accessibility-text">5 étoiles</span></a></li>
 {% elif pin.owner_rate == 2 %}
-	<li><a href="{% url "pin_rate" pin.id 1 %}" class="star"><span class="accessibility-text">1 étoile</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 1 %}" class="star"><span class="accessibility-text">1 étoile</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 3 %}" class="point"><span class="accessibility-text">3 étoiles</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 4 %}" class="point"><span class="accessibility-text">4 étoiles</span></a></li>
-    <li><a href="{% url "pin_rate" pin.id 5 %}" class="point"><span class="accessibility-text">5 étoiles</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 1 %}" title="1 star rating" class="star"><span class="accessibility-text">1 étoile</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 1 %}" title="1 star rating" class="star"><span class="accessibility-text">1 étoile</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 3 %}" title="3 star rating" class="point"><span class="accessibility-text">3 étoiles</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 4 %}" title="4 star rating" class="point"><span class="accessibility-text">4 étoiles</span></a></li>
+    <li><a href="{% url "pin_rate" pin.id 5 %}" title="5 star rating" class="point"><span class="accessibility-text">5 étoiles</span></a></li>
 {% elif pin.owner_rate == 3 %}
-	<li><a href="{% url "pin_rate" pin.id 1 %}" class="star"><span class="accessibility-text">1 étoile</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 2 %}" class="star"><span class="accessibility-text">2 étoiles</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 2 %}" class="star"><span class="accessibility-text">2 étoiles</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 4 %}" class="point"><span class="accessibility-text">4 étoiles</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 5 %}" class="point"><span class="accessibility-text">5 étoiles</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 1 %}" title="1 star rating" class="star"><span class="accessibility-text">1 étoile</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 2 %}" title="2 star rating" class="star"><span class="accessibility-text">2 étoiles</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 2 %}" title="2 star rating" class="star"><span class="accessibility-text">2 étoiles</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 4 %}" title="4 star rating" class="point"><span class="accessibility-text">4 étoiles</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 5 %}" title="5 star rating" class="point"><span class="accessibility-text">5 étoiles</span></a></li>
 {% elif pin.owner_rate == 4 %}
-	<li><a href="{% url "pin_rate" pin.id 1 %}" class="star"><span class="accessibility-text">1 étoile</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 2 %}" class="star"><span class="accessibility-text">2 étoiles</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 3 %}" class="star"><span class="accessibility-text">3 étoiles</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 3 %}" class="star"><span class="accessibility-text">3 étoiles</span></a></li>
-	<li><a href="{% url "pin_rate" pin.id 5 %}" class="point"><span class="accessibility-text">5 étoiles</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 1 %}" title="1 star rating" class="star"><span class="accessibility-text">1 étoile</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 2 %}" title="2 star rating" class="star"><span class="accessibility-text">2 étoiles</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 3 %}" title="3 star rating" class="star"><span class="accessibility-text">3 étoiles</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 3 %}" title="3 star rating" class="star"><span class="accessibility-text">3 étoiles</span></a></li>
+	<li><a href="{% url "pin_rate" pin.id 5 %}" title="5 star rating" class="point"><span class="accessibility-text">5 étoiles</span></a></li>
 {% elif pin.owner_rate == 5 %}
-    <li><a href="{% url "pin_rate" pin.id 1 %}" class="star"><span class="accessibility-text">1 étoile</span></a></li> 
-    <li><a href="{% url "pin_rate" pin.id 2 %}" class="star"><span class="accessibility-text">2 étoiles</span></a></li>
-    <li><a href="{% url "pin_rate" pin.id 3 %}" class="star"><span class="accessibility-text">3 étoiles</span></a></li>
-    <li><a href="{% url "pin_rate" pin.id 4 %}" class="star"><span class="accessibility-text">4 étoiles</span></a></li>
-    <li><a href="{% url "pin_rate" pin.id 4 %}" class="star"><span class="accessibility-text">4 étoiles</span></a></li>
+    <li><a href="{% url "pin_rate" pin.id 1 %}" title="1 star rating" class="star"><span class="accessibility-text">1 étoile</span></a></li> 
+    <li><a href="{% url "pin_rate" pin.id 2 %}" title="2 star rating" class="star"><span class="accessibility-text">2 étoiles</span></a></li>
+    <li><a href="{% url "pin_rate" pin.id 3 %}" title="3 star rating" class="star"><span class="accessibility-text">3 étoiles</span></a></li>
+    <li><a href="{% url "pin_rate" pin.id 4 %}" title="4 star rating" class="star"><span class="accessibility-text">4 étoiles</span></a></li>
+    <li><a href="{% url "pin_rate" pin.id 4 %}" title="4 star rating" class="star"><span class="accessibility-text">4 étoiles</span></a></li>
 {% endif %}
 {% endspaceless %}
