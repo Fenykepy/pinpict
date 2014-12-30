@@ -11,7 +11,9 @@
     </form>
     <a href="{% url "pin_view" pin.pk %}" class="pin-link"><img src="{{ MEDIA_URL }}previews/236/{{ pin.resource.previews_path }}" alt="" /></a>
     {% if owner == user %}
+    <ul class="rate">
     {% include 'pin/pin_rate.html' %}
+    </ul>
     {% endif %}
     </div>
     <p class="pin-description">

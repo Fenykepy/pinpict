@@ -1,9 +1,60 @@
 $(document).ready(function () {
+    
+    // cookie setup
+    // Function to get cookie from django doc
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // for csrf_token from django doc
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        crossDomain: false, // obviates need for sameOrigin test
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type)) {
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);
+            }
+        }
+    });
+
+    // to conform ajax request to http standart (and avoid hacks for php)
+    $.ajaxSettings.traditional = true;
+
+
+    // pins rating
+    var rate_pins = function() {
+        $('ul.rate').on('click', 'a.star, a.point', function(e) {
+            var link = $(this).attr('href');
+            $(this).parent().closest('ul.rate').load(link);
+            e.preventDefault();
+        });
+    };
+
+
+
+
     // hide article .pin until justification has been computed
     $('article.pin').css('visibility', 'hidden');
 
 
-    justify_pins = function () {
+    var justify_pins = function() {
         // hide pins and reset css (for window resizing)
         $('article.pin').css('visibility', 'hidden')
             .css('position', 'relative')
@@ -38,7 +89,7 @@ $(document).ready(function () {
                 height: pos.top,
                 left: pos.left
             });
-        }
+        };
 
         // for each article.pin
         var index = 0;
@@ -109,6 +160,7 @@ $(document).ready(function () {
     
     // justify pins
     justify_pins();
+    rate_pins();
     $(window).resize(justify_pins);
 
     // get found images width and height, show it.

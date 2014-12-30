@@ -1,6 +1,5 @@
 {% load static %}
 {% spaceless %}
-<ul class="rate">
 {% if pin.owner_rate == 0 %}
     <li><a href="{% url "pin_rate" pin.id 1 %}" class="point"><span class="accessibility-text">1 étoile</span></a></li>
 	<li><a href="{% url "pin_rate" pin.id 2 %}" class="point"><span class="accessibility-text">2 étoiles</span></a></li>
@@ -38,5 +37,4 @@
     <li><a href="{% url "pin_rate" pin.id 4 %}" class="star"><span class="accessibility-text">4 étoiles</span></a></li>
     <li><a href="{% url "pin_rate" pin.id 4 %}" class="star"><span class="accessibility-text">4 étoiles</span></a></li>
 {% endif %}
-</ul>
 {% endspaceless %}
