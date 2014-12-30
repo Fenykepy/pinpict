@@ -781,6 +781,7 @@ class PinRateTest(TestCase):
         self.assertEqual(response.status_code, 404)
 
 
+
 class PinUpdateTest(TestCase):
     """Pin update test class."""
 

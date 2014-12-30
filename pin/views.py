@@ -213,16 +213,11 @@ def create_pin(request):
             pin_form.initial = {}
             if request.session.get('last_visited_board'):
                 pk = request.session['last_visited_board']
-                print(pk)
                 pin_form.initial['board'] = pk
                 board = Board.objects.get(pk=pk)
                 pin_form.initial['description'] = board.pin_default_description
             if 'description' in form.cleaned_data and form.cleaned_data['description']:
-                print('description2:')
-                print(form.cleaned_data['description'])
                 pin_form.initial['description'] = form.cleaned_data['description']
-            print('description1')
-            print(pin_form.initial['description'])
 
             # search user's pins with this resource
             pins = request.user.pin_user.filter(resource__source_file_url=form.cleaned_data['src'])
@@ -344,14 +339,11 @@ def create_pin(request):
             form.initial['board'] = pk
             board = Board.objects.get(pk=pk)
             form.initial['description'] = board.pin_default_description
-        print('description')
-        print(form.initial['description'])
 
 
     boards = None
     ## request arrive from upload pin with new uploaded file
     if request.session.get('pin_create_tmp_resource'):
-        #print(request.session['pin_create_tmp_resource'])
         src = MEDIA_URL + request.session['pin_create_tmp_resource']
     ## request arrive from upload pin with no uploaded file (it exists)
     elif request.session.get('pin_create_resource'):
