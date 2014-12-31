@@ -723,6 +723,65 @@ class PinCreationTest(TestCase):
 
 
 
+class PinRateTest(TestCase):
+    """Pin rate test class."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # create resources
+        create_test_resources(self)
+        # create boards
+        create_test_boards(self)
+        # create pins
+        create_test_pins(self)
+        # launch client
+        self.client = Client()
+
+
+    def test_pin_rate(self):
+        # login with user
+        login(self, self.user)
+        response = self.client.post('/pin/1/rate/1/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        pin = Pin.objects.get(pk=1)
+        self.assertEqual(pin.owner_rate, 1)
+
+
+    def test_pin_rate_with_wrong_user(self):
+        # login with user2
+        login(self, self.user2)
+        response = self.client.post('/pin/1/rate/1/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 404)
+
+
+    def test_pin_rate_without_login(self):
+        response = self.client.post('/pin/1/rate/1/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 302)
+
+
+    def test_pin_rate_with_wrong_rate(self):
+        # login with user
+        login(self, self.user)
+        response = self.client.post('/pin/1/rate/6/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 404)
+
+
+    def test_pin_rate_with_wrong_pin(self):
+        # login with user
+        login(self, self.user)
+        response = self.client.post('/pin/12544/rate/1/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 404)
+
+
+    def test_pin_rate_without_ajax(self):
+        # login with user
+        login(self, self.user)
+        response = self.client.post('/pin/1/rate/1/')
+        self.assertEqual(response.status_code, 404)
+
+
+
 class PinUpdateTest(TestCase):
     """Pin update test class."""
 

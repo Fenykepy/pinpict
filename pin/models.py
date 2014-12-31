@@ -169,6 +169,7 @@ class Pin(models.Model):
     added_via = models.ForeignKey(User, blank=True, null=True)
     pin_user = models.ForeignKey(User, related_name="pin_user")
     policy = models.PositiveIntegerField(blank=True, null=True)
+    owner_rate = models.PositiveSmallIntegerField(default=0, verbose_name="Rate")
 
     def __str__(self):
         return "%s" % self.description

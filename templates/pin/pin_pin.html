@@ -10,6 +10,11 @@
         <input type="submit" value="Pin it" class="pinit" title="Pin it ! file is {{ pin.resource.width }} x {{ pin.resource.height }}px" />
     </form>
     <a href="{% url "pin_view" pin.pk %}" class="pin-link"><img src="{{ MEDIA_URL }}previews/236/{{ pin.resource.previews_path }}" alt="" /></a>
+    {% if owner == user %}
+    <ul class="rate">
+    {% include 'pin/pin_rate.html' %}
+    </ul>
+    {% endif %}
     </div>
     <p class="pin-description">
     {{ pin.description|linebreaksbr }}

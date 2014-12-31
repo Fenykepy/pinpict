@@ -246,6 +246,7 @@ class BoardUpdateTest(TestCase):
             'title': 'Paolo Roversi',
             'description': 'Photographs of Paolo Roversi',
             'policy': 1,
+            'pin_default_description': 'test',
             }, follow=True
         )
 
@@ -258,6 +259,7 @@ class BoardUpdateTest(TestCase):
         board = Board.objects.get(slug='paolo-roversi')
         # assert description is ok
         self.assertEqual(board.description, 'Photographs of Paolo Roversi')
+        self.assertEqual(board.pin_default_description, 'test')
 
         ## try to change policys
         # assert board is public

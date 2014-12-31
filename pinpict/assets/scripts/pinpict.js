@@ -1,9 +1,116 @@
 $(document).ready(function () {
+    
+    // cookie setup
+    // Function to get cookie from django doc
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // for csrf_token from django doc
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        crossDomain: false, // obviates need for sameOrigin test
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type)) {
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);
+            }
+        }
+    });
+
+    // to conform ajax request to http standart (and avoid hacks for php)
+    $.ajaxSettings.traditional = true;
+
+
+    // pins rating
+    var rate_pins = function() {
+        $('ul.rate').on('click', 'a.star, a.point', function(e) {
+            var link = $(this).attr('href');
+            $(this).parent().closest('ul.rate').load(link);
+            e.preventDefault();
+        });
+    };
+
+    function isInArray(value, array) {
+        return array.indexOf(value) > -1;
+    }
+
+    // keyboard navigation
+    var keyboard_nav = function() {
+        var next = [
+            39, // right arrow
+            32, // space key
+        ];
+        var prev = [
+            37, // left arrow
+            8, // backspace
+        ];
+        var quit = [
+            27, // escpace key
+            81, // q key
+        ];
+        var E = 69; // e, open edit form
+        var P = 80; // p, open pinit form
+
+        function navigateTo(link) {
+            if (link) {
+                window.location = link;
+            }
+        }
+        
+        $(document).on('keydown', function(event) {
+            console.log(event.keyCode);
+            if (isInArray(event.keyCode, next)) {
+                // go to next item
+                var link = $('[rel="next"]').attr('href');
+                navigateTo(link);
+            }
+            else if (isInArray(event.keyCode, prev)) {
+                // go to prev item
+                var link = $('[rel="prev"]').attr('href');
+                navigateTo(link);
+            }
+            else if (isInArray(event.keyCode, quit)) {
+                // go to parent page
+                var link = $('[rel="bookmark"]').attr('href');
+                navigateTo(link);
+            }
+            else if (event.keyCode == E) {
+                // open edition form
+                var link = $('[data-navigate="edit"]').attr('href');
+                navigateTo(link);
+            }
+            else if (event.keyCode == P) {
+                // open pinit form
+                $('[data-navigate="pinit"]').submit()
+            }
+        });
+    };
+
+
+
+
     // hide article .pin until justification has been computed
     $('article.pin').css('visibility', 'hidden');
 
 
-    justify_pins = function () {
+    var justify_pins = function() {
         // hide pins and reset css (for window resizing)
         $('article.pin').css('visibility', 'hidden')
             .css('position', 'relative')
@@ -38,7 +145,7 @@ $(document).ready(function () {
                 height: pos.top,
                 left: pos.left
             });
-        }
+        };
 
         // for each article.pin
         var index = 0;
@@ -110,6 +217,10 @@ $(document).ready(function () {
     // justify pins
     justify_pins();
     $(window).resize(justify_pins);
+    // enable rating
+    rate_pins();
+    // enable keyboard navigation
+    keyboard_nav();
 
     // get found images width and height, show it.
     $('article.pin.find').each(function() {
