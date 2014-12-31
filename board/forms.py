@@ -28,7 +28,8 @@ class UpdateBoardForm(ModelForm):
 
     class Meta:
         model = Board
-        fields = ('title', 'description', 'pin_default_description', 'policy')
+        fields = ('title', 'pins_order', 'reverse_pins_order', 'policy',
+                'description', 'pin_default_description')
 
 
 class BoardForm(ModelForm):
@@ -36,6 +37,8 @@ class BoardForm(ModelForm):
     class Meta:
         model = Board
         fields = ('title', 'description')
+
+
 
 class BoardSearchForm(ModelSearchForm):
     """Board search form."""

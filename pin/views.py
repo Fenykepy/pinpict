@@ -57,7 +57,7 @@ class ListBoardPins(ListView, ListPinsMixin):
         if (self.board.policy == 0 and self.request.user.is_authenticated()
             and self.board.user != self.request.user and not self.request.user.is_staff):
             raise Http404
-        return self.board.pin_set.all()
+        return self.board.get_sorted_pins()
 
 
     def render_to_response(self, context, **response_kwargs):
@@ -143,7 +143,7 @@ class PinView(DetailView):
         context['mlt'] = mlt
         
         # get prev and next links
-        board_pins = list(self.object.board.pin_set.values_list('id'))
+        board_pins = list(self.object.board.get_sorted_pins().values_list('id'))
         index = board_pins.index((self.object.id,))
         length = len(board_pins)
 

@@ -9,9 +9,16 @@ from board.slug import unique_slugify
 
 
 BOARD_POLICY_CHOICES = (
-            (0, 'Private'),
-            (1, 'Public'),
-        )
+        (0, 'Private'),
+        (1, 'Public'),
+)
+
+PIN_ORDERING_CHOICES = (
+        ('date_created', 'Date'),
+        ('owner_rate', 'Rating'),
+        ('source_domain', 'Domain pin comes from'),
+)
+
 
 
 
@@ -56,6 +63,11 @@ class Board(models.Model):
             null=False, blank=False, default=1)
     user = models.ForeignKey(User)
     order = models.PositiveIntegerField(default=100000)
+    pins_order = models.CharField(max_length=254, null=True, blank=True,
+            choices=PIN_ORDERING_CHOICES, default='date_created',
+            verbose_name="Order pins by")
+    reverse_pins_order = models.BooleanField(default=False,
+            verbose_name="Descending order")
 
     # managers
     objects = models.Manager()
@@ -87,6 +99,14 @@ class Board(models.Model):
             'user': self.user.slug,
             'board': self.slug,
         })
+
+    def get_sorted_pins(self):
+        """Return board's pins sorted by "pins_order" field and
+        reverse if reverse_pins_order."""
+        prefix = ''
+        if self.reverse_pins_order:
+            prefix = '-'
+        return self.pin_set.all().order_by(prefix + self.pins_order)
 
 
     def __str__(self):
