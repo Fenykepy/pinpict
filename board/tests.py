@@ -247,6 +247,8 @@ class BoardUpdateTest(TestCase):
             'description': 'Photographs of Paolo Roversi',
             'policy': 1,
             'pin_default_description': 'test',
+            'pins_order': 'owner_rate',
+            'reverse_pins_order': 'on',
             }, follow=True
         )
 
@@ -260,6 +262,8 @@ class BoardUpdateTest(TestCase):
         # assert description is ok
         self.assertEqual(board.description, 'Photographs of Paolo Roversi')
         self.assertEqual(board.pin_default_description, 'test')
+        self.assertEqual(board.pins_order, 'owner_rate')
+        self.assertEqual(board.reverse_pins_order, True)
 
         ## try to change policys
         # assert board is public

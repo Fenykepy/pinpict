@@ -1420,8 +1420,75 @@ class ListBoardPins(TestCase):
 
     def test_pin_list_context(self):
         """Assert context shows good pins."""
+
         response = self.client.get('/flr/user-board/')
         self.assertEqual(response.context['board'].slug, 'user-board')
+        
+
+
+class PinsOrderingTest(TestCase):
+    """Pins ordering test class."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # create resources
+        create_test_resources(self)
+        # create boards
+        create_test_boards(self)
+        # create pins
+        create_test_pins(self)
+        # launch client
+        self.client = Client()
+        # create 2 pins to test ordering
+        self.pin3 = Pin(
+                resource = self.resource,
+                board = self.board,
+                description = 'Test pin for first board',
+                pin_user = self.user,
+                policy = self.board.policy,
+                owner_rate = 4
+        )
+        self.pin3.save()
+
+        self.pin4 = Pin(
+                resource = self.resource,
+                board = self.board,
+                description = 'Test pin for first board',
+                pin_user = self.user,
+                policy = self.board.policy,
+                owner_rate = 5
+        )
+        self.pin4.save()
+
+        self.board.pins_order = 'owner_rate'
+        self.board.reverse_pins_order = True
+        self.board.save()
+
+
+    def test_list_ordering(self):
+        response = self.client.get('/flr/user-board/')
+        self.assertEqual(response.context['pins'][0], self.pin4)
+        self.assertEqual(response.context['pins'][1], self.pin3)
+        
+        # test reverse order
+        self.board.reverse_pins_order = False
+        self.board.save()
+
+        response = self.client.get('/flr/user-board/')
+        self.assertEqual(response.context['pins'][2], self.pin4)
+        self.assertEqual(response.context['pins'][1], self.pin3)
+        self.assertEqual(response.context['pins'][0], self.pin)
+
+
+    def test_pin_view_ordering(self):
+        response = self.client.get('/pin/{}/'.format(self.pin3.pk))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['prev'], self.pin4.pk)
+        self.assertEqual(response.context['next'], self.pin.pk)
+
+
+ 
 
 
 class PinChooseUrlTest(TestCase):
