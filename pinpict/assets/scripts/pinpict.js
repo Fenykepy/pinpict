@@ -65,35 +65,41 @@ $(document).ready(function () {
             27, // escpace key
             81, // q key
         ];
-        var E = ''; // e, open edit form
+        var E = 69; // e, open edit form
         var P = 80; // p, open pinit form
+
+        function navigateTo(link) {
+            if (link) {
+                window.location = link;
+            }
+        }
         
         $(document).on('keydown', function(event) {
             console.log(event.keyCode);
             if (isInArray(event.keyCode, next)) {
                 // go to next item
                 var link = $('[rel="next"]').attr('href');
-                if (link) {
-                    window.location = link;
-                }
+                navigateTo(link);
             }
             else if (isInArray(event.keyCode, prev)) {
                 // go to prev item
                 var link = $('[rel="prev"]').attr('href');
-                if (link) {
-                    window.location = link;
-                }
+                navigateTo(link);
             }
             else if (isInArray(event.keyCode, quit)) {
-                // quit
+                // go to parent page
+                var link = $('[rel="bookmark"]').attr('href');
+                navigateTo(link);
             }
             else if (event.keyCode == E) {
                 // open edition form
+                var link = $('[data-navigate="edit"]').attr('href');
+                navigateTo(link);
             }
             else if (event.keyCode == P) {
                 // open pinit form
+                $('[data-navigate="pinit"]').submit()
             }
-
         });
     };
 

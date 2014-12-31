@@ -7,7 +7,7 @@
 <section id="pin">
 <article>
 <header>
-    <form method="post" action="{% url "create_pin" %}">
+    <form method="post" action="{% url "create_pin" %}" data-navigate="pinit">
         {% csrf_token %}
         <input type="hidden" name="pin" value="{{ pin.pk }}" />
         <input type="submit" value="Pin it" class="pinit"/>
@@ -21,11 +21,11 @@
     <button type="button">Image</button>
     </a>
     {% if user.is_authenticated and user == owner %}
-    <a href="{% url 'update_pin' pin.pk %}">
+    <a href="{% url 'update_pin' pin.pk %}" data-navigate="edit">
     <button type="button">Edit</button>
     </a>
     {% endif %}
-    <a id="back-to-board" href="{% url "board_view" owner.slug pin.board.slug %}" title="Back to board"><span class="accessibility-text">back to board</span></a>
+    <a id="back-to-board" rel="bookmark" href="{% url "board_view" owner.slug pin.board.slug %}" title="Back to board"><span class="accessibility-text">back to board</span></a>
 </header>
 {% if prev %}
 <a href="{% url "pin_view" prev %}" id="previous-pin" title="Previous pin" rel="prev"><div><span class="accessibility-text">previous pin</span></div></a>
