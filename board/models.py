@@ -90,6 +90,10 @@ class Board(models.Model):
         # if policy has changed, update pin's policy
         if has_changed(self, 'policy'):
             self.pin_set.all().update(policy=self.policy)
+            self.user.n_public_pins = self.user.get_n_public_pins()
+            self.user.n_public_boards = self.user.get_n_public_boards()
+            self.user.save()
+
 
         # save object
         super(Board, self).save()
