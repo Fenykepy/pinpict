@@ -8,7 +8,7 @@ from wand.image import Image
 from django.core.files.storage import FileSystemStorage
 from  django.core.files.images import ImageFile
 from django.db import models
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.http import Http404
 from django.utils.encoding import iri_to_uri
@@ -171,16 +171,37 @@ class Pin(models.Model):
     policy = models.PositiveIntegerField(blank=True, null=True)
     owner_rate = models.PositiveSmallIntegerField(default=0, verbose_name="Rate")
 
+    class Meta:
+        ordering = ['date_created']
+
+
     def __str__(self):
         return "%s" % self.description
+
 
     def get_absolute_url(self):
         return reverse('pin_view', kwargs={
             'pk': self.pk,
         })
 
-    class Meta:
-        ordering = ['date_created']
+
+    def increase_n_pins(self):
+        """Increase number of pins after pin creation."""
+        # increase board n_pins
+        self.board.n_pins += 1
+        self.board.save()
+
+        # increase user n_pins
+        self.pin_user.n_pins += 1
+        if self.board.policy == 1:
+            self.pin_user.n_public_pins += 1
+        self.pin_user.save()
+
+
+        # increase resource n_pins
+        self.resource.n_pins += 1
+        self.resource.save()
+
 
     def save(self, **kwargs):
         """get domain from source, then save."""
@@ -188,19 +209,46 @@ class Pin(models.Model):
         if self.source:
             self.source_domain = extract_domain_name(self.source)
 
+        # if created increase n_pins
+        if not self.pk:
+            self.increase_n_pins()
+        # else check if board has changed
+        else:
+            old = Pin.objects.get(pk=self.pk)
+            if old.board != self.board:
+                old.board.n_pins -= 1
+                old.board.save()
+                self.board.n_pins += 1
+                self.board.save()
+                self.pin_user.n_public_pins = self.pin_user.get_n_public_pins()
+                self.pin_user.save()
+
         super(Pin, self).save()
 
 
 
-@receiver(post_save, sender=Pin)
 @receiver(post_delete, sender=Pin)
-def update_n_pins(sender, instance, **kwargs):
-    """Update Board's n_pins, Resource's n_pins and
-    User's n_pins after a pin is save or delete."""
-    # update board n_pins
-    instance.board.n_pins = instance.board.pin_set.all().count()
+def decrease_n_pins(sender, instance, **kwargs):
+    """Decrease number of pins after a pin deletion."""
+    # decrease board n_pins
+    instance.board.n_pins -= 1
     instance.board.save()
 
+    # decrease user n_pins
+    instance.pin_user.n_pins -= 1
+    if instance.board.policy == 1:
+        instance.pin_user.n_public_pins -= 1
+    instance.pin_user.save()
+
+    # decrease resource n_pins
+    instance.resource.n_pins -= 1
+    instance.resource.save()
+
+
+
+def update_n_pins(instance, **kwargs):
+    """Update Board's n_pins, Resource's n_pins and
+    User's n_pins after a pin is save or delete."""
     # update user's boards n_pins
     boards = Board.objects.filter(user=instance.board.user)
     for board in boards:
