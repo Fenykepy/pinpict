@@ -4,7 +4,7 @@
     <header>
         <h1>{{ board.title }}</h1>
     </header>
-        {% with first=board.pin_set.all.0 %}
+        {% with first=board.get_main_cover %}
         {% if first %}
             <img
                 data-main-id="{{ first.id }}"

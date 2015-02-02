@@ -66,6 +66,10 @@ $(document).ready(function () {
             });
             // hide arrows
             board.find("div.board-right-arrow, div.board-left-arrow").hide();
+            // delete arrows events
+            $("article.board").off("click", ".board-right-arrow");
+            $("article.board").off("click", ".board-left-arrow");
+            
             // change back button name to "Change cover"
             $(this).html("Change cover");
             $(this).attr("title", "Change cover");
