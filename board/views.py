@@ -1,9 +1,13 @@
+import json
+
 from django.views.generic import ListView, DetailView, \
         CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
 from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
+from django.http import JsonResponse
 
+from pinpict.settings import MEDIA_URL
 from user.models import User
 from board.models import Board
 from board.forms import BoardForm, UpdateBoardForm
@@ -162,4 +166,11 @@ class DeleteBoard(DeleteView, AjaxableResponseMixin):
                 kwargs={'user': self.request.user.slug})
 
 
+def getCoversList(request, pk):
+    """Returns a json list of all pins id of the given board."""
+    board = get_object_or_404(Board, id=pk)
+    data = board.pin_set.all().select_related('resource').values('pk', 'resource__previews_path')
+    to_dump = [{'pk': item['pk'], 'previews_path': "{}previews/216-160/{}".format(
+        MEDIA_URL, item['resource__previews_path'])} for item in data]
 
+    return JsonResponse(to_dump, safe=False)

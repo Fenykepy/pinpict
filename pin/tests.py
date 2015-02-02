@@ -934,6 +934,18 @@ class PinUpdateTest(TestCase):
         board2 = Board.objects.get(pk=2)
         self.assertEqual(board2.n_pins, board2_n_pins - 1)
 
+    def test_board_covers_list(self):
+        # test that covers list is rendered correctly
+        response = self.client.get('/board/covers/1/')
+        self.assertEqual(response.status_code, 200)
+        result = ((response.content == b'[{"pk": 1, "previews_path": "/media/previews/216-160/None"}]') or
+            (response.content == b'[{"previews_path": "/media/previews/216-160/None", "pk": 1}]'))
+        self.assertTrue(result)
+        
+        # it should return 404 with wrong board id
+        response = self.client.get('/board/covers/3456/')
+        self.assertEqual(response.status_code, 404)
+
 
 
 class PinDeleteTest(TestCase):
