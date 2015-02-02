@@ -6,7 +6,11 @@
     </header>
         {% with first=board.pin_set.all.0 %}
         {% if first %}
-            <img class="board-main-preview" src="{{ MEDIA_URL }}previews/216-160/{{ first.resource.previews_path }}" alt="{{ board.title }}" />
+            <img
+                data-main-id="{{ first.id }}"
+                class="board-main-preview" 
+                src="{{ MEDIA_URL }}previews/216-160/{{ first.resource.previews_path }}" 
+                alt="{{ board.title }}" />
         {% else %}
             <img class="board-main-preview" src="{% static 'images/structure/grey58.png' %}" alt="" />
         {% endif %}

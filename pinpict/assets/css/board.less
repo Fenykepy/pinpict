@@ -125,17 +125,39 @@ article.pin, article#create-pin, #user-compact, .user-compact, article.user {
         }
     }
     div.board-left-arrow, div.board-right-arrow {
-        top: 120px;
+        top: 110px;
         height: 20px;
         width: 20px;
         box-sizing: border-box;
         display: none;
+        padding: 0px;
+        a {
+            display: block;
+            height: 100%;
+            width: 100%;
+        }
     }
     div.board-left-arrow {
         left: 14px;
+        a:before {
+            left: 5px;
+            top: 4px;
+            .arrow-left(@CC, 6px, 8px);
+        }
+        a:focus:before, a:hover:before, a:active:before {
+            .arrow-left(@FF, 6px, 8px);
+        }
     }
     div.board-right-arrow {
         right: 14px;
+        a:before {
+            right: 5px;
+            top: 4px;
+            .arrow-right(@CC, 6px, 8px);
+        }
+        a:focus:before, a:hover:before, a:active:before {
+            .arrow-right(@FF, 6px, 8px);
+        }
     }
 
     a.board-previews {

@@ -56,12 +56,13 @@ $(document).ready(function () {
     $("article.board").on("click", ".board-change-cover a", function(e) {
         if($(this).html() == "Select") {
             console.log("visible");
-            // send request ajax to set cover
+            // send request ajax to get covers list
             // hide arrows
             $(this).parents("article").find("div.board-right-arrow, div.board-left-arrow").hide();
             // change back button name to "Change cover"
             $(this).html("Change cover");
             $(this).attr("title", "Change cover");
+            $("article.board").on("click", ".board-right-arrow", function(e){} );
         } else {
             // show arrows
             $(this).parents("article").find("div.board-right-arrow, div.board-left-arrow").show();
@@ -71,7 +72,6 @@ $(document).ready(function () {
         }
         e.preventDefault();
     });
-    $("article.board").on("click", ".board-right-arrow", function(e){} );
 
     // keyboard navigation
     var keyboard_nav = function() {
