@@ -49,7 +49,29 @@ $(document).ready(function () {
 
     function isInArray(value, array) {
         return array.indexOf(value) > -1;
-    }
+    };
+
+
+    // board cover selection
+    $("article.board").on("click", ".board-change-cover a", function(e) {
+        if($(this).html() == "Select") {
+            console.log("visible");
+            // send request ajax to set cover
+            // hide arrows
+            $(this).parents("article").find("div.board-right-arrow, div.board-left-arrow").hide();
+            // change back button name to "Change cover"
+            $(this).html("Change cover");
+            $(this).attr("title", "Change cover");
+        } else {
+            // show arrows
+            $(this).parents("article").find("div.board-right-arrow, div.board-left-arrow").show();
+            // change button name to "Select"
+            $(this).html("Select");
+            $(this).attr("title", "Select this cover");
+        }
+        e.preventDefault();
+    });
+    $("article.board").on("click", ".board-right-arrow", function(e){} );
 
     // keyboard navigation
     var keyboard_nav = function() {

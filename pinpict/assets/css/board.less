@@ -100,10 +100,8 @@ article.pin, article#create-pin, #user-compact, .user-compact, article.user {
         color: @00;
         margin:  0 3px 6px 3px;
     }
-    div.board-n-pins {
+    div.label {
         position: absolute;
-        bottom: 110px;
-        right: 14px;
         color: @FF;
         font-weight: bold;
         font-size: 12px;
@@ -111,6 +109,33 @@ article.pin, article#create-pin, #user-compact, .user-compact, article.user {
         border-radius: 3px;
         box-shadow: 0px 0px 2px @00 inset;
         padding: 3px 6px;
+    }
+    div.board-n-pins {
+        bottom: 110px;
+        right: 14px;
+    }
+    div.board-change-cover {
+        top: 40px;
+        right: 14px;
+        a {
+            color: @CC;
+            &:hover, &:focus, &:active {
+                color:@FF;
+            }
+        }
+    }
+    div.board-left-arrow, div.board-right-arrow {
+        top: 120px;
+        height: 20px;
+        width: 20px;
+        box-sizing: border-box;
+        display: none;
+    }
+    div.board-left-arrow {
+        left: 14px;
+    }
+    div.board-right-arrow {
+        right: 14px;
     }
 
     a.board-previews {

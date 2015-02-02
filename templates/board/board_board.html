@@ -43,9 +43,12 @@
         </li>
         {% endwith %}
         </ul>
-        <div class="board-n-pins">{{ board.n_pins }} Pin{{ board.n_pins|pluralize }}</div>
+        <div class="label board-n-pins">{{ board.n_pins }} Pin{{ board.n_pins|pluralize }}</div>
     </a>
 {% if user.is_authenticated and user == owner %}
+    <div class="label board-change-cover"><a href="#" title="Change cover">Change cover</a></div>
+    <div class="label board-right-arrow"><a href="#"><span class="accessibility-text">&gt;</span></a></div>
+    <div class="label board-left-arrow"><a href="#"><span class="accessibility-text">&lt;</span></a></div>
 <a href="{% url "board_update" owner.slug board.slug %}" title="Edit board"><button type="button">Edit</button></a>
 {% else %}
 <a href="{% url "board_view" board.user.slug board.slug %}" title="View board"><button type="button">View</button></a>
