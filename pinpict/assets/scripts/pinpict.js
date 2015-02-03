@@ -143,7 +143,6 @@ $(document).ready(function () {
         }
         
         $(document).on('keydown', function(event) {
-            console.log(event.keyCode);
             if (isInArray(event.keyCode, next)) {
                 // go to next item
                 var link = $('[rel="next"]').attr('href');
@@ -303,7 +302,6 @@ $(document).ready(function () {
         // on img load
         img.one('load', function() {
             // append width and height to footer
-            console.log(pict.width);
             article.find('span.width').append(pict.width);
             article.find('span.height').append(pict.height);
         });

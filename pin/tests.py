@@ -739,7 +739,8 @@ class MainPinTest(TestCase):
             board = self.board,
             description = 'Test pin for first board',
             pin_user = self.user,
-            policy = self.board.policy
+            policy = self.board.policy,
+            main = True
         )
         self.pin_new.save()
         # launch client
@@ -748,10 +749,19 @@ class MainPinTest(TestCase):
     def test_main_pin(self):
         # login with user
         login(self, self.user)
+        # set pin2 (from board2 as main for board2
+        self.pin2.main = True
+        self.pin2.save()
+        # set pin1 as main instead of pin_new by get request
         response = self.client.get('/pin/1/main/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
+        # assert pin1 is main
         pin = Pin.objects.get(pk=1)
         self.assertTrue(pin.main)
+        # assert pin2 is still main
+        pin2 = Pin.objects.get(pk=self.pin2.pk)
+        self.assertTrue(pin2.main)
+        # assert there is only one main pin for board 1
         n_pins = pin.board.pin_set.all().count()
         print(n_pins)
         n_main = pin.board.pin_set.all().filter(main=True).count()
