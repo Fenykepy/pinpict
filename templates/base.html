@@ -9,10 +9,10 @@
     {% load static %}
     
     {# PROD: compiled file #}
-    {#<link rel="stylesheet" href="{% static 'css/pinpict.min.css' %}" />{# PROD #}
+    <link rel="stylesheet" href="{% static 'css/pinpict.min.css' %}" />{# PROD #}
     
     {# DEVEL: less file #}
-    <link rel="stylesheet/less" href="{% static 'css/controller.less' %}" />{# DEVEL #}
+    {#<link rel="stylesheet/less" href="{% static 'css/controller.less' %}" />{# DEVEL #}
 </head>
 <body>
 {% block header %}
@@ -62,10 +62,10 @@
 {% endblock %}
 {% block body %}
 {% endblock %}
-{# DEVEL less compilation client side #}
 <script src="{% static 'scripts/jquery-2.0.3.min.js' %}"></script>
 <script src="{% static 'scripts/pinpict.js' %}"></script>
-<script src="{% static 'scripts/less-1.7.4.min.js' %}" type="text/javascript"></script>{# DEVEL #}
+{# DEVEL less compilation client side #}
+{#<script src="{% static 'scripts/less-1.7.4.min.js' %}" type="text/javascript"></script>{# DEVEL #}
 </body>
 </html>
 
