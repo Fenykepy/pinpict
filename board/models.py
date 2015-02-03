@@ -68,6 +68,9 @@ class Board(models.Model):
             verbose_name="Order pins by")
     reverse_pins_order = models.BooleanField(default=False,
             verbose_name="Descending order")
+    users_can_read = models.ManyToManyField(User, null=True, blank=True,
+            related_name="users_can_read",
+            verbose_name="Users who can see board if private")
 
     # managers
     objects = models.Manager()

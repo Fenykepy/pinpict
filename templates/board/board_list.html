@@ -43,7 +43,7 @@
 </section>
 
 
-{% if user.is_authenticated and user == owner or user.is_staff and private_boards%}
+{% if private_boards%}
 {% spaceless %}
 <div id="private-boards-wrapper">
 <section id="private-boards">
