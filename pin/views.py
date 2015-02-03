@@ -193,7 +193,7 @@ def set_main_cover(request, pk):
         raise Http404
 
     # get main(s) pin(s) 
-    mains = Pin.objects.filter(main=True)
+    mains = pin.board.pin_set.all().filter(main=True)
     # unset main(s) pin(s)
     for main in mains:
         main.main = False
