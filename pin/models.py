@@ -165,6 +165,7 @@ class Pin(models.Model):
             verbose_name="Web page pin comes from", max_length=2000)
     description = models.TextField(verbose_name="Pin description")
     board = models.ForeignKey(Board)
+    main = models.BooleanField(default=False, verbose_name="Use as main preview")
     resource = models.ForeignKey(Resource)
     added_via = models.ForeignKey(User, blank=True, null=True)
     pin_user = models.ForeignKey(User, related_name="pin_user")

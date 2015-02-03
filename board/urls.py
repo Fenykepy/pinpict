@@ -4,14 +4,18 @@ from django.contrib.auth.decorators import login_required
 from haystack.views import SearchView, search_view_factory
 
 from board.forms import BoardSearchForm
-from board.views import CreateBoard, CreatePrivateBoard
+from board.views import CreateBoard, CreatePrivateBoard, getCoversList
 
 urlpatterns = patterns('',
+
+    ## covers list
+    url(r'^covers/(?P<pk>\d+)/', getCoversList, name='get_covers_list'),
+
 
     ### board creation
     ## public board creation
     url(r'^create/$', login_required(CreateBoard.as_view()),
-        name='board_create'),
+        name='board_create'), 
 
     ## private board creation
     url(r'^create/private/$', login_required(CreatePrivateBoard.as_view()),

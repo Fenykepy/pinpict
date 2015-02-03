@@ -5,7 +5,7 @@ from django.views.generic import ListView, DetailView, \
         FormView
 from django.views.generic.base import ContextMixin
 from django.core.urlresolvers import reverse_lazy
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.http import urlquote_plus
 from django.utils.encoding import iri_to_uri
@@ -182,6 +182,27 @@ def rate_pin(request, pk, rate):
             'pin/pin_rate.html',
             {'pin': pin})
 
+
+@login_required
+def set_main_cover(request, pk):
+    """Set given pin as cover for board."""
+    if not request.is_ajax():
+        raise Http404
+    pin = get_object_or_404(Pin, pk=pk)
+    if pin.pin_user != request.user:
+        raise Http404
+
+    # get main(s) pin(s) 
+    mains = Pin.objects.filter(main=True)
+    # unset main(s) pin(s)
+    for main in mains:
+        main.main = False
+        main.save()
+
+    pin.main = True
+    pin.save()
+
+    return HttpResponse('')
 
 
 @login_required

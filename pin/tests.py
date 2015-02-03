@@ -721,6 +721,71 @@ class PinCreationTest(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.templates[0].name, '404.html')
 
+class MainPinTest(TestCase):
+    """Main Pin test class."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # create resources
+        create_test_resources(self)
+        # create boards
+        create_test_boards(self)
+        # create pins
+        create_test_pins(self)
+        # create a second pin in board, to ensure only one remain main
+        self.pin_new = Pin(
+            resource = self.resource,
+            board = self.board,
+            description = 'Test pin for first board',
+            pin_user = self.user,
+            policy = self.board.policy
+        )
+        self.pin_new.save()
+        # launch client
+        self.client = Client()
+
+    def test_main_pin(self):
+        # login with user
+        login(self, self.user)
+        response = self.client.get('/pin/1/main/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        pin = Pin.objects.get(pk=1)
+        self.assertTrue(pin.main)
+        n_pins = pin.board.pin_set.all().count()
+        print(n_pins)
+        n_main = pin.board.pin_set.all().filter(main=True).count()
+        self.assertEqual(n_main, 1)
+
+
+    def test_main_pin_with_wrong_user(self):
+        # login with user2
+        login(self, self.user2)
+        response = self.client.get('/pin/1/main/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 404)
+
+
+    def test_main_pin_without_login(self):
+        response = self.client.get('/pin/1/main/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 302)
+
+
+    def test_main_pin_with_wrong_pin(self):
+        # login with user
+        login(self, self.user)
+        response = self.client.get('/pin/2/main/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 404)
+
+
+    def test_main_pin_without_ajax(self):
+        # login with user
+        login(self, self.user)
+        response = self.client.get('/pin/1/main/')
+        self.assertEqual(response.status_code, 404)
+
+
+
+
 
 
 class PinRateTest(TestCase):
@@ -933,6 +998,18 @@ class PinUpdateTest(TestCase):
         # assert old board number of pins has been decreased by one
         board2 = Board.objects.get(pk=2)
         self.assertEqual(board2.n_pins, board2_n_pins - 1)
+
+    def test_board_covers_list(self):
+        # test that covers list is rendered correctly
+        response = self.client.get('/board/covers/1/')
+        self.assertEqual(response.status_code, 200)
+        result = ((response.content == b'[{"pk": 1, "previews_path": "/media/previews/216-160/None"}]') or
+            (response.content == b'[{"previews_path": "/media/previews/216-160/None", "pk": 1}]'))
+        self.assertTrue(result)
+        
+        # it should return 404 with wrong board id
+        response = self.client.get('/board/covers/3456/')
+        self.assertEqual(response.status_code, 404)
 
 
 

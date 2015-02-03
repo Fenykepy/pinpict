@@ -112,6 +112,16 @@ class Board(models.Model):
             prefix = '-'
         return self.pin_set.all().order_by(prefix + self.pins_order)
 
+    def get_main_cover(self):
+        """Return main cover pin instance."""
+        mains = self.pin_set.all().filter(main=True);
+        # try to get main pin else return first one if any
+        try:
+            main = mains.get()
+            return main
+        except:
+            return self.pin_set.all()[:1].get()
+
 
     def __str__(self):
         return "%s" % self.title

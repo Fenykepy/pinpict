@@ -49,7 +49,75 @@ $(document).ready(function () {
 
     function isInArray(value, array) {
         return array.indexOf(value) > -1;
-    }
+    };
+
+
+    // board cover selection
+    $("article.board").on("click", ".board-change-cover a", function(e) {
+        var board = $(this).parents("article"); // cache parent article
+        var board_id = board.attr("id"); // get board id
+        var cover = board.find("img.board-main-preview"); // get cover 
+        var cover_id = cover.attr("data-main-id"); // get cover
+        var covers = [];
+        if($(this).html() == "Select") {
+            // send request ajax to set cover
+            $.ajax( "/pin/" + cover_id + "/main/" ).fail(function() {
+                alert('Setting cover failed :(');
+            });
+            // hide arrows
+            board.find("div.board-right-arrow, div.board-left-arrow").hide();
+            // delete arrows events
+            $("article.board").off("click", ".board-right-arrow");
+            $("article.board").off("click", ".board-left-arrow");
+            
+            // change back button name to "Change cover"
+            $(this).html("Change cover");
+            $(this).attr("title", "Change cover");
+        } else {
+            // send request ajax to get covers list
+            $.getJSON("/board/covers/" + board_id + "/", function(data) {
+                covers = data;
+            });
+            // show arrows
+            board.find("div.board-right-arrow, div.board-left-arrow").show();
+            // change button name to "Select"
+            $(this).html("Select");
+            $(this).attr("title", "Select this cover");
+
+            var get_index = function() {
+                for (var i=0; i < covers.length; i++) {
+                    if (cover_id == covers[i].pk) {
+                        return i;
+                    }
+                }
+            };
+
+            var set_cover = function(index) {
+                // set new cover_id
+                cover_id = covers[index].pk;
+                cover.attr("data-main-id", cover_id);
+                // load cover preview
+                cover.attr("src", covers[index].previews_path);
+            };
+
+            $("article.board").on("click", ".board-right-arrow", function(e){
+                // get next index
+                var next = get_index() + 1;
+                if (next >= covers.length) { next = 0; }
+                set_cover(next);
+                e.preventDefault();
+            });
+
+            $("article.board").on("click", ".board-left-arrow", function(e){
+                // get prev index
+                var prev = get_index() - 1;
+                if (prev < 0) { prev = covers.length - 1; }
+                set_cover(prev);
+                e.preventDefault();
+            });
+        }
+        e.preventDefault();
+    });
 
     // keyboard navigation
     var keyboard_nav = function() {
