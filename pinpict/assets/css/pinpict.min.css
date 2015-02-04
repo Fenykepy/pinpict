@@ -44,10 +44,12 @@ input,textarea,select,option,:invalid,:valid{outline:none;display:block}
 div.field_wrapper{margin-bottom:25px}
 header#form{max-width:650px}
 form{position:relative;max-width:650px;margin:2em auto 1em}form span.help_text{display:block;margin-top:5px;margin-bottom:5px;color:#222}
-input,option,select,button,textarea,ul.errorlist li,ul.warninglist li{width:100%;border-radius:4px;background:#585858;border:1px solid #313131;font-size:14px;color:#000;text-align:left;padding:6px 12px;margin-top:5px;box-sizing:border-box}
+input,select,button,textarea,ul.errorlist li,ul.warninglist li{width:100%;border-radius:4px;background:#585858;border:1px solid #313131;font-size:14px;color:#000;text-align:left;padding:6px 12px;margin-top:5px;box-sizing:border-box}
 textarea{resize:vertical;line-height:20px}
 select{background:#585858;background:-webkit-linear-gradient(#666, #505050);background:-moz-linear-gradient(#666, #505050);background:-ms-linear-gradient(#666, #505050);background:-o-linear-gradient(#666, #505050);background:linear-gradient(#666, #505050)}
-input,option,select,button{height:34px}
+input,select,button{height:34px}
+select[multiple]{height:auto}select[multiple] option{background:none}
+option{background:#585858;font-size:14px;color:#000}
 input[type="checkbox"]{height:13px;width:13px;margin:3px 8px 0 0;float:left}
 label{display:inline-block;margin-bottom:5px}
 .checkbox label{font-weight:normal}

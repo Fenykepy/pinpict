@@ -27,8 +27,16 @@ class ListBoards(ListView):
         context = super(ListBoards, self).get_context_data(**kwargs)
         #context['range4'] = [i+1 for i in range(4)]
         context['owner'] = self.user
+        if not self.request.user.is_authenticated():
+            return context
+        # get owner's private boards 
+        privates = Board.privates.filter(user=self.user)
         if self.user == self.request.user or self.request.user.is_staff:
-            context['private_boards'] = Board.privates.filter(user=self.user)
+            context['private_boards'] = privates
+            return context
+        allowed = privates.filter(users_can_read=self.request.user)
+        if allowed:
+            context['private_boards'] = allowed
 
         return context
 

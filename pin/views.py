@@ -53,9 +53,11 @@ class ListBoardPins(ListView, ListPinsMixin):
         # add session variable to store last visited board
         self.request.session['last_visited_board'] = self.board.pk
         # if board is private and user is not board owner or staff member,
+        # or allowed to read board
         # raise 404
         if (self.board.policy == 0 and self.request.user.is_authenticated()
-            and self.board.user != self.request.user and not self.request.user.is_staff):
+            and self.board.user != self.request.user and not self.request.user.is_staff
+            and not self.request.user in self.board.users_can_read.all() ):
             raise Http404
         return self.board.get_sorted_pins()
 
@@ -132,7 +134,8 @@ class PinView(DetailView):
         self.object = self.get_object()
         if (self.object.board.policy == 0 
             and self.object.board.user != self.request.user 
-            and not self.request.user.is_staff):
+            and not self.request.user.is_staff and 
+            not self.request.user in self.object.board.users_can_read.all() ):
                 raise Http404
 
         context = self.get_context_data(object=self.object)
