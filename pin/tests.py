@@ -69,7 +69,7 @@ def create_test_private_pins(instance):
             board = instance.privateBoard,
             description = 'Test private pin',
             pin_user = instance.user,
-            policy = instance.board.policy
+            policy = instance.privateBoard.policy
 
     )
     instance.privatePin.save()
@@ -79,7 +79,7 @@ def create_test_private_pins(instance):
             board = instance.privateBoard,
             description = 'Second test private pin',
             pin_user = instance.user,
-            policy = instance.board.policy
+            policy = instance.privateBoard.policy
     )
     instance.privatePin2.save()
 
@@ -240,6 +240,63 @@ class UtilsTest(TestCase):
         parser.feed(html)
         
         self.assertEqual(parser.pictures, result)
+
+class PinBoardAllowUserTest(TestCase):
+    """Pin and board special autorisation to view private
+    board and pins test class."""
+
+    def setUp(self):
+        create_test_users(self)
+        create_test_private_boards(self)
+        create_test_resources(self)
+        create_test_private_pins(self)
+        # create a new private board
+        self.privateBoard2 = Board(
+                title="private board 2",
+                description=".",
+                policy=0,
+                user=self.user)
+        self.privateBoard2.save()
+        self.client = Client()
+
+    def test_add_allowed_user(self):
+        # update one private board of user to be visible by user2
+        login(self, self.user)
+
+        response = self.client.post('/flr/private-board/edit/', {
+            'title': 'private board',
+            'description': 'Photographs of Paolo Roversi',
+            'policy': 0,
+            'pins_order': 'date_created',
+            'users_can_read': ["2"],
+            }, follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+
+
+        # assert user2 sees user's allowed private board in boards list 
+        # and not other private boards
+        login(self, self.user2)
+
+        response = self.client.get('/flr/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['private_boards'].count(), 1)
+
+        # assert user2 sees user's allowed private board pins'list
+        response = self.client.get('/flr/private-board/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['pins'].count(), 2)
+
+        # assert user2 sees user's allowed private pins in all pins list
+        response = self.client.get('/flr/pins/')
+        self.assertEqual(response.status_code, 200)
+        #self.assertEqual(response.context['pins'].count(), 2)
+
+        # assert user2 sees user's allowed board pins detail
+        response = self.client.get('/pin/{}/'.format(self.privatePin.pk))
+        self.assertEqual(response.status_code, 200)
+
+
 
 
 
