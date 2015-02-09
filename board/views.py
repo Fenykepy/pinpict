@@ -3,9 +3,10 @@ import json
 from django.views.generic import ListView, DetailView, \
         CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 
 from pinpict.settings import MEDIA_URL
 from user.models import User
@@ -172,6 +173,31 @@ class DeleteBoard(DeleteView, AjaxableResponseMixin):
     def get_success_url(self):
         return reverse_lazy('boards_list',
                 kwargs={'user': self.request.user.slug})
+
+
+@login_required
+def boardFollow(request, pk):
+    """Add a follower to a board."""
+    if not request.is_ajax():
+        raise Http404
+    board = get_object_or_404(Board, id=pk)
+    board.add_follower(request.user)
+
+    return HttpResponse(reverse_lazy('board_unfollow',
+            kwargs={'pk': pk}))
+
+
+@login_required
+def boardUnfollow(request, pk):
+    """Remove a follower from a board."""
+    if not request.is_ajax():
+        raise Http404
+    board = get_object_or_404(Board, id=pk)
+    board.remove_follower(request.user)
+
+    return HttpResponse(reverse_lazy('board_follow',
+            kwargs={'pk': pk}))
+
 
 
 def getCoversList(request, pk):

@@ -41,7 +41,6 @@ def create_test_private_boards(instance):
 
 
 
-
 class BoardCreationTest(TestCase):
     """Board app tests."""
 
@@ -209,6 +208,53 @@ class BoardUpdateTest(TestCase):
             },
         ]
         test_urls(self, urls)
+
+
+    def test_follow_board(self):
+        # not logged in should redirect to login page
+        response = self.client.get('/board/follow/1/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 302)
+        
+        # login but not ajax should return 404
+        login(self, self.user2)
+        response = self.client.get('/board/follow/1/')
+        self.assertEqual(response.status_code, 404)
+        
+        # should add user in followers
+        response = self.client.get('/board/follow/1/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        board = Board.objects.get(pk=1)
+        self.assertTrue(self.user2 in board.followers.all())
+        self.assertEqual(board.n_followers, 1)
+
+
+    def test_unfollow_board(self):
+        # make user2 following board 1 
+        board = Board.objects.get(pk=1)
+        board.add_follower(self.user2)
+
+        self.assertTrue(self.user2 in board.followers.all())
+        self.assertEqual(board.n_followers, 1)
+
+        # not logged in should redirect to login page
+        response = self.client.get('/board/unfollow/1/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 302)
+        
+        # login but not ajax should return 404
+        login(self, self.user2)
+        response = self.client.get('/board/unfollow/1/')
+        self.assertEqual(response.status_code, 404)
+        
+        # should remove user from followers
+        response = self.client.get('/board/unfollow/1/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        board = Board.objects.get(pk=1)
+        self.assertTrue(not self.user2 in board.followers.all())
+        self.assertEqual(board.n_followers, 0)
+
+
+
+
 
 
     def test_logged_in_urls(self):

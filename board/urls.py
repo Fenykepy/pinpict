@@ -11,6 +11,12 @@ urlpatterns = patterns('',
     ## covers list
     url(r'^covers/(?P<pk>\d+)/', getCoversList, name='get_covers_list'),
 
+    ## add and remove follower
+    url(r'^follow/(?P<pk>\d+)/', 'board.views.boardFollow',
+        name='board_follow'),
+    url(r'^unfollow/(?P<pk>\d+)/', 'board.views.boardUnfollow',
+        name='board_unfollow'),
+
 
     ### board creation
     ## public board creation

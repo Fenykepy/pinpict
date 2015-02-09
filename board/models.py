@@ -71,6 +71,11 @@ class Board(models.Model):
     users_can_read = models.ManyToManyField(User, null=True, blank=True,
             related_name="users_can_read",
             verbose_name="Users who can see board if private")
+    followers = models.ManyToManyField(User, null=True, blank=True,
+            related_name="board_followers",
+            verbose_name="Users who follow board")
+    n_followers = models.PositiveIntegerField(default=0,
+            verbose_name="Followers number")
 
     # managers
     objects = models.Manager()
@@ -125,6 +130,22 @@ class Board(models.Model):
         except:
             return self.pin_set.all()[:1].get()
 
+    def set_n_followers(self):
+        """Set number of followers."""
+        self.n_followers = self.followers.all().count()
+        self.save()
+
+    def add_follower(self, follower):
+        """Add a follower to the board.
+        follower : user object."""
+        self.followers.add(follower)
+        self.set_n_followers()
+
+    def remove_follower(self, follower):
+        """Remove a follower from thes board.
+        follower : user object."""
+        self.followers.remove(follower)
+        self.set_n_followers()
 
     def __str__(self):
         return "%s" % self.title

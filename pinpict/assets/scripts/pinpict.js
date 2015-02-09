@@ -51,6 +51,28 @@ $(document).ready(function () {
         return array.indexOf(value) > -1;
     };
 
+    $("body").on("click", "a.follow", function(e) {
+        var link = $(this);
+        var button = $(this).children("button");
+        console.log(button.html());
+        $.ajax(link.attr("href"))
+            .done(function(data) {
+                console.log(data);
+                link.attr("href", data);
+                if (button.html() == "Follow") {
+                    button.html("Unfollow");
+                    link.attr("title", "Unfollow this board");
+                } else {
+                    button.html("Follow");
+                    link.attr("title", "Follow this board");
+                }
+
+        }).fail(function() {
+            alert("An error occured");
+        });
+        e.preventDefault();
+    });
+
 
     // board cover selection
     $("article.board").on("click", ".board-change-cover a", function(e) {
