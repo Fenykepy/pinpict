@@ -210,6 +210,53 @@ class BoardUpdateTest(TestCase):
         test_urls(self, urls)
 
 
+
+    def test_follow_user(self):
+        # not logged in should redirect to login page
+        response = self.client.get('/user/follow/1/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 302)
+        
+        # login but not ajax should return 404
+        login(self, self.user2)
+        response = self.client.get('/user/follow/1/')
+        self.assertEqual(response.status_code, 404)
+        
+        # should add user in followers
+        response = self.client.get('/user/follow/1/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.get(pk=1)
+        self.assertTrue(self.user2 in user.followers.all())
+        self.assertEqual(user.n_followers, 1)
+
+
+    def test_unfollow_user(self):
+        # make user2 following board 1 
+        user = User.objects.get(pk=1)
+        user.add_follower(self.user2)
+
+        self.assertTrue(self.user2 in user.followers.all())
+        self.assertEqual(user.n_followers, 1)
+
+        # not logged in should redirect to login page
+        response = self.client.get('/user/unfollow/1/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 302)
+        
+        # login but not ajax should return 404
+        login(self, self.user2)
+        response = self.client.get('/user/unfollow/1/')
+        self.assertEqual(response.status_code, 404)
+        
+        # should remove user from followers
+        response = self.client.get('/user/unfollow/1/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.get(pk=1)
+        self.assertTrue(not self.user2 in user.followers.all())
+        self.assertEqual(user.n_followers, 0)
+
+
+
+
+
     def test_follow_board(self):
         # not logged in should redirect to login page
         response = self.client.get('/board/follow/1/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')

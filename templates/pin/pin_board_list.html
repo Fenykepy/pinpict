@@ -27,9 +27,9 @@
     {% if user == owner %}
     <a href="{% url "board_update" owner.slug board.slug %}" title="Edit board" data-navigate="edit"><button>Edit board</button></a>
     {% elif user in board.followers.all %}
-    <a href="{% url "board_unfollow" board.pk %}" class="follow" title="Unfollow this board"><button>Unfollow</button></a>
-    {% else %}
-    <a href="{% url "board_follow" board.pk %}" class="follow" title="Follow this board"><button>Follow</button></a>
+    <a href="{% url "board_unfollow" board.pk %}" class="follow-board" title="Unfollow this board"><button>Unfollow</button></a>
+    {% elif user.is_authenticated %}
+    <a href="{% url "board_follow" board.pk %}" class="follow-board" title="Follow this board"><button>Follow</button></a>
     {% endif %}
     <h2><a href="{% url "boards_list" owner.slug %}" rel="bookmark">
     {{ owner.get_full_name }}

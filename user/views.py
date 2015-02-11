@@ -6,7 +6,8 @@ from django.views.generic import FormView, UpdateView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404, render
 from django.utils import timezone
-from django.http import Http404
+from django.http import Http404, HttpResponse
+from django.contrib.auth.decorators import login_required
 
 from pinpict.settings import EMAIL_SUBJECT_PREFIX
 from user.models import User, mail_staffmembers
@@ -232,4 +233,27 @@ def confirm_recovery_view(request, uuid):
     # redirect to password changement form
     return redirect(reverse_lazy('user_password'))
 
+
+@login_required
+def userFollow(request, pk):
+    """Add a follower to an user."""
+    if not request.is_ajax():
+        raise Http404
+    user = get_object_or_404(User, id=pk)
+    user.add_follower(request.user)
+
+    return HttpResponse(reverse_lazy('user_unfollow',
+        kwargs={'pk': pk}))
+
+
+@login_required
+def userUnfollow(request, pk):
+    """Remove a follower from an user."""
+    if not request.is_ajax():
+        raise Http404
+    user = get_object_or_404(User, id=pk)
+    user.remove_follower(request.user)
+
+    return HttpResponse(reverse_lazy('user_follow',
+        kwargs={'pk': pk}))
 

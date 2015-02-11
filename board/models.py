@@ -137,13 +137,13 @@ class Board(models.Model):
 
     def add_follower(self, follower):
         """Add a follower to the board.
-        follower : user object."""
+        follower: user object."""
         self.followers.add(follower)
         self.set_n_followers()
 
     def remove_follower(self, follower):
         """Remove a follower from thes board.
-        follower : user object."""
+        follower: user object."""
         self.followers.remove(follower)
         self.set_n_followers()
 

@@ -25,14 +25,15 @@
     {% endfor %}
     </ul>
     </a>
-<a href="{% url "boards_list" owner.slug %}" title="View user"><button type="button">View</button></a>
-
-{% comment %}
-{% if user.is_authenticated and user == owner %}
-<a href="{% url "board_update" owner.slug board.slug %}" title="Edit board"><button type="button">Edit</button></a>
+{% if user == owner %}
+    <a href="{% url "user_profil" %}" title="Edit profile"><button type="button">Edit profile</button></a>
+{% elif user in owner.followers.all %}
+    <a href="{% url "user_unfollow" owner.pk %}" class="follow-user" title="Unfollow this user"><button type="button">Unfollow</button></a>
+{% elif user.is_authenticated %}
+    <a href="{% url "user_follow" owner.pk %}" class="follow-user" title="Follow this user"><button type="button">Follow</button></a>
 {% else %}
-<a href="{% url "board_view" board.user.slug board.slug %}" title="Follow user"><button type="button">Follow</button></a>
+    <a href="{% url "boards_list" owner.slug %}" title="View user"><button type="button">View</button></a>
 {% endif %}
-{% endcomment %}
+
 </article>
 {% endwith %}

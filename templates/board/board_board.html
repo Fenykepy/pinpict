@@ -49,12 +49,16 @@
         </ul>
         <div class="label board-n-pins">{{ board.n_pins }} Pin{{ board.n_pins|pluralize }}</div>
     </a>
-{% if user.is_authenticated and user == owner %}
+{% if user == owner %}
     <div class="label board-change-cover"><a href="#" title="Change cover">Change cover</a></div>
     <div class="label board-right-arrow"><a href="#"><span class="accessibility-text">&gt;</span></a></div>
     <div class="label board-left-arrow"><a href="#"><span class="accessibility-text">&lt;</span></a></div>
-<a href="{% url "board_update" owner.slug board.slug %}" title="Edit board"><button type="button">Edit</button></a>
+    <a href="{% url "board_update" owner.slug board.slug %}" title="Edit board"><button type="button">Edit</button></a>
+{% elif user in board.followers.all %}
+    <a href="{% url "board_unfollow" board.pk %}" class="follow-board" title="Unfollow this board"><button type="button">Unfollow</button></a>
+{% elif user.is_autenticated %}
+    <a href="{% url "board_follow" board.pk %}" class="follow-board" title="Follow this board"><button type="button">Follow</button></a>
 {% else %}
-<a href="{% url "board_view" board.user.slug board.slug %}" title="View board"><button type="button">View</button></a>
+    <a href="{% url "board_view" board.user.slug board.slug %}" title="View board"><button type="button">View</button></a>
 {% endif %}
 </article>
