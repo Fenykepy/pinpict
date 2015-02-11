@@ -12,7 +12,7 @@ from pinpict.settings import MEDIA_URL
 from user.models import User
 from board.models import Board
 from board.forms import BoardForm, UpdateBoardForm
-
+from notification.models import Notification
 
 class ListBoards(ListView):
     """List all boards for one user."""
@@ -91,6 +91,21 @@ class CreateBoard(CreateView, AjaxableResponseMixin):
         """Set policy before saving object."""
         self.object.policy = 1
 
+    def send_notifications(self):
+        """Send notifications to all suscribed
+        users who have rights on board."""
+        for user in self.object.user.followers.all():
+            if (self.object.policy == 0 and 
+                not user in self.object.users_can_read.all()):
+                continue
+
+            Notification.objects.create(
+                sender=self.object.user,
+                receiver=user,
+                title="created a new board",
+                content_object=self.object
+            )
+
     def form_valid(self, form):
         """If form is valid, save associated model."""
         self.object = form.save(commit=False)
@@ -100,6 +115,8 @@ class CreateBoard(CreateView, AjaxableResponseMixin):
         self.set_policy()
         # save form
         self.object.save()
+        # send notifications
+        self.send_notifications()
         # redirect to success url
         return redirect(self.get_success_url())
 

@@ -51,7 +51,7 @@
 </section>
 
 
-{% if private_boards%}
+{% if private_boards or user == owner%}
 {% spaceless %}
 <div id="private-boards-wrapper">
 <section id="private-boards">

@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 
 from pinpict.settings import BOARD_RESERVED_WORDS
 from user.models import User, has_changed
+from notification.models import Notification
 from board.slug import unique_slugify
 
 
@@ -135,11 +136,21 @@ class Board(models.Model):
         self.n_followers = self.followers.all().count()
         self.save()
 
-    def add_follower(self, follower):
+    def add_follower(self, follower, notification=True):
         """Add a follower to the board.
         follower: user object."""
         self.followers.add(follower)
         self.set_n_followers()
+        if not notification:
+            return
+        # else send notification
+        Notification.objects.create(
+            sender=follower,
+            receiver=self.user,
+            title="suscribed to your board",
+            content_object=self
+        )
+
 
     def remove_follower(self, follower):
         """Remove a follower from thes board.

@@ -40,6 +40,8 @@ RESERVED_WORDS = (
         'register',
         'recovery',
         'page',
+        'user',
+        'notifications',
 )
 
 # words that can't be used as board name
@@ -76,6 +78,7 @@ INSTALLED_APPS = (
     'user',
     'board',
     'pin',
+    'notification',
 )
 
 MIDDLEWARE_CLASSES = (
