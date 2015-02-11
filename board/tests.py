@@ -228,6 +228,10 @@ class BoardUpdateTest(TestCase):
         self.assertTrue(self.user2 in user.followers.all())
         self.assertEqual(user.n_followers, 1)
 
+        # should follow all user's board
+        board = Board.objects.get(pk=1)
+        self.assertTrue(self.user2 in board.followers.all())
+
 
     def test_unfollow_user(self):
         # make user2 following board 1 
@@ -237,7 +241,10 @@ class BoardUpdateTest(TestCase):
         self.assertTrue(self.user2 in user.followers.all())
         self.assertEqual(user.n_followers, 1)
 
-        # not logged in should redirect to login page
+        board = Board.objects.get(pk=1)
+        self.assertTrue(self.user2 in board.followers.all())
+
+# not logged in should redirect to login page
         response = self.client.get('/user/unfollow/1/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 302)
         
@@ -254,6 +261,9 @@ class BoardUpdateTest(TestCase):
         self.assertEqual(user.n_followers, 0)
 
 
+        # shouldn't follow any user's board
+        board = Board.objects.get(pk=1)
+        self.assertTrue(not self.user2 in board.followers.all())
 
 
 

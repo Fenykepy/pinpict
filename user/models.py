@@ -118,6 +118,8 @@ class User(AbstractUser):
         follower: user object."""
         self.followers.add(follower)
         self.set_n_followers()
+        for board in self.board_set.all():
+            board.followers.add(follower)
     
 
     def remove_follower(self, follower):
@@ -125,6 +127,8 @@ class User(AbstractUser):
         follower: user object."""
         self.followers.remove(follower)
         self.set_n_followers()
+        for board in self.board_set.all():
+            board.followers.remove(follower)
 
 
     def get_public_boards(self):
