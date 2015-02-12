@@ -56,7 +56,7 @@
     <a href="{% url "board_update" owner.slug board.slug %}" title="Edit board"><button type="button">Edit</button></a>
 {% elif user in board.followers.all %}
     <a href="{% url "board_unfollow" board.pk %}" class="follow-board" title="Unfollow this board"><button type="button">Unfollow</button></a>
-{% elif user.is_autenticated %}
+{% elif user.is_authenticated %}
     <a href="{% url "board_follow" board.pk %}" class="follow-board" title="Follow this board"><button type="button">Follow</button></a>
 {% else %}
     <a href="{% url "board_view" board.user.slug board.slug %}" title="View board"><button type="button">View</button></a>

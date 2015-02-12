@@ -91,6 +91,11 @@ class CreateBoard(CreateView, AjaxableResponseMixin):
         """Set policy before saving object."""
         self.object.policy = 1
 
+    def auto_follow(self):
+        """Automatically add owner's followers to this board."""
+        for user in self.object.user.followers.all():
+            self.object.add_follower(user, notification=False)
+            
     def send_notifications(self):
         """Send notifications to all suscribed
         users who have rights on board."""
@@ -117,6 +122,8 @@ class CreateBoard(CreateView, AjaxableResponseMixin):
         self.object.save()
         # send notifications
         self.send_notifications()
+        # add followers to board
+        self.auto_follow()
         # redirect to success url
         return redirect(self.get_success_url())
 

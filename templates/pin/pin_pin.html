@@ -17,7 +17,7 @@
     {% endif %}
     </div>
     <p class="pin-description">
-    {{ pin.description|linebreaksbr }}
+    {{ pin.description|urlize|linebreaksbr }}
     </p>
     <footer>
     {% if display_user %}
