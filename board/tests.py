@@ -232,6 +232,17 @@ class BoardUpdateTest(TestCase):
         board = Board.objects.get(pk=1)
         self.assertTrue(self.user2 in board.followers.all())
 
+        # should follow board when user create a new one
+        login(self, self.user)
+        response = self.client.post('/board/create/', {
+            'title': 'follow',
+            'description': 'follow',
+            }, follow=True
+        )
+        board = Board.objects.get(slug='follow')
+        self.assertTrue(self.user2 in board.followers.all())
+
+
 
     def test_unfollow_user(self):
         # make user2 following board 1 

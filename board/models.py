@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, m2m_changed
 from django.dispatch import receiver
 from django.core.urlresolvers import reverse
 
@@ -170,5 +170,47 @@ def update_user_n_boards(sender, instance, **kwargs):
     instance.user.n_boards = instance.user.get_n_boards()
     instance.user.n_public_boards = instance.user.get_n_public_boards()
     instance.user.save()
+
+
+@receiver(m2m_changed, sender=Board.users_can_read.through)
+def allow_private_board_read(sender, instance, action, reverse,
+        model, pk_set, **kwargs):
+    """Send a notification when an user has been allowed
+    to read a private board."""
+    if action != 'post_add' or instance.policy != 0:
+        return
+    # get receiver of notification
+    for elem in pk_set:
+        receiver = User.objects.get(pk=elem)
+        # send notification
+        Notification.objects.create(
+            sender=instance.user,
+            receiver=receiver,
+            title="allowed you to see his private board",
+            content_object=instance
+        )
+    
+# add this function here as it's impossible to import
+# notification in user.models
+@receiver(m2m_changed, sender=User.followers.through)
+def user_follow_notification(sender, instance, action, reverse,
+        model, pk_set, **kwargs):
+    """Send a notification when an user has new follower"""
+    if action != 'post_add':
+        return
+    # get receiver of notification
+    for elem in pk_set:
+        receiver = User.objects.get(pk=elem)
+        # send notification
+        Notification.objects.create(
+            sender=instance,
+            receiver=receiver,
+            title="started to follow you.",
+            content_object=instance
+        )
+    
+
+
+
 
 

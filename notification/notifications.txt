@@ -3,21 +3,21 @@
 =======================
 
 User receive notifications when :
-    - user starts to follow
-#    - user starts to follow one board
-    - followed user's board added a new pin
-    - followed user added a new board
-    - pin has been repinned
-    - user allowed you to see his private board
+    - user starts to follow                         -> user_follower
+#    - user starts to follow one board              -> board_follower
+#    - followed user's board added a new pin        -> add_pin
+#    - followed user added a new board              -> add_board
+#    - pin has been repinned                        -> re_pinned
+#    - user allowed you to see his private board    -> allow_read
 
 
 To implement later :
-    - pin has been liked
+    - pin has been liked                            -> pin_like
 
-    - pin has been commented
-    - board has been commented
-    - pin user commented received answer
-    - board user commented received answer
+    - pin has been commented                        -> pin_comment
+    - board has been commented                      -> board_comment
+    - pin user commented received answer            -> pin_comment_answer
+    - board user commented received answer          -> board_comment_answer
 
 
 Add a new line in menu with link to user's notifications page, and number of notifications

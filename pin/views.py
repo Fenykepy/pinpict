@@ -19,10 +19,12 @@ from pinpict.settings import MEDIA_URL, MEDIA_ROOT, MAX_PIN_PER_PAGE
 from board.views import AjaxableResponseMixin
 from user.models import User
 from pin.models import Pin, Resource, ResourceFactory
+from notification.models import Notification
 from board.models import Board
 from pin.forms import PinForm, UploadPinForm, PinUrlForm, DownloadPinForm,\
         RePinForm
 from pin.utils import get_sha1_hexdigest, scan_html_for_picts
+
 
 
 
@@ -264,8 +266,8 @@ def create_pin(request):
             # set session variables
             request.session['pin_create_resource'] = pin.resource.pk
             request.session['pin_create_source'] = pin.source
-            if pin.pin_user and pin.pin_user != request.user:
-                request.session['pin_create_added_via'] = pin.pin_user.pk
+            if pin.pin_user != request.user:
+                request.session['pin_create_added_via'] = pin.pk
 
             pin_form = PinForm(user=request.user)
             pin_form.initial = {}
@@ -300,10 +302,19 @@ def create_pin(request):
             pin.policy = pin.board.policy
             # set added_via if any
             if request.session.get('pin_create_added_via'):
-                added_via = User.objects.get(
+                added_via = Pin.objects.get(
                         pk = request.session['pin_create_added_via']
                 )
-                pin.added_via = added_via
+                pin.added_via = added_via.pin_user
+
+                # send notification to user
+                Notification.objects.create(
+                    sender=request.user,
+                    receiver=added_via.pin_user,
+                    title="repinned your pin",
+                    content_object=added_via
+                )
+
                 del request.session['pin_create_added_via']
             # set source
             if request.session.get('pin_create_source'):
@@ -347,6 +358,19 @@ def create_pin(request):
             
             # save pin in db
             pin.save()
+            
+            # send notification
+            for user in pin.board.followers.all():
+                if (pin.board.policy == 0 and not
+                    user in pin.board.users_can_read.all()):
+                    continue
+
+                Notification.objects.create(
+                    sender=pin.pin_user,
+                    receiver=user,
+                    title="added a new pin on board",
+                    content_object=pin.board
+                )
 
             # redirect to board
             return redirect(reverse_lazy('board_view',
