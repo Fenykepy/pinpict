@@ -8,6 +8,9 @@ from django.contrib.auth.models import AbstractUser
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
+from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 from board.slug import unique_slugify
 from pinpict.settings import AVATAR_MAX_SIZE, MEDIA_ROOT
@@ -28,6 +31,39 @@ def has_changed(instance, field, manager='objects'):
     manager = getattr(instance.__class__, manager)
     old = getattr(manager.get(pk=instance.pk), field)
     return not getattr(instance, field) == old
+    
+
+
+class Notification(models.Model):
+    """Table for all notifications."""
+    date = models.DateTimeField(auto_now_add=True, db_index=True,
+            auto_now=False,
+            verbose_name="Creation date")
+    type = models.CharField(max_length=254, null=True, blank=True)
+    title = models.TextField(null=True, blank=True,
+            verbose_name="Title")
+    read = models.BooleanField(default=False, db_index=True)
+    receiver = models.ForeignKey('User', related_name="receiver", null=True)
+    sender = models.ForeignKey('User', related_name="sender", null=True)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+
+    def save(self, **kwargs):
+        """Increment user unread_notifications number and send mails
+        if necessary."""
+        # if notification is created
+        if self.pk == None:
+            # increment user unread notifications number
+            self.receiver.n_unread_notifications += 1
+            self.receiver.save()
+
+            # send mail if necessairy
+
+
+        # save object
+        super(Notification, self).save()
 
 
 
@@ -105,6 +141,8 @@ class User(AbstractUser):
             verbose_name="Boards'number")
     n_public_boards = models.PositiveIntegerField(default=0,
             verbose_name="Public Boards'number")
+    n_unread_notifications = models.PositiveIntegerField(default=0,
+            verbose_name="New notifications")
 
     
     def set_n_followers(self):
@@ -121,6 +159,15 @@ class User(AbstractUser):
         for board in self.board_set.all():
             board.add_follower(follower, notification=False)
 
+        # send notification
+        Notification.objects.create(
+            type="USER_FOLLOWER",
+            sender=follower,
+            receiver=self,
+            title="started to follow you.",
+            content_object=follower
+        )
+
 
     def remove_follower(self, follower):
         """Remove a follower to the user.
@@ -133,6 +180,14 @@ class User(AbstractUser):
 
     def get_public_boards(self):
         return self.board_set.filter(policy=1)
+
+
+    def get_notifications(self):
+        return self.receiver.all()
+
+
+    def get_unread_notifications(self):
+        return self.receiver.filter(read=False)
 
 
     def get_short_name(self):
@@ -236,5 +291,3 @@ def mail_staffmembers(subject, message):
     # send mail to staff members
     send_mail(subject, message, DEFAULT_FROM_EMAIL, staffmembers_mails)
 
-
-    

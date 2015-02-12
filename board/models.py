@@ -4,8 +4,7 @@ from django.dispatch import receiver
 from django.core.urlresolvers import reverse
 
 from pinpict.settings import BOARD_RESERVED_WORDS
-from user.models import User, has_changed
-from notification.models import Notification
+from user.models import User, has_changed, Notification
 from board.slug import unique_slugify
 
 
@@ -145,6 +144,7 @@ class Board(models.Model):
             return
         # else send notification
         Notification.objects.create(
+            type="BOARD_FOLLOWER",
             sender=follower,
             receiver=self.user,
             title="suscribed to your board",
@@ -184,33 +184,13 @@ def allow_private_board_read(sender, instance, action, reverse,
         receiver = User.objects.get(pk=elem)
         # send notification
         Notification.objects.create(
+            type="ALLOW_READ",
             sender=instance.user,
             receiver=receiver,
             title="allowed you to see his private board",
             content_object=instance
         )
     
-# add this function here as it's impossible to import
-# notification in user.models
-@receiver(m2m_changed, sender=User.followers.through)
-def user_follow_notification(sender, instance, action, reverse,
-        model, pk_set, **kwargs):
-    """Send a notification when an user has new follower"""
-    if action != 'post_add':
-        return
-    # get receiver of notification
-    for elem in pk_set:
-        receiver = User.objects.get(pk=elem)
-        # send notification
-        Notification.objects.create(
-            sender=instance,
-            receiver=receiver,
-            title="started to follow you.",
-            content_object=instance
-        )
-    
-
-
 
 
 

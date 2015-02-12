@@ -9,10 +9,9 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 
 from pinpict.settings import MEDIA_URL
-from user.models import User
+from user.models import User, Notification
 from board.models import Board
 from board.forms import BoardForm, UpdateBoardForm
-from notification.models import Notification
 
 class ListBoards(ListView):
     """List all boards for one user."""
@@ -105,6 +104,7 @@ class CreateBoard(CreateView, AjaxableResponseMixin):
                 continue
 
             Notification.objects.create(
+                type= "ADD_BOARD",
                 sender=self.object.user,
                 receiver=user,
                 title="created a new board",

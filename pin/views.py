@@ -17,9 +17,8 @@ from haystack.views import SearchView
 
 from pinpict.settings import MEDIA_URL, MEDIA_ROOT, MAX_PIN_PER_PAGE
 from board.views import AjaxableResponseMixin
-from user.models import User
+from user.models import User, Notification
 from pin.models import Pin, Resource, ResourceFactory
-from notification.models import Notification
 from board.models import Board
 from pin.forms import PinForm, UploadPinForm, PinUrlForm, DownloadPinForm,\
         RePinForm
@@ -309,6 +308,7 @@ def create_pin(request):
 
                 # send notification to user
                 Notification.objects.create(
+                    type="RE_PINNED",
                     sender=request.user,
                     receiver=added_via.pin_user,
                     title="repinned your pin",
@@ -366,6 +366,7 @@ def create_pin(request):
                     continue
 
                 Notification.objects.create(
+                    type="ADD_PIN",
                     sender=pin.pin_user,
                     receiver=user,
                     title="added a new pin on board",

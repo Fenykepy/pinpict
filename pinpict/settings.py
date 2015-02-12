@@ -78,7 +78,6 @@ INSTALLED_APPS = (
     'user',
     'board',
     'pin',
-    'notification',
 )
 
 MIDDLEWARE_CLASSES = (
