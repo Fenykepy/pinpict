@@ -301,25 +301,16 @@ def create_pin(request):
             pin.policy = pin.board.policy
             # set added_via if any
             if request.session.get('pin_create_added_via'):
-                added_via = Pin.objects.get(
+                pin.added_via = Pin.objects.get(
                         pk = request.session['pin_create_added_via']
                 )
-                pin.added_via = added_via.pin_user
-
-                # send notification to user
-                Notification.objects.create(
-                    type="RE_PINNED",
-                    sender=request.user,
-                    receiver=added_via.pin_user,
-                    title="repinned your pin",
-                    content_object=added_via
-                )
-
                 del request.session['pin_create_added_via']
+
             # set source
             if request.session.get('pin_create_source'):
                 pin.source = request.session['pin_create_source'][:2000]
                 del request.session['pin_create_source']
+
             # set resource
             if request.session.get('pin_create_resource'):
                 # if resource in session (repin or clone on upload)
@@ -370,7 +361,17 @@ def create_pin(request):
                     sender=pin.pin_user,
                     receiver=user,
                     title="added a new pin on board",
-                    content_object=pin.board
+                    content_object=pin
+                )
+
+            # send notification to user if it's added via another pin
+            if pin.added_via:
+                Notification.objects.create(
+                    type="RE_PINNED",
+                    sender=request.user,
+                    receiver=added_via.pin_user,
+                    title="pinned your ",
+                    content_object=pin
                 )
 
             # redirect to board

@@ -58,6 +58,8 @@ urlpatterns = patterns('',
     ## notifications
     url(r'^notifications/$',
         login_required(ListNotifications.as_view()), name='notifications_list'),
+    url(r'^notifications/page/(?P<page>\d+)/$',
+        login_required(ListNotifications.as_view()), name='notifications_list'),
     
     ## home page with pagination
     url(r'^page/(?P<page>\d+)/$',

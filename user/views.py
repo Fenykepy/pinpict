@@ -171,7 +171,7 @@ class PasswordView(FormView):
 class ListNotifications(ListView, ListPinsMixin):
     """List all notifications of an user."""
     model = Notification
-    context_object_name = 'notification'
+    context_object_name = 'notifications'
     template_name = 'user/notifications_list.html'
     paginate_by = 100
 
