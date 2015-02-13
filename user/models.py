@@ -146,6 +146,20 @@ class User(AbstractUser):
             verbose_name="Public Boards'number")
     n_unread_notifications = models.PositiveIntegerField(default=0,
             verbose_name="New notifications")
+    mail_user_follower = models.BooleanField(default=True,
+         verbose_name="Receive a mail when a user starts to follow me")
+    mail_board_follower = models.BooleanField(default=True,
+    verbose_name=("Receive a mail when a user starts to follow"
+        " one of my boards"))
+    mail_following_add_pin = models.BooleanField(default=True,
+    verbose_name="Receive a mail when following user add a new pin")
+    mail_following_add_board = models.BooleanField(default=True,
+    verbose_name="Receive a mail when following user add a new board")
+    mail_repinned = models.BooleanField(default=True,
+    verbose_name="Receive a mail when one of my pins are pinned")
+    mail_allow_read = models.BooleanField(default=True,
+    verbose_name=("Receive a mail when a user allows me to see one"
+        " of it's private boards"))
 
     
     def set_n_followers(self):
@@ -154,7 +168,7 @@ class User(AbstractUser):
         self.save()
     
 
-    def add_follower(self, follower):
+    def add_follower(self, follower, request):
         """Add a follower to the user.
         follower: user object."""
         self.followers.add(follower)
@@ -170,6 +184,26 @@ class User(AbstractUser):
             title="started to follow you.",
             content_object=follower
         )
+
+        if self.mail_user_follower:
+            subject = "{} started to follow you".format(
+                    follower.username)
+            message = ("Hi {}! \n\n"
+                "{} started to follow you!\n"
+                "see his profile :\n"
+                "{}\n\n"
+                "Don't want to see this mail ? unsuscribe :\n"
+                "{}"
+            ).format(
+                self.username,
+                follower.username,
+                request.build_absolute_uri(reverse('boards_list',kwargs={
+                        'user': follower.slug,
+                })),
+                request.build_absolute_uri(reverse('user_profil')),
+            )
+
+
 
 
     def remove_follower(self, follower):
@@ -191,6 +225,10 @@ class User(AbstractUser):
 
     def get_unread_notifications(self):
         return self.receiver.filter(read=False)
+
+
+    def set_notifications_read(self):
+        self.get_unread_notifications().update(read=True)
 
 
     def get_short_name(self):

@@ -176,6 +176,9 @@ class ListNotifications(ListView, ListPinsMixin):
     paginate_by = 100
 
     def get_queryset(self):
+        # set to 0 
+        self.request.user.n_unread_notifications = 0
+        self.request.user.save()
         return self.request.user.get_notifications()
 
 
@@ -250,7 +253,7 @@ def userFollow(request, pk):
     if not request.is_ajax():
         raise Http404
     user = get_object_or_404(User, id=pk)
-    user.add_follower(request.user)
+    user.add_follower(request.user, request)
 
     return HttpResponse(reverse_lazy('user_unfollow',
         kwargs={'pk': pk}))

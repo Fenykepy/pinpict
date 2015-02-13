@@ -163,6 +163,12 @@ class ProfilForm(ModelForm):
             'gplus_link',
             'pinterest_link',
             'vk_link',
+            'mail_user_follower',
+            'mail_board_follower',
+            'mail_following_add_pin',
+            'mail_following_add_board',
+            'mail_repinned',
+            'mail_allow_read',
         )
 
 
