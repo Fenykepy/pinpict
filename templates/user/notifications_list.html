@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+{{ board.title }} on Pinpict
+{% endblock %}
+
+{% block body %}
+{% spaceless %}
+<section id="pins">
+<header>
+    <h1>Notifications</h1>
+</header>
+<div id="user-wrapper">
+<article id="user-compact">
+    {% if user.avatar %}
+        <a href="{% url "boards_list" user.slug %}"><img src="{{ MEDIA_URL }}{{ user.avatar }}" /></a>
+    {% else %}
+        <a href="{% url "boards_list" user.slug %}"><img src="{% static 'images/structure/default_avatar.png' %}" /></a>
+    {% endif %}
+    <h2><a href="{% url "boards_list" user.slug %}" rel="bookmark">
+    {{ user.get_full_name }}
+    </a></h2>
+    {% if user.website %}
+    <div class="user-website"><a href="{{ user.website }}" target="_blank">{{ user.website }}</a></div>
+    {% endif %}
+</article>
+</div>
+</article>
+{% for notif in notifications %}
+    {{ notif.title }
+{% empty %}
+No notifications yet.
+{% endfor %}
+{% endspaceless %}
+</section>
+{% if page_obj.paginator.num_pages > 1 %}
+<section id="navigation">
+        {% include 'pagination/pagination.html' %}
+</section>
+{% endif %}
+{% endblock body %}

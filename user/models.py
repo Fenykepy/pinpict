@@ -49,6 +49,9 @@ class Notification(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
+    class Meta:
+        ordering = ['-date']
+
 
     def save(self, **kwargs):
         """Increment user unread_notifications number and send mails

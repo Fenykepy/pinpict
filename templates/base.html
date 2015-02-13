@@ -39,7 +39,7 @@
             <li><a href="{% url "boards_list" user.slug %}">My boards</a></li>
             <li><a href="{% url "user_pins" user.slug %}">My pins</a></li>
             <li><a href="{% url "user_profil" %}">Profil</a></li>
-            <li><a href="{% url "user_profil" %}">Notifications {% if user.n_unread_notifications %}
+            <li><a href="{% url "notifications_list" %}">Notifications {% if user.n_unread_notifications %}
                         <div class="rounded float-right">{{ user.n_unread_notifications }}</div>
                     {% endif %}
                 </a></li>

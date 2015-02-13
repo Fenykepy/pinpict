@@ -11,7 +11,7 @@ from django.contrib.sitemaps.views import sitemap
 from pinpict.sitemaps import UserSitemap, BoardSitemap, PinSitemap
 from board.views import *
 from user.views import LoginView, RegistrationView, ProfilView, \
-        PasswordView, RecoveryView
+        PasswordView, RecoveryView, ListNotifications
 from pin.views import ListBoardPins, ListUserPins, ListLastPins
 
 admin.autodiscover()
@@ -54,6 +54,10 @@ urlpatterns = patterns('',
 
     ## password changement
     url(r'^profil/password/$', login_required(PasswordView.as_view()), name='user_password'),
+
+    ## notifications
+    url(r'^notifications/$',
+        login_required(ListNotifications.as_view()), name='notifications_list'),
     
     ## home page with pagination
     url(r'^page/(?P<page>\d+)/$',
