@@ -5,7 +5,7 @@ from django.views.generic import ListView, DetailView, \
         FormView
 from django.views.generic.base import ContextMixin
 from django.core.urlresolvers import reverse_lazy
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.http import urlquote_plus
 from django.utils.encoding import iri_to_uri
@@ -17,12 +17,13 @@ from haystack.views import SearchView
 
 from pinpict.settings import MEDIA_URL, MEDIA_ROOT, MAX_PIN_PER_PAGE
 from board.views import AjaxableResponseMixin
-from user.models import User
+from user.models import User, Notification
 from pin.models import Pin, Resource, ResourceFactory
 from board.models import Board
 from pin.forms import PinForm, UploadPinForm, PinUrlForm, DownloadPinForm,\
         RePinForm
 from pin.utils import get_sha1_hexdigest, scan_html_for_picts
+
 
 
 
@@ -53,9 +54,11 @@ class ListBoardPins(ListView, ListPinsMixin):
         # add session variable to store last visited board
         self.request.session['last_visited_board'] = self.board.pk
         # if board is private and user is not board owner or staff member,
+        # or allowed to read board
         # raise 404
         if (self.board.policy == 0 and self.request.user.is_authenticated()
-            and self.board.user != self.request.user and not self.request.user.is_staff):
+            and self.board.user != self.request.user and not self.request.user.is_staff
+            and not self.request.user in self.board.users_can_read.all() ):
             raise Http404
         return self.board.get_sorted_pins()
 
@@ -132,7 +135,8 @@ class PinView(DetailView):
         self.object = self.get_object()
         if (self.object.board.policy == 0 
             and self.object.board.user != self.request.user 
-            and not self.request.user.is_staff):
+            and not self.request.user.is_staff and 
+            not self.request.user in self.object.board.users_can_read.all() ):
                 raise Http404
 
         context = self.get_context_data(object=self.object)
@@ -182,6 +186,27 @@ def rate_pin(request, pk, rate):
             'pin/pin_rate.html',
             {'pin': pin})
 
+
+@login_required
+def set_main_cover(request, pk):
+    """Set given pin as cover for board."""
+    if not request.is_ajax():
+        raise Http404
+    pin = get_object_or_404(Pin, pk=pk)
+    if pin.pin_user != request.user:
+        raise Http404
+
+    # get main(s) pin(s) 
+    mains = pin.board.pin_set.all().filter(main=True)
+    # unset main(s) pin(s)
+    for main in mains:
+        main.main = False
+        main.save()
+
+    pin.main = True
+    pin.save()
+
+    return HttpResponse('')
 
 
 @login_required
@@ -240,8 +265,8 @@ def create_pin(request):
             # set session variables
             request.session['pin_create_resource'] = pin.resource.pk
             request.session['pin_create_source'] = pin.source
-            if pin.pin_user and pin.pin_user != request.user:
-                request.session['pin_create_added_via'] = pin.pin_user.pk
+            if pin.pin_user != request.user:
+                request.session['pin_create_added_via'] = pin.pk
 
             pin_form = PinForm(user=request.user)
             pin_form.initial = {}
@@ -276,10 +301,20 @@ def create_pin(request):
             pin.policy = pin.board.policy
             # set added_via if any
             if request.session.get('pin_create_added_via'):
-                added_via = User.objects.get(
+                added_via = Pin.objects.get(
                         pk = request.session['pin_create_added_via']
                 )
-                pin.added_via = added_via
+                pin.added_via = added_via.pin_user
+
+                # send notification to user
+                Notification.objects.create(
+                    type="RE_PINNED",
+                    sender=request.user,
+                    receiver=added_via.pin_user,
+                    title="repinned your pin",
+                    content_object=added_via
+                )
+
                 del request.session['pin_create_added_via']
             # set source
             if request.session.get('pin_create_source'):
@@ -323,6 +358,20 @@ def create_pin(request):
             
             # save pin in db
             pin.save()
+            
+            # send notification
+            for user in pin.board.followers.all():
+                if (pin.board.policy == 0 and not
+                    user in pin.board.users_can_read.all()):
+                    continue
+
+                Notification.objects.create(
+                    type="ADD_PIN",
+                    sender=pin.pin_user,
+                    receiver=user,
+                    title="added a new pin on board",
+                    content_object=pin.board
+                )
 
             # redirect to board
             return redirect(reverse_lazy('board_view',

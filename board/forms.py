@@ -29,7 +29,7 @@ class UpdateBoardForm(ModelForm):
     class Meta:
         model = Board
         fields = ('title', 'pins_order', 'reverse_pins_order', 'policy',
-                'description', 'pin_default_description')
+                'users_can_read', 'description', 'pin_default_description')
 
 
 class BoardForm(ModelForm):

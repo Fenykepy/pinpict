@@ -40,6 +40,8 @@ RESERVED_WORDS = (
         'register',
         'recovery',
         'page',
+        'user',
+        'notifications',
 )
 
 # words that can't be used as board name

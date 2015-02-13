@@ -2,16 +2,17 @@ import datetime
 
 from uuid import uuid4
 from django.contrib.auth import authenticate, login, logout
-from django.views.generic import FormView, UpdateView
+from django.views.generic import FormView, UpdateView, ListView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404, render
 from django.utils import timezone
-from django.http import Http404
+from django.http import Http404, HttpResponse
+from django.contrib.auth.decorators import login_required
 
 from pinpict.settings import EMAIL_SUBJECT_PREFIX
-from user.models import User, mail_staffmembers
+from user.models import User, Notification, mail_staffmembers
 from user.forms import *
-
+from pin.views import ListPinsMixin
 
 class LoginView(FormView):
     """Class to login a user."""
@@ -167,6 +168,16 @@ class PasswordView(FormView):
         return context
 
 
+class ListNotifications(ListView, ListPinsMixin):
+    """List all notifications of an user."""
+    model = Notification
+    context_object_name = 'notification'
+    template_name = 'user/notifications_list.html'
+    paginate_by = 100
+
+    def get_queryset(self):
+        return self.request.user.get_notifications()
+
 
 class RecoveryView(FormView):
     """Class to ask for password recovery."""
@@ -232,4 +243,27 @@ def confirm_recovery_view(request, uuid):
     # redirect to password changement form
     return redirect(reverse_lazy('user_password'))
 
+
+@login_required
+def userFollow(request, pk):
+    """Add a follower to an user."""
+    if not request.is_ajax():
+        raise Http404
+    user = get_object_or_404(User, id=pk)
+    user.add_follower(request.user)
+
+    return HttpResponse(reverse_lazy('user_unfollow',
+        kwargs={'pk': pk}))
+
+
+@login_required
+def userUnfollow(request, pk):
+    """Remove a follower from an user."""
+    if not request.is_ajax():
+        raise Http404
+    user = get_object_or_404(User, id=pk)
+    user.remove_follower(request.user)
+
+    return HttpResponse(reverse_lazy('user_follow',
+        kwargs={'pk': pk}))
 

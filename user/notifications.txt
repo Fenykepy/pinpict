@@ -1,0 +1,25 @@
+=======================
+     Notifications
+=======================
+
+User receive notifications when :
+     --- event ---                                  --- type ---        --- object ---
+#    - user starts to follow                        -> user_follower    -> User
+#    - user starts to follow one board              -> board_follower   -> Board 
+#    - followed user's board added a new pin        -> add_pin          -> Pin
+#    - followed user added a new board              -> add_board        -> Board
+#    - pin has been repinned                        -> re_pinned        -> Pin
+#    - user allowed you to see his private board    -> allow_read       -> Board
+
+
+To implement later :
+    - pin has been liked                            -> pin_like         -> Pin
+
+    - pin has been commented                        -> pin_comment      -> Pin
+    - board has been commented                      -> board_comment    -> Board
+    - pin user commented received answer            -> pin_comment_answer   -> Pin
+    - board user commented received answer          -> board_comment_answer -> Pin
+
+
+Add a new line in menu with link to user's notifications page, and number of notifications
+

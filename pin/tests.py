@@ -69,7 +69,7 @@ def create_test_private_pins(instance):
             board = instance.privateBoard,
             description = 'Test private pin',
             pin_user = instance.user,
-            policy = instance.board.policy
+            policy = instance.privateBoard.policy
 
     )
     instance.privatePin.save()
@@ -79,7 +79,7 @@ def create_test_private_pins(instance):
             board = instance.privateBoard,
             description = 'Second test private pin',
             pin_user = instance.user,
-            policy = instance.board.policy
+            policy = instance.privateBoard.policy
     )
     instance.privatePin2.save()
 
@@ -240,6 +240,63 @@ class UtilsTest(TestCase):
         parser.feed(html)
         
         self.assertEqual(parser.pictures, result)
+
+class PinBoardAllowUserTest(TestCase):
+    """Pin and board special autorisation to view private
+    board and pins test class."""
+
+    def setUp(self):
+        create_test_users(self)
+        create_test_private_boards(self)
+        create_test_resources(self)
+        create_test_private_pins(self)
+        # create a new private board
+        self.privateBoard2 = Board(
+                title="private board 2",
+                description=".",
+                policy=0,
+                user=self.user)
+        self.privateBoard2.save()
+        self.client = Client()
+
+    def test_add_allowed_user(self):
+        # update one private board of user to be visible by user2
+        login(self, self.user)
+
+        response = self.client.post('/flr/private-board/edit/', {
+            'title': 'private board',
+            'description': 'Photographs of Paolo Roversi',
+            'policy': 0,
+            'pins_order': 'date_created',
+            'users_can_read': ["2"],
+            }, follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+
+
+        # assert user2 sees user's allowed private board in boards list 
+        # and not other private boards
+        login(self, self.user2)
+
+        response = self.client.get('/flr/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['private_boards'].count(), 1)
+
+        # assert user2 sees user's allowed private board pins'list
+        response = self.client.get('/flr/private-board/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['pins'].count(), 2)
+
+        # assert user2 sees user's allowed private pins in all pins list
+        response = self.client.get('/flr/pins/')
+        self.assertEqual(response.status_code, 200)
+        #self.assertEqual(response.context['pins'].count(), 2)
+
+        # assert user2 sees user's allowed board pins detail
+        response = self.client.get('/pin/{}/'.format(self.privatePin.pk))
+        self.assertEqual(response.status_code, 200)
+
+
 
 
 
@@ -721,6 +778,81 @@ class PinCreationTest(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.templates[0].name, '404.html')
 
+class MainPinTest(TestCase):
+    """Main Pin test class."""
+
+    def setUp(self):
+        # create users
+        create_test_users(self)
+        # create resources
+        create_test_resources(self)
+        # create boards
+        create_test_boards(self)
+        # create pins
+        create_test_pins(self)
+        # create a second pin in board, to ensure only one remain main
+        self.pin_new = Pin(
+            resource = self.resource,
+            board = self.board,
+            description = 'Test pin for first board',
+            pin_user = self.user,
+            policy = self.board.policy,
+            main = True
+        )
+        self.pin_new.save()
+        # launch client
+        self.client = Client()
+
+    def test_main_pin(self):
+        # login with user
+        login(self, self.user)
+        # set pin2 (from board2 as main for board2
+        self.pin2.main = True
+        self.pin2.save()
+        # set pin1 as main instead of pin_new by get request
+        response = self.client.get('/pin/1/main/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        # assert pin1 is main
+        pin = Pin.objects.get(pk=1)
+        self.assertTrue(pin.main)
+        # assert pin2 is still main
+        pin2 = Pin.objects.get(pk=self.pin2.pk)
+        self.assertTrue(pin2.main)
+        # assert there is only one main pin for board 1
+        n_pins = pin.board.pin_set.all().count()
+        print(n_pins)
+        n_main = pin.board.pin_set.all().filter(main=True).count()
+        self.assertEqual(n_main, 1)
+
+
+    def test_main_pin_with_wrong_user(self):
+        # login with user2
+        login(self, self.user2)
+        response = self.client.get('/pin/1/main/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 404)
+
+
+    def test_main_pin_without_login(self):
+        response = self.client.get('/pin/1/main/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 302)
+
+
+    def test_main_pin_with_wrong_pin(self):
+        # login with user
+        login(self, self.user)
+        response = self.client.get('/pin/2/main/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 404)
+
+
+    def test_main_pin_without_ajax(self):
+        # login with user
+        login(self, self.user)
+        response = self.client.get('/pin/1/main/')
+        self.assertEqual(response.status_code, 404)
+
+
+
+
 
 
 class PinRateTest(TestCase):
@@ -933,6 +1065,18 @@ class PinUpdateTest(TestCase):
         # assert old board number of pins has been decreased by one
         board2 = Board.objects.get(pk=2)
         self.assertEqual(board2.n_pins, board2_n_pins - 1)
+
+    def test_board_covers_list(self):
+        # test that covers list is rendered correctly
+        response = self.client.get('/board/covers/1/')
+        self.assertEqual(response.status_code, 200)
+        result = ((response.content == b'[{"pk": 1, "previews_path": "/media/previews/216-160/None"}]') or
+            (response.content == b'[{"previews_path": "/media/previews/216-160/None", "pk": 1}]'))
+        self.assertTrue(result)
+        
+        # it should return 404 with wrong board id
+        response = self.client.get('/board/covers/3456/')
+        self.assertEqual(response.status_code, 404)
 
 
 

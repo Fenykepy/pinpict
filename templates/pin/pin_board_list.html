@@ -10,7 +10,7 @@
 <header>
     <h1>{{ board.title }}</h1>
     {% if board.description %}
-        <p id="description">{{ board.description|linebreaksbr }}</p>
+        <p id="description">{{ board.description|urlize|linebreaksbr }}</p>
     {% endif %}
     <p id="n-pins">{{ board.n_pins }} pin{{ board.n_pins|pluralize }}</p>
     {% if board.policy == 0 %}
@@ -26,8 +26,10 @@
     {% endif %}
     {% if user == owner %}
     <a href="{% url "board_update" owner.slug board.slug %}" title="Edit board" data-navigate="edit"><button>Edit board</button></a>
-    {% else %}
-        {# add follow link here #}
+    {% elif user in board.followers.all %}
+    <a href="{% url "board_unfollow" board.pk %}" class="follow-board" title="Unfollow this board"><button>Unfollow</button></a>
+    {% elif user.is_authenticated %}
+    <a href="{% url "board_follow" board.pk %}" class="follow-board" title="Follow this board"><button>Follow</button></a>
     {% endif %}
     <h2><a href="{% url "boards_list" owner.slug %}" rel="bookmark">
     {{ owner.get_full_name }}

@@ -58,7 +58,7 @@ form {
     }
 }
 
-input, option, select, button, textarea, ul.errorlist li, ul.warninglist li {
+input, select, button, textarea, ul.errorlist li, ul.warninglist li {
     width: 100%;
     border-radius: 4px;
     background: @58;
@@ -77,9 +77,19 @@ textarea {
 select {
     .degrade(@66, @50, @58);
 }
-
-input, option, select, button {
+input, select, button {
     height: 34px;
+}
+select[multiple] {
+    height: auto;
+    option {
+        background: none;
+    }
+}
+option {
+    background: @58;
+    font-size: 14px;
+    color: @00;
 }
 
 input[type="checkbox"] {

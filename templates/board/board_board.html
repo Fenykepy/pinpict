@@ -4,9 +4,13 @@
     <header>
         <h1>{{ board.title }}</h1>
     </header>
-        {% with first=board.pin_set.all.0 %}
+        {% with first=board.get_main_cover %}
         {% if first %}
-            <img class="board-main-preview" src="{{ MEDIA_URL }}previews/216-160/{{ first.resource.previews_path }}" alt="{{ board.title }}" />
+            <img
+                data-main-id="{{ first.id }}"
+                class="board-main-preview" 
+                src="{{ MEDIA_URL }}previews/216-160/{{ first.resource.previews_path }}" 
+                alt="{{ board.title }}" />
         {% else %}
             <img class="board-main-preview" src="{% static 'images/structure/grey58.png' %}" alt="" />
         {% endif %}
@@ -43,11 +47,18 @@
         </li>
         {% endwith %}
         </ul>
-        <div class="board-n-pins">{{ board.n_pins }} Pin{{ board.n_pins|pluralize }}</div>
+        <div class="label board-n-pins">{{ board.n_pins }} Pin{{ board.n_pins|pluralize }}</div>
     </a>
-{% if user.is_authenticated and user == owner %}
-<a href="{% url "board_update" owner.slug board.slug %}" title="Edit board"><button type="button">Edit</button></a>
+{% if user == owner %}
+    <div class="label board-change-cover"><a href="#" title="Change cover">Change cover</a></div>
+    <div class="label board-right-arrow"><a href="#"><span class="accessibility-text">&gt;</span></a></div>
+    <div class="label board-left-arrow"><a href="#"><span class="accessibility-text">&lt;</span></a></div>
+    <a href="{% url "board_update" owner.slug board.slug %}" title="Edit board"><button type="button">Edit</button></a>
+{% elif user in board.followers.all %}
+    <a href="{% url "board_unfollow" board.pk %}" class="follow-board" title="Unfollow this board"><button type="button">Unfollow</button></a>
+{% elif user.is_authenticated %}
+    <a href="{% url "board_follow" board.pk %}" class="follow-board" title="Follow this board"><button type="button">Follow</button></a>
 {% else %}
-<a href="{% url "board_view" board.user.slug board.slug %}" title="View board"><button type="button">View</button></a>
+    <a href="{% url "board_view" board.user.slug board.slug %}" title="View board"><button type="button">View</button></a>
 {% endif %}
 </article>

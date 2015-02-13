@@ -33,7 +33,7 @@
 #    - add link to navigate between pin views
 #    - add an article nder pin_view with a link to user pin was added via.
 #    - add an article under pin_view with preview of other pins from board.
-    - add a field with 0-5 owner rating
+#    - add a field with 0-5 owner rating
 #    - redirect to pin_list and not board_list after pin_update or create cancel
 #    - redirect to pin_list and not board_list after pin_delete cancel
     
@@ -147,7 +147,7 @@
 #   - justify pins
 #       - justify again when window size changes
 #    - test with firefox
-    - add navigation with arrows in pin_view
+#    - add navigation with arrows in pin_view
 
 ==== CSS ====
 #   - inline block for all article.pin

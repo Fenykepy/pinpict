@@ -1,13 +1,17 @@
+import json
+
 from django.views.generic import ListView, DetailView, \
         CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, get_object_or_404
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 
-from user.models import User
+from pinpict.settings import MEDIA_URL
+from user.models import User, Notification
 from board.models import Board
 from board.forms import BoardForm, UpdateBoardForm
-
 
 class ListBoards(ListView):
     """List all boards for one user."""
@@ -23,8 +27,16 @@ class ListBoards(ListView):
         context = super(ListBoards, self).get_context_data(**kwargs)
         #context['range4'] = [i+1 for i in range(4)]
         context['owner'] = self.user
+        if not self.request.user.is_authenticated():
+            return context
+        # get owner's private boards 
+        privates = Board.privates.filter(user=self.user)
         if self.user == self.request.user or self.request.user.is_staff:
-            context['private_boards'] = Board.privates.filter(user=self.user)
+            context['private_boards'] = privates
+            return context
+        allowed = privates.filter(users_can_read=self.request.user)
+        if allowed:
+            context['private_boards'] = allowed
 
         return context
 
@@ -78,6 +90,27 @@ class CreateBoard(CreateView, AjaxableResponseMixin):
         """Set policy before saving object."""
         self.object.policy = 1
 
+    def auto_follow(self):
+        """Automatically add owner's followers to this board."""
+        for user in self.object.user.followers.all():
+            self.object.add_follower(user, notification=False)
+            
+    def send_notifications(self):
+        """Send notifications to all suscribed
+        users who have rights on board."""
+        for user in self.object.user.followers.all():
+            if (self.object.policy == 0 and 
+                not user in self.object.users_can_read.all()):
+                continue
+
+            Notification.objects.create(
+                type= "ADD_BOARD",
+                sender=self.object.user,
+                receiver=user,
+                title="created a new board",
+                content_object=self.object
+            )
+
     def form_valid(self, form):
         """If form is valid, save associated model."""
         self.object = form.save(commit=False)
@@ -87,6 +120,10 @@ class CreateBoard(CreateView, AjaxableResponseMixin):
         self.set_policy()
         # save form
         self.object.save()
+        # send notifications
+        self.send_notifications()
+        # add followers to board
+        self.auto_follow()
         # redirect to success url
         return redirect(self.get_success_url())
 
@@ -162,4 +199,36 @@ class DeleteBoard(DeleteView, AjaxableResponseMixin):
                 kwargs={'user': self.request.user.slug})
 
 
+@login_required
+def boardFollow(request, pk):
+    """Add a follower to a board."""
+    if not request.is_ajax():
+        raise Http404
+    board = get_object_or_404(Board, id=pk)
+    board.add_follower(request.user)
 
+    return HttpResponse(reverse_lazy('board_unfollow',
+            kwargs={'pk': pk}))
+
+
+@login_required
+def boardUnfollow(request, pk):
+    """Remove a follower from a board."""
+    if not request.is_ajax():
+        raise Http404
+    board = get_object_or_404(Board, id=pk)
+    board.remove_follower(request.user)
+
+    return HttpResponse(reverse_lazy('board_follow',
+            kwargs={'pk': pk}))
+
+
+
+def getCoversList(request, pk):
+    """Returns a json list of all pins id of the given board."""
+    board = get_object_or_404(Board, id=pk)
+    data = board.pin_set.all().select_related('resource').values('pk', 'resource__previews_path')
+    to_dump = [{'pk': item['pk'], 'previews_path': "{}previews/216-160/{}".format(
+        MEDIA_URL, item['resource__previews_path'])} for item in data]
+
+    return JsonResponse(to_dump, safe=False)

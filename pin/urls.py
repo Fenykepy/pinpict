@@ -78,4 +78,7 @@ urlpatterns = patterns('',
         url(r'^(?P<pk>\d+)/rate/(?P<rate>[0-5])/$',
             'pin.views.rate_pin', name="pin_rate"),
 
+        ## set main pin
+        url(r'^(?P<pk>\d+)/main/$', 'pin.views.set_main_cover', name="set_main_cover"),
+
 )
