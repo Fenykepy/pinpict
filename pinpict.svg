@@ -27,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4"
-     inkscape:cx="-1237.7516"
-     inkscape:cy="1253.358"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="-1230.1704"
+     inkscape:cy="800.34345"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -37,7 +37,14 @@
      inkscape:window-height="1184"
      inkscape:window-x="0"
      inkscape:window-y="14"
-     inkscape:window-maximized="0" />
+     inkscape:window-maximized="0"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       orientation="1,0"
+       position="-1445.75,1161.25"
+       id="guide3049" />
+  </sodipodi:namedview>
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -55,7 +62,7 @@
      inkscape:groupmode="layer"
      id="layer1">
     <rect
-       style="fill:#585858;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       style="fill:#303030;fill-opacity:1;fill-rule:evenodd;stroke:none"
        id="rect2985"
        width="354"
        height="354"
@@ -81,7 +88,7 @@
            height="211.42857"
            x="-722.85712"
            y="-347.63782" /></flowRegion><flowPara
-         id="flowPara3784"></flowPara></flowRoot>    <text
+         id="flowPara3784" /></flowRoot>    <text
        xml:space="preserve"
        style="font-size:25.97402573px;font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Zapfino;-inkscape-font-specification:Zapfino Bold Italic"
        x="-1354.0247"
@@ -96,5 +103,123 @@
          x="-1354.0247"
          y="-116.48196"
          style="font-size:25.97402573px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;font-family:Zapfino;-inkscape-font-specification:Zapfino Italic">Pin Pict</tspan></text>
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="rect3774-2"
+       width="128"
+       height="128"
+       x="-1420"
+       y="-75.637817"
+       rx="10"
+       ry="10" />
+    <text
+       xml:space="preserve"
+       style="font-size:25.97402573px;font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Zapfino;-inkscape-font-specification:Zapfino Bold Italic"
+       x="159.63538"
+       y="704.01807"
+       id="text3786-7"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/lavilotte-rolle/sites/pinpict/pinpict/assets/images/structure/pinpict.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3788-3"
+         x="159.63538"
+         y="704.01807"
+         style="font-size:25.97402573px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;font-family:Zapfino;-inkscape-font-specification:Zapfino Italic">Pin it</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:71.13861847px;font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Zapfino;-inkscape-font-specification:Zapfino Bold Italic"
+       x="-1411.7549"
+       y="27.844116"
+       id="text3786-2"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/lavilotte-rolle/sites/pinpict/pinpict/assets/images/structure/pinpict.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3788-37"
+         x="-1411.7549"
+         y="27.844116"
+         style="font-size:71.13861847px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;font-family:Zapfino;-inkscape-font-specification:Zapfino Italic">P</tspan></text>
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="rect3774-2-5"
+       width="128"
+       height="128"
+       x="-1161"
+       y="-49.637817"
+       rx="10"
+       ry="10" />
+    <text
+       xml:space="preserve"
+       style="font-size:93.40992737px;font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Zapfino;-inkscape-font-specification:Zapfino Bold Italic"
+       x="-1170.21"
+       y="81.496445"
+       id="text3786-2-2"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/lavilotte-rolle/sites/pinpict/pinpict/assets/images/structure/pinpict.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3788-37-2"
+         x="-1170.21"
+         y="81.496445"
+         style="font-size:93.40992737px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;font-family:Zapfino;-inkscape-font-specification:Zapfino Italic">P</tspan></text>
+    <path
+       sodipodi:type="arc"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="path3901"
+       sodipodi:cx="-1279.5"
+       sodipodi:cy="167.86218"
+       sodipodi:rx="56"
+       sodipodi:ry="56"
+       d="m -1223.5,167.86218 a 56,56 0 1 1 -112,0 56,56 0 1 1 112,0 z"
+       transform="matrix(1.1428571,0,0,1.1428571,190.78571,-31.980312)"
+       inkscape:export-filename="/home/lavilotte-rolle/sites/pinpict-env/pinpict/pinpict/assets/images/structure/pinpict-favicon.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:70.28358459px;font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Zapfino;-inkscape-font-specification:Zapfino Bold Italic"
+       x="-1326.0848"
+       y="197.99377"
+       id="text3786-2-2-4"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/lavilotte-rolle/sites/pinpict-env/pinpict/pinpict/assets/images/structure/pinpict-favicon.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3788-37-2-9"
+         x="-1326.0848"
+         y="197.99377"
+         style="font-size:70.28358459px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;font-family:Zapfino;-inkscape-font-specification:Zapfino Italic">P</tspan></text>
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="rect3774-2-9"
+       width="128"
+       height="128"
+       x="-1133.1455"
+       y="153.97618"
+       rx="10"
+       ry="10"
+       inkscape:export-filename="/home/lavilotte-rolle/sites/pinpict-env/pinpict/pinpict/assets/images/structure/pinpict-favicon.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:84.46311187999999959px;font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Zapfino;-inkscape-font-specification:Zapfino Bold Italic"
+       x="-1135.3435"
+       y="264.85321"
+       id="text3786-2-7"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/lavilotte-rolle/sites/pinpict-env/pinpict/pinpict/assets/images/structure/pinpict-favicon.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3788-37-8"
+         x="-1135.3435"
+         y="264.85321"
+         style="font-size:84.46311187999999959px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;font-family:Zapfino;-inkscape-font-specification:Zapfino Italic">P</tspan></text>
   </g>
 </svg>

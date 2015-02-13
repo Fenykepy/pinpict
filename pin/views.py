@@ -171,8 +171,8 @@ class ChoosePinOrigin(TemplateView, AjaxableResponseMixin):
 @login_required
 def rate_pin(request, pk, rate):
     """View to rate a pin."""
-    if not request.is_ajax():
-        raise Http404
+#    if not request.is_ajax():
+#        raise Http404
     pin = get_object_or_404(Pin, pk=pk)
     if pin.pin_user != request.user:
         raise Http404
