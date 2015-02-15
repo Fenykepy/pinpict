@@ -50,6 +50,53 @@ $(document).ready(function () {
     function isInArray(value, array) {
         return array.indexOf(value) > -1;
     };
+    
+    // users following
+    $("body").on("click", "a.follow-user", function(e) {
+        var link = $(this);
+        var button = $(this).children("button");
+        console.log(button.html());
+        $.ajax(link.attr("href"))
+            .done(function(data) {
+                console.log(data);
+                link.attr("href", data);
+                if (button.html() == "Follow") {
+                    button.html("Unfollow");
+                    link.attr("title", "Unfollow this user");
+                } else {
+                    button.html("Follow");
+                    link.attr("title", "Follow this user");
+                }
+
+        }).fail(function() {
+            alert("An error occured");
+        });
+        e.preventDefault();
+    });
+
+
+    // boards following
+    $("body").on("click", "a.follow-board", function(e) {
+        var link = $(this);
+        var button = $(this).children("button");
+        console.log(button.html());
+        $.ajax(link.attr("href"))
+            .done(function(data) {
+                console.log(data);
+                link.attr("href", data);
+                if (button.html() == "Follow") {
+                    button.html("Unfollow");
+                    link.attr("title", "Unfollow this board");
+                } else {
+                    button.html("Follow");
+                    link.attr("title", "Follow this board");
+                }
+
+        }).fail(function() {
+            alert("An error occured");
+        });
+        e.preventDefault();
+    });
 
 
     // board cover selection

@@ -81,7 +81,7 @@ section#private-boards {
 
 
 article.board, article.create-board, article#user, article.pin-standalone,
-article.pin, article#create-pin, #user-compact, .user-compact, article.user {
+article.pin, article#create-pin, #user-compact, .user-compact, article.user, .notification {
     position: relative;
     display: inline-block;
     margin: 14px 7px 0px 7px;
@@ -196,6 +196,13 @@ article.pin, article#create-pin, #user-compact, .user-compact, article.user {
         margin-right: 0;
     }
 }
+article#user {
+    button {
+        float: right;
+        margin-right: 15px;
+        width: auto;
+    }
+}
 article.create-board, article#create-pin {
     text-align: center;
 
@@ -264,7 +271,7 @@ article.board, article.user {
     margin-right: auto;
     margin-left: auto;
 }
-article#user, #user-compact, .user-compact {
+article#user, #user-compact, .user-compact, .notification {
     max-width: 1236px;
     display: block;
     width: auto;

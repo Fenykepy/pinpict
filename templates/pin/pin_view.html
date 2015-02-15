@@ -46,7 +46,7 @@
 </div>
 </a>
 <p class="pin-description">
-{{ pin.description|linebreaksbr }}
+{{ pin.description|urlize|linebreaksbr }}
 </p>
 <footer>
 {% if pin.source %}
@@ -81,7 +81,7 @@
 
 {% if pin.added_via %}
 <article class="user-compact">
-    {% with via=pin.added_via %}
+    {% with via=pin.added_via.pin_user %}
     {% if via.avatar %}
         <a href="{% url "boards_list" via.slug %}"><img src="{{ MEDIA_URL }}{{ via.avatar }}" /></a>
     {% else %}

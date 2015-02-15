@@ -11,6 +11,9 @@
     {# PROD: compiled file #}
     <link rel="stylesheet" href="{% static 'css/pinpict.min.css' %}" />{# PROD #}
     
+    <link rel="icon" type="image/png" href="{% static 'images/structure/pinpict-favicon.png' %}" />
+
+    
     {# DEVEL: less file #}
     {#<link rel="stylesheet/less" href="{% static 'css/controller.less' %}" />{# DEVEL #}
 </head>
@@ -39,7 +42,12 @@
             <li><a href="{% url "boards_list" user.slug %}">My boards</a></li>
             <li><a href="{% url "user_pins" user.slug %}">My pins</a></li>
             <li><a href="{% url "user_profil" %}">Profil</a></li>
+            <li><a href="{% url "notifications_list" %}">Notifications {% if user.n_unread_notifications %}
+                        <div class="rounded float-right">{{ user.n_unread_notifications }}</div>
+                    {% endif %}
+                </a></li>
             {% if user.is_staff %}
+            <hr />
             <li><a href="/admin/">Admin</a></li>
             {% endif %}
             <hr />

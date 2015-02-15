@@ -10,6 +10,8 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Previews generation settings
@@ -40,12 +42,16 @@ RESERVED_WORDS = (
         'register',
         'recovery',
         'page',
+        'user',
+        'notifications',
 )
 
 # words that can't be used as board name
 BOARD_RESERVED_WORDS = (
         'pins',
         'page',
+        'followers',
+        'following',
 )
 
 # max size for avatar img (side in px)
@@ -72,7 +78,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.sitemaps',
     'haystack',
-    #'debug_toolbar', # comment for prod
+    'debug_toolbar', # comment for prod
     'user',
     'board',
     'pin',

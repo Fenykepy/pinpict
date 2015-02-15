@@ -19,6 +19,14 @@
     {% if owner.website %}
     <div class="user-website"><a href="{{ owner.website }}" target="_blank">{{ owner.website }}</a></div>
     {% endif %}
+    {% if user == owner %}
+        <a href="{% url "user_profil" %}" title="Edit profile"><button>Edit profile</button></a>
+    {% elif user in owner.followers.all %}
+        <a href="{% url "user_unfollow" owner.pk %}" class="follow-user" title="Unfollow this user"><button>Unfollow</button></a>
+    {% elif user.is_authenticated %}
+        <a href="{% url "user_follow" owner.pk %}" class="follow-user" title="Follow this user"><button>Follow</button></a>
+    {% endif %}
+
     {% spaceless %}
     <ul>
         <li class="selected"><a href=""><span class="number">{{ owner.n_public_boards }}</span></br><span class="title">Board{{ owner.n_public_boards|pluralize }}</span></a></li>
@@ -28,7 +36,7 @@
 </article>
 </div>
 {% spaceless %}
-{% if user.is_authenticated and user == owner %}
+{% if user == owner %}
 <article class="create-board">
     <a href="{% url "board_create" %}">
     <div class="plus"></div>
@@ -43,7 +51,7 @@
 </section>
 
 
-{% if private_boards%}
+{% if private_boards or user == owner%}
 {% spaceless %}
 <div id="private-boards-wrapper">
 <section id="private-boards">

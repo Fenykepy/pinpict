@@ -8,6 +8,9 @@ from django.contrib.auth.models import AbstractUser
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
+from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 from board.slug import unique_slugify
 from pinpict.settings import AVATAR_MAX_SIZE, MEDIA_ROOT
@@ -28,6 +31,149 @@ def has_changed(instance, field, manager='objects'):
     manager = getattr(instance.__class__, manager)
     old = getattr(manager.get(pk=instance.pk), field)
     return not getattr(instance, field) == old
+    
+
+
+class Notification(models.Model):
+    """Table for all notifications."""
+    date = models.DateTimeField(auto_now_add=True, db_index=True,
+            auto_now=False,
+            verbose_name="Creation date")
+    type = models.CharField(max_length=254, null=True, blank=True)
+    title = models.TextField(null=True, blank=True,
+            verbose_name="Title")
+    read = models.BooleanField(default=False, db_index=True)
+    receiver = models.ForeignKey('User', related_name="receiver", null=True)
+    sender = models.ForeignKey('User', related_name="sender", null=True)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        ordering = ['-date']
+
+
+    def save(self, **kwargs):
+        """Increment user unread_notifications number and send mails
+        if necessary."""
+        # if notification is created
+        if self.pk == None:
+            # increment user unread notifications number
+            self.receiver.n_unread_notifications += 1
+            self.receiver.save()
+
+            # send mail if necessairy
+            if self.sender.root_uri:
+                root_uri = self.sender.root_uri
+            else:
+                root_uri = ''
+            sender_url = root_uri + reverse('boards_list', kwargs={
+                'user': self.sender.slug,
+            })
+            if (self.receiver.mail_user_follower and 
+                    self.type == "USER_FOLLOWER"):
+                subject = "{} started to follow you".format(
+                        self.sender.username)
+                message = ("{}!\n"
+                    "see his profile:\n"
+                    "{}\n\n"
+                ).format(
+                    subject,
+                    sender_url,
+                )
+            elif (self.receiver.mail_board_follower and
+                    self.type =="BOARD_FOLLOWER"):
+                subject = "{} started to follow your board {}".format(
+                        self.sender.username,
+                        self.content_object.title)
+                message = ("{}!\n"
+                        "see his profile:\n"
+                        "{}\n"
+                        "see board:\n"
+                        "{}\n\n"
+                ).format(
+                    subject,
+                    sender_url,
+                    root_uri + reverse('board_view', kwargs={
+                            'user': self.sender.slug,
+                            'board': self.content_object.slug,
+                    }),
+                )
+            elif (self.receiver.mail_following_add_pin and
+                    self.type == "ADD_PIN"):
+                subject = "{} added a pin on board {}".format(
+                        self.sender.username,
+                        self.content_object.board.title)
+                message = ("{}!\n"
+                        "See pin:\n"
+                        "{}\n\n"
+                ).format(
+                    subject,
+                    root_uri + reverse('pin_view', kwargs={
+                        'pk': self.content_object.pk,
+                    }),
+                )
+            elif (self.receiver.mail_following_add_board and
+                    self.type == "ADD_BOARD"):
+                subject = "{} added a new board {}".format(
+                        self.sender.username,
+                        self.content_object.title)
+                message = ("{}!\n"
+                        "See board:\n"
+                        "{}\n\n"
+                ).format(
+                    subject,
+                    root_uri + reverse('board_view', kwargs={
+                            'user': self.sender.slug,
+                            'board': self.content_object.slug,
+                    }),
+                )
+
+            elif (self.receiver.mail_repinned and
+                    self.type == "RE_PINNED"):
+                subject = "{} pinned one of your pins".format(
+                        self.sender.username)
+                message = ("{}!\n"
+                        "See new pin:\n"
+                        "{}\n\n"
+                ).format(
+                    subject,
+                    root_uri + reverse('pin_view', kwargs={
+                        'pk': self.content_object.pk,
+                    }),
+                )
+
+            elif (self.receiver.mail_allow_read and
+                    self.type == "ALLOW_READ"):
+                subject = "{} allowed you to see his private board {}".format(
+                        self.sender.username,
+                        self.content_object.title)
+                message = ("{}!\n"
+                        "See board:\n"
+                        "{}\n\n"
+                ).format(
+                    subject,
+                    root_uri + reverse('board_view', kwargs={
+                            'user': self.sender.slug,
+                            'board': self.content_object.slug,
+                    }),
+                )
+
+
+
+            if subject:
+                lead = ("Hi {}! \n\n").format(self.receiver.username)
+                trail = ("\n##########################################\n\n"
+                           "Don't want to see this mail ? unsuscribe :\n{}\n"
+                ).format(
+                        root_uri + reverse('user_profil')
+                )
+                message = lead + message + trail
+                self.receiver.send_mail(subject, message)
+
+
+        # save object
+        super(Notification, self).save()
 
 
 
@@ -37,6 +183,8 @@ class User(AbstractUser):
                 unique=True, verbose_name="Slug")
     uuid = models.CharField(max_length=42, blank=True, null=True)
     uuid_expiration = models.DateTimeField(blank=True, null=True)
+    root_uri = models.URLField(blank=True, null=True,
+            verbose_name="Home page URI, without trailing slash")
     avatar = models.ImageField(
             null=True, blank=True,
             upload_to='images/avatars',
@@ -92,7 +240,11 @@ class User(AbstractUser):
             verbose_name="Vkontakte",
             help_text="A link to your vkontakte page."
     )
-
+    followers = models.ManyToManyField("self", null=True, blank=True,
+            related_name="user_followers",
+            verbose_name="Users who follow user")
+    n_followers = models.PositiveIntegerField(default=0,
+            verbose_name="Followers number")
     n_public_pins = models.PositiveIntegerField(default=0,
             verbose_name="Public pins'number")
     n_pins = models.PositiveIntegerField(default=0,
@@ -101,10 +253,74 @@ class User(AbstractUser):
             verbose_name="Boards'number")
     n_public_boards = models.PositiveIntegerField(default=0,
             verbose_name="Public Boards'number")
+    n_unread_notifications = models.PositiveIntegerField(default=0,
+            verbose_name="New notifications")
+    mail_user_follower = models.BooleanField(default=True,
+         verbose_name="Receive a mail when a user starts to follow me")
+    mail_board_follower = models.BooleanField(default=True,
+    verbose_name=("Receive a mail when a user starts to follow"
+        " one of my boards"))
+    mail_following_add_pin = models.BooleanField(default=True,
+    verbose_name="Receive a mail when following user add a new pin")
+    mail_following_add_board = models.BooleanField(default=True,
+    verbose_name="Receive a mail when following user add a new board")
+    mail_repinned = models.BooleanField(default=True,
+    verbose_name="Receive a mail when one of my pins are pinned")
+    mail_allow_read = models.BooleanField(default=True,
+    verbose_name=("Receive a mail when a user allows me to see one"
+        " of it's private boards"))
+
+    
+    def set_n_followers(self):
+        """Set number of followers."""
+        self.n_followers = self.followers.all().count()
+        self.save()
+    
+
+    def add_follower(self, follower):
+        """Add a follower to the user.
+        follower: user object."""
+        self.followers.add(follower)
+        self.set_n_followers()
+        for board in self.board_set.all():
+            board.add_follower(follower, notification=False)
+
+        # send notification
+        Notification.objects.create(
+            type="USER_FOLLOWER",
+            sender=follower,
+            receiver=self,
+            title="started to follow you.",
+            content_object=follower
+        )
+
+
+
+
+
+    def remove_follower(self, follower):
+        """Remove a follower to the user.
+        follower: user object."""
+        self.followers.remove(follower)
+        self.set_n_followers()
+        for board in self.board_set.all():
+            board.remove_follower(follower)
 
 
     def get_public_boards(self):
         return self.board_set.filter(policy=1)
+
+
+    def get_notifications(self):
+        return self.receiver.all()
+
+
+    def get_unread_notifications(self):
+        return self.receiver.filter(read=False)
+
+
+    def set_notifications_read(self):
+        self.get_unread_notifications().update(read=True)
 
 
     def get_short_name(self):
@@ -208,5 +424,3 @@ def mail_staffmembers(subject, message):
     # send mail to staff members
     send_mail(subject, message, DEFAULT_FROM_EMAIL, staffmembers_mails)
 
-
-    

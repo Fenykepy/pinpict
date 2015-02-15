@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+{{ user.username }} notifications on Pinpict
+{% endblock %}
+
+{% block body %}
+{% spaceless %}
+<section id="pins">
+<header>
+    <h1>Notifications</h1>
+</header>
+<div id="user-wrapper">
+{% for notif in notifications %}
+<article class="notification {% if notif.read %}read{% endif %}">
+        <a href="{% url "boards_list" notif.sender.slug %}"><img
+            {% if notif.sender.avatar %}
+            src="{{ MEDIA_URL }}{{ notif.sender.avatar }}"
+            {% else %}
+            src="{% static 'images/structure/default_avatar.png' %}"
+            {% endif %}/></a>
+        <h2><a href="{% url "boards_list" notif.sender.slug %}">{{ notif.sender.get_full_name }}</a> {{ notif.title }}
+        {% if notif.type == "ADD_PIN" %}
+            <a href="{% url "board_view" notif.sender.slug notif.content_object.board.slug %}">{{ notif.content_object.board.title }}.</a>
+            </h2>
+            <a href="{% url "pin_view" notif.content_object.pk %}"><img
+                src="{{ MEDIA_URL}}/previews/50/{{notif.content_object.resource.previews_path }}" /><button>View Pin</button></a>
+
+        {% elif notif.type == "ADD_BOARD" %}
+            <a href="{% url "board_view" notif.sender.slug notif.content_object.slug %}">{{ notif.content_object.title }}.</a>
+            </h2>
+            <a href="{% url "board_view" notif.sender.slug  notif.content_object.slug %}"><button>View Board</button></a>
+
+        {% elif notif.type == "USER_FOLLOWER" %}
+            </h2>
+            <a href="{% url "boards_list" notif.sender.slug %}"><button>View follower</button></a>
+
+        {% elif notif.type == "BOARD_FOLLOWER" %}
+            <a href="{% url "board_view" user.slug notif.content_object.slug %}">{{ notif.content_object.title }}.</a>
+            </h2>
+            <a href="{% url "board_view" user.slug  notif.content_object.slug %}"><button>View Board</button></a>
+
+        {% elif notif.type == "RE_PINNED" %}
+            <a href="{% url "pin_view" notif.content_object.added_via.pk %}">pin.</a>
+            </h2>
+            <a href="{% url "pin_view" notif.content_object.pk %}"><img
+                src="{{ MEDIA_URL}}/previews/50/{{notif.content_object.resource.previews_path }}" /><button>View Pin</button></a>
+
+        {% elif notif.type == "ALLOW_READ" %}
+            <a href="{% url "board_view" notif.sender.slug notif.content_object.slug %}">{{ notif.content_object.title }}.</a>
+            </h2>
+            <a href="{% url "board_view" notif.sender.slug  notif.content_object.slug %}"><button>View Board</button></a>
+        
+        {% endif %}
+        <div class="user-website">{{ notif.date|naturaltime }}</div>
+</article>
+{% empty %}
+<article class="notification read center-align">
+    <h2><em>No notifications yet...</em></h2>
+</article>
+{% endfor %}
+{# set notifications as read, dirty to do that here, but no other simple way with ListView #}
+<span class="accessibility-text">{{ user.set_notifications_read }}</span>
+{% endspaceless %}
+</div>
+
+</section>
+{% if page_obj.paginator.num_pages > 1 %}
+<section id="navigation">
+        {% include 'pagination/pagination.html' %}
+</section>
+{% endif %}
+{% endblock body %}

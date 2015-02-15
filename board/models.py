@@ -1,10 +1,10 @@
 from django.db import models
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, m2m_changed
 from django.dispatch import receiver
 from django.core.urlresolvers import reverse
 
 from pinpict.settings import BOARD_RESERVED_WORDS
-from user.models import User, has_changed
+from user.models import User, has_changed, Notification
 from board.slug import unique_slugify
 
 
@@ -71,6 +71,11 @@ class Board(models.Model):
     users_can_read = models.ManyToManyField(User, null=True, blank=True,
             related_name="users_can_read",
             verbose_name="Users who can see board if private")
+    followers = models.ManyToManyField(User, null=True, blank=True,
+            related_name="board_followers",
+            verbose_name="Users who follow board")
+    n_followers = models.PositiveIntegerField(default=0,
+            verbose_name="Followers number")
 
     # managers
     objects = models.Manager()
@@ -125,6 +130,33 @@ class Board(models.Model):
         except:
             return self.pin_set.all()[:1].get()
 
+    def set_n_followers(self):
+        """Set number of followers."""
+        self.n_followers = self.followers.all().count()
+        self.save()
+
+    def add_follower(self, follower, notification=True):
+        """Add a follower to the board.
+        follower: user object."""
+        self.followers.add(follower)
+        self.set_n_followers()
+        if not notification:
+            return
+        # else send notification
+        Notification.objects.create(
+            type="BOARD_FOLLOWER",
+            sender=follower,
+            receiver=self.user,
+            title="suscribed to your board",
+            content_object=self
+        )
+
+
+    def remove_follower(self, follower):
+        """Remove a follower from thes board.
+        follower: user object."""
+        self.followers.remove(follower)
+        self.set_n_followers()
 
     def __str__(self):
         return "%s" % self.title
@@ -138,5 +170,27 @@ def update_user_n_boards(sender, instance, **kwargs):
     instance.user.n_boards = instance.user.get_n_boards()
     instance.user.n_public_boards = instance.user.get_n_public_boards()
     instance.user.save()
+
+
+@receiver(m2m_changed, sender=Board.users_can_read.through)
+def allow_private_board_read(sender, instance, action, reverse,
+        model, pk_set, **kwargs):
+    """Send a notification when an user has been allowed
+    to read a private board."""
+    if action != 'post_add' or instance.policy != 0:
+        return
+    # get receiver of notification
+    for elem in pk_set:
+        receiver = User.objects.get(pk=elem)
+        # send notification
+        Notification.objects.create(
+            type="ALLOW_READ",
+            sender=instance.user,
+            receiver=receiver,
+            title="allowed you to see his private board",
+            content_object=instance
+        )
+    
+
 
 

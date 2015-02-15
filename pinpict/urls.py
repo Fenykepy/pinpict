@@ -8,14 +8,11 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView
 from django.contrib.sitemaps.views import sitemap
 
-from haystack.views import SearchView, search_view_factory
-
 from pinpict.sitemaps import UserSitemap, BoardSitemap, PinSitemap
 from board.views import *
 from user.views import LoginView, RegistrationView, ProfilView, \
-        PasswordView, RecoveryView
+        PasswordView, RecoveryView, ListNotifications
 from pin.views import ListBoardPins, ListUserPins, ListLastPins
-from user.forms import UserSearchForm
 
 admin.autodiscover()
 
@@ -57,6 +54,12 @@ urlpatterns = patterns('',
 
     ## password changement
     url(r'^profil/password/$', login_required(PasswordView.as_view()), name='user_password'),
+
+    ## notifications
+    url(r'^notifications/$',
+        login_required(ListNotifications.as_view()), name='notifications_list'),
+    url(r'^notifications/page/(?P<page>\d+)/$',
+        login_required(ListNotifications.as_view()), name='notifications_list'),
     
     ## home page with pagination
     url(r'^page/(?P<page>\d+)/$',
@@ -69,25 +72,13 @@ urlpatterns = patterns('',
     url(r'^(?P<user>[-\w]+)/pins/$',
         ListUserPins.as_view(), name='user_pins'),
 
+
+
     ## home page
     url(r'^$', login_required(ListLastPins.as_view()), name='home'),
 
-    ## user search
-    url(r'^user/search/page/(?P<page>\d+)/', login_required(search_view_factory(
-            view_class=SearchView,
-            template='user/user_search.html',
-            form_class=UserSearchForm
-        )),
-        name='user_search'),
-    url(r'^user/search/', login_required(search_view_factory(
-            view_class=SearchView,
-            template='user/user_search.html',
-            form_class=UserSearchForm
-        )),
-        name='user_search'),
-
-
-
+    ## user urls
+    url(r'^user/', include('user.urls')),
 
     ## pin urls
     url(r'^pin/', include('pin.urls')),

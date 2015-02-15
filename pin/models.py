@@ -167,7 +167,7 @@ class Pin(models.Model):
     board = models.ForeignKey(Board)
     main = models.BooleanField(default=False, verbose_name="Use as main preview")
     resource = models.ForeignKey(Resource)
-    added_via = models.ForeignKey(User, blank=True, null=True)
+    added_via = models.ForeignKey('self', blank=True, null=True)
     pin_user = models.ForeignKey(User, related_name="pin_user")
     policy = models.PositiveIntegerField(blank=True, null=True)
     owner_rate = models.PositiveSmallIntegerField(default=0, verbose_name="Rate")

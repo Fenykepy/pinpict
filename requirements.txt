@@ -1,6 +1,7 @@
 django==1.7                     # django framework
 httplib2                        # Python alternative http librairy
 wand                            # Imaging librairy
-django-haystack
-whoosh
-pillow
+django-haystack                 # django search engine abstraction interface
+django-debug-toolbar            # django profiling tool
+whoosh                          # search engine
+pillow                          # imaging librairy
