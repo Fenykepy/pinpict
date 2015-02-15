@@ -212,6 +212,13 @@ class User(AbstractUser):
             verbose_name="Flickr",
             help_text="A link to your flickr page."
     )
+    px500_link = models.URLField(
+            null=True,
+            blank=True,
+            max_length=2000,
+            verbose_name="500px",
+            help_text="A link to your 500px page."
+    )
     twitter_link = models.URLField(
             null=True,
             blank=True,

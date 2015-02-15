@@ -11,7 +11,8 @@
 #    - login page
 #    - logout page
 #    - user facebook, flickr, pinterest, vk, twitter, google+ links on user models
-        - user links in template (with small logo)
+#        - user links in template (with small logo)
+#        - add a link for 500px
 #    - user avatar auto renaming and resizing
 #    - user uuid field
 #    - user uuid expiration field
@@ -46,7 +47,7 @@
 #            - keep searched text in form after submit
 #            - test it
 #    - board creation form
-        - add a field for a cover pin/resource
+#        - add a field for a cover pin/resource
 #    - board update form
 #    - board delete form
 #        - link buttons act as submit in forms (for delete and cancel, need to open in new tab)
@@ -125,13 +126,13 @@
 #        - your pins (only display to login users
 #        - boards
 #        - users
-        - add a context variable to remember which model was search in (and replace good url in search form)
+        - add a context variable to remember which model was search in (and replace good url in search form) or a get 
 #    - add a link to admin page in user menu if he is staff member
 #    - handle query strings in pagination.
     - use a HEAD request to ensure link is an image in parser
-    - to avoid problems with different pin_create_* set at the same time reinitialise them
+#    - to avoid problems with different pin_create_* set at the same time reinitialise them
     - user appears as not login in error pages.
-
+    - tests for notifications
 
 
 ==== JavaScript ====
@@ -171,12 +172,15 @@
     - placeholder style for search form
     - disposition of pagination of searchs
 #    - title of last pins list.
+    - change grey falses images for div with background color
+    - change disposition of user article to be more centered and page width
 
 ==== Media creation ====
     - create a lock logo for private boards
     - create a new avatar with PP
     - create a PP icon for pages footers
     - create a Pin It button
+#    - create social links logos
     - create a sprite
 
 

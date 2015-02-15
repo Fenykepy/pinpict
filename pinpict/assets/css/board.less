@@ -202,6 +202,71 @@ article#user {
         margin-right: 15px;
         width: auto;
     }
+    ul.social-icons {
+        position: absolute;
+        bottom: 50px;
+        left: 100px;
+        clear: none;
+        border: none;
+        text-align: bottom;
+        .social-icon {
+            display: inline-block;
+            background: #666;
+            height: 22px;
+            width: 22px;
+            border-radius: 2px;
+            border: 1px solid @22;
+            box-shadow: 1px 1px 0 @66 + 20, inset 1px 1px @66 + 20;
+            margin-right: 4px;
+            a {
+                display: block;
+                height: 100%;
+                margin: 0;
+            }
+            a.fb {
+                background-image: url('@{base-image}structure/fb.grey.png');
+                &:hover {
+                    background-image: url('@{base-image}structure/fb.png');
+                }
+            }
+            a.flickr {
+                background-image: url('@{base-image}structure/flickr.grey.png');
+                &:hover {
+                    background-image: url('@{base-image}structure/flickr.png');
+                }
+            }
+            a.px500 {
+                background-image: url('@{base-image}structure/500px.grey.png');
+                &:hover {
+                    background-image: url('@{base-image}structure/500px.png');
+                }
+            }
+            a.twitter {
+                background-image: url('@{base-image}structure/twitter.grey.png');
+                &:hover {
+                    background-image: url('@{base-image}structure/twitter.png');
+                }
+            }
+            a.gplus {
+                background-image: url('@{base-image}structure/gplus.grey.png');
+                &:hover {
+                    background-image: url('@{base-image}structure/gplus.png');
+                }
+            }
+            a.pinterest {
+                background-image: url('@{base-image}structure/pinterest.grey.png');
+                &:hover {
+                    background-image: url('@{base-image}structure/pinterest.png');
+                }
+            }
+            a.vk {
+                background-image: url('@{base-image}structure/vk.grey.png');
+                &:hover {
+                    background-image: url('@{base-image}structure/vk.png');
+                }
+            }
+        }
+    }
 }
 article.create-board, article#create-pin {
     text-align: center;

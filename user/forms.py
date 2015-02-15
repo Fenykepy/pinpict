@@ -159,6 +159,7 @@ class ProfilForm(ModelForm):
             'website',
             'facebook_link',
             'flickr_link',
+            'px500_link',
             'twitter_link',
             'gplus_link',
             'pinterest_link',
