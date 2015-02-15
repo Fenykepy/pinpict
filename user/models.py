@@ -63,6 +63,113 @@ class Notification(models.Model):
             self.receiver.save()
 
             # send mail if necessairy
+            if self.sender.root_uri:
+                root_uri = self.sender.root_uri
+            else:
+                root_uri = ''
+            sender_url = root_uri + reverse('boards_list', kwargs={
+                'user': self.sender.slug,
+            })
+            if (self.receiver.mail_user_follower and 
+                    self.type == "USER_FOLLOWER"):
+                subject = "{} started to follow you".format(
+                        self.sender.username)
+                message = ("{}!\n"
+                    "see his profile:\n"
+                    "{}\n\n"
+                ).format(
+                    subject,
+                    sender_url,
+                )
+            elif (self.receiver.mail_board_follower and
+                    self.type =="BOARD_FOLLOWER"):
+                subject = "{} started to follow your board {}".format(
+                        self.sender.username,
+                        self.content_object.title)
+                message = ("{}!\n"
+                        "see his profile:\n"
+                        "{}\n"
+                        "see board:\n"
+                        "{}\n\n"
+                ).format(
+                    subject,
+                    sender_url,
+                    root_uri + reverse('board_view', kwargs={
+                            'user': self.sender.slug,
+                            'board': self.content_object.slug,
+                    }),
+                )
+            elif (self.receiver.mail_following_add_pin and
+                    self.type == "ADD_PIN"):
+                subject = "{} added a pin on board {}".format(
+                        self.sender.username,
+                        self.content_object.board.title)
+                message = ("{}!\n"
+                        "See pin:\n"
+                        "{}\n\n"
+                ).format(
+                    subject,
+                    root_uri + reverse('pin_view', kwargs={
+                        'pk': self.content_object.pk,
+                    }),
+                )
+            elif (self.receiver.mail_following_add_board and
+                    self.type == "ADD_BOARD"):
+                subject = "{} added a new board {}".format(
+                        self.sender.username,
+                        self.content_object.title)
+                message = ("{}!\n"
+                        "See board:\n"
+                        "{}\n\n"
+                ).format(
+                    subject,
+                    root_uri + reverse('board_view', kwargs={
+                            'user': self.sender.slug,
+                            'board': self.content_object.slug,
+                    }),
+                )
+
+            elif (self.receiver.mail_repinned and
+                    self.type == "RE_PINNED"):
+                subject = "{} pinned one of your pins".format(
+                        self.sender.username)
+                message = ("{}!\n"
+                        "See new pin:\n"
+                        "{}\n\n"
+                ).format(
+                    subject,
+                    root_uri + reverse('pin_view', kwargs={
+                        'pk': self.content_object.pk,
+                    }),
+                )
+
+            elif (self.receiver.mail_allow_read and
+                    self.type == "ALLOW_READ"):
+                subject = "{} allowed you to see his private board {}".format(
+                        self.sender.username,
+                        self.content_object.title)
+                message = ("{}!\n"
+                        "See board:\n"
+                        "{}\n\n"
+                ).format(
+                    subject,
+                    root_uri + reverse('board_view', kwargs={
+                            'user': self.sender.slug,
+                            'board': self.content_object.slug,
+                    }),
+                )
+
+
+
+            if subject:
+                lead = ("Hi {}! \n\n").format(self.receiver.username)
+                trail = ("\n##########################################\n\n"
+                           "Don't want to see this mail ? unsuscribe :\n{}\n"
+                ).format(
+                        root_uri + reverse('user_profil')
+                )
+                message = lead + message + trail
+                self.receiver.send_mail(subject, message)
 
 
         # save object
@@ -76,6 +183,8 @@ class User(AbstractUser):
                 unique=True, verbose_name="Slug")
     uuid = models.CharField(max_length=42, blank=True, null=True)
     uuid_expiration = models.DateTimeField(blank=True, null=True)
+    root_uri = models.URLField(blank=True, null=True,
+            verbose_name="Home page URI, without trailing slash")
     avatar = models.ImageField(
             null=True, blank=True,
             upload_to='images/avatars',
@@ -168,7 +277,7 @@ class User(AbstractUser):
         self.save()
     
 
-    def add_follower(self, follower, request):
+    def add_follower(self, follower):
         """Add a follower to the user.
         follower: user object."""
         self.followers.add(follower)
@@ -185,23 +294,6 @@ class User(AbstractUser):
             content_object=follower
         )
 
-        if self.mail_user_follower:
-            subject = "{} started to follow you".format(
-                    follower.username)
-            message = ("Hi {}! \n\n"
-                "{} started to follow you!\n"
-                "see his profile :\n"
-                "{}\n\n"
-                "Don't want to see this mail ? unsuscribe :\n"
-                "{}"
-            ).format(
-                self.username,
-                follower.username,
-                request.build_absolute_uri(reverse('boards_list',kwargs={
-                        'user': follower.slug,
-                })),
-                request.build_absolute_uri(reverse('user_profil')),
-            )
 
 
 

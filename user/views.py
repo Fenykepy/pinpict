@@ -14,6 +14,8 @@ from user.models import User, Notification, mail_staffmembers
 from user.forms import *
 from pin.views import ListPinsMixin
 
+
+
 class LoginView(FormView):
     """Class to login a user."""
     form_class = LoginForm
@@ -31,6 +33,9 @@ class LoginView(FormView):
 
     def form_valid(self, form):
         login(self.request, form.get_user()) # connect user
+        self.request.user.root_uri = self.request.build_absolute_uri(
+                    reverse('home')).rstrip('/')
+        self.request.user.save()
         
         url = self.request.GET.get('next', False)
         if url:
@@ -253,7 +258,7 @@ def userFollow(request, pk):
     if not request.is_ajax():
         raise Http404
     user = get_object_or_404(User, id=pk)
-    user.add_follower(request.user, request)
+    user.add_follower(request.user)
 
     return HttpResponse(reverse_lazy('user_unfollow',
         kwargs={'pk': pk}))

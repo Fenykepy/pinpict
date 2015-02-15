@@ -26,7 +26,6 @@ from pin.utils import get_sha1_hexdigest, scan_html_for_picts
 
 
 
-
 class ListPinsMixin(ContextMixin):
     """Mixin to get common context for list pin views."""
     def get_context_data(self, **kwargs):
@@ -175,8 +174,8 @@ class ChoosePinOrigin(TemplateView, AjaxableResponseMixin):
 @login_required
 def rate_pin(request, pk, rate):
     """View to rate a pin."""
-#    if not request.is_ajax():
-#        raise Http404
+    if not request.is_ajax():
+        raise Http404
     pin = get_object_or_404(Pin, pk=pk)
     if pin.pin_user != request.user:
         raise Http404
@@ -369,7 +368,7 @@ def create_pin(request):
                 Notification.objects.create(
                     type="RE_PINNED",
                     sender=request.user,
-                    receiver=added_via.pin_user,
+                    receiver=pin.added_via.pin_user,
                     title="pinned your ",
                     content_object=pin
                 )

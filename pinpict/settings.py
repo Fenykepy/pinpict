@@ -10,6 +10,8 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Previews generation settings
@@ -48,6 +50,8 @@ RESERVED_WORDS = (
 BOARD_RESERVED_WORDS = (
         'pins',
         'page',
+        'followers',
+        'following',
 )
 
 # max size for avatar img (side in px)
