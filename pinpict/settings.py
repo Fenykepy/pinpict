@@ -78,7 +78,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.sitemaps',
     'haystack',
-    'debug_toolbar', # comment for prod
+#    'debug_toolbar', # comment for prod
     'user',
     'board',
     'pin',

@@ -5,61 +5,8 @@
 {% endblock %}
 
 {% block body %}
-{% with name=owner.get_full_name %}
 <section id="boards">
-<div id="user-wrapper">
-<article id="user">
-    {% if owner.avatar %}
-    <img src="{{ MEDIA_URL }}{{ owner.avatar }}" alt="{{ owner. }}" />
-    {% else %}
-    <img src="{% static 'images/structure/default_avatar.png' %}" alt="{{ name }}" />
-    {% endif %}
-    <h1>{{ name }}</h1>
-    <hr />
-    {% if user == owner %}
-        <a href="{% url "user_profil" %}" title="Edit profile"><button>Edit profile</button></a>
-    {% elif user in owner.followers.all %}
-        <a href="{% url "user_unfollow" owner.pk %}" class="follow-user" title="Unfollow this user"><button>Unfollow</button></a>
-    {% elif user.is_authenticated %}
-        <a href="{% url "user_follow" owner.pk %}" class="follow-user" title="Follow this user"><button>Follow</button></a>
-    {% endif %}
-    {% if owner.website %}
-    <div class="user-website"><a href="{{ owner.website }}" target="_blank">{{ owner.website }}</a></div>
-    {% endif %}
-    {% spaceless %}
-    <ul class="social-icons">
-        {% if owner.facebook_link %}
-        <li class="social-icon"><a class="fb" href="{{ owner.facebook_link }}" title="Follow on Facebook"><span class="accessibility-text">Facebook link</span></a></li>
-        {% endif %}
-        {% if owner.flickr_link %}
-        <li class="social-icon"><a class="flickr" href="{{ owner.flickr_link }}" title="Follow on Flickr"><span class="accessibility-text">Flickr link</span></a></li>
-        {% endif %}
-        {% if owner.px500_link %}
-        <li class="social-icon"><a class="px500" href="{{ owner.px500_link }}" title="Follow on 500px"><span class="accessibility-text">500px link</span></a></li>
-        {% endif %}
-        {% if owner.twitter_link %}
-        <li class="social-icon"><a class="twitter" href="{{ owner.twitter_link }}" title="Follow on Twitter"><span class="accessibility-text">Twitter link</span></a></li>
-        {% endif %}
-        {% if owner.gplus_link %}
-        <li class="social-icon"><a class="gplus" href="{{ owner.gplus_link }}" title="Follow on Google +"><span class="accessibility-text">Google plus link</span></a></li>
-        {% endif %}
-        {% if owner.pinterest_link %}
-        <li class="social-icon"><a class="pinterest" href="{{ owner.pinterest_link }}" title="Follow on Pinterest"><span class="accessibility-text">Pinterest link</span></a></li>
-        {% endif %}
-        {% if owner.vk_link %}
-        <li class="social-icon"><a class="vk" href="{{ owner.vk_link }}" title="Follow on VK"><span class="accessibility-text">Vkontakte link</span></a></li>
-        {% endif %}
-    </ul>
-    {% endspaceless %}
-
-    {% spaceless %}
-    <ul>
-        <li class="selected"><a href=""><span class="number">{{ owner.n_public_boards }}</span></br><span class="title">Board{{ owner.n_public_boards|pluralize }}</span></a></li>
-        <li><a href="{% url "user_pins" owner.slug %}"><span class="number">{{ owner.n_public_pins }}</span></br><span class="title">Pin{{ owner.n_public_pins|pluralize }}</span></a></li>
-    </ul>
-    {% endspaceless %}
-</article>
-</div>
+{% include 'user/user_owner.html' with selected='board' %}
 {% spaceless %}
 {% if user == owner %}
 <article class="create-board">
@@ -96,6 +43,5 @@
 {% endif %}
 </section>
 </div>
-{% endwith %}
 {% endblock body %}
 
