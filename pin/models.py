@@ -171,6 +171,9 @@ class Pin(models.Model):
     pin_user = models.ForeignKey(User, related_name="pin_user")
     policy = models.PositiveIntegerField(blank=True, null=True)
     owner_rate = models.PositiveSmallIntegerField(default=0, verbose_name="Rate")
+    likes = models.ManyToManyField(User, null=True, blank=True,
+            related_name="likes")
+    n_likes = models.PositiveIntegerField(default=0, verbose_name="Number of likes")
 
     class Meta:
         ordering = ['date_created']
@@ -202,6 +205,12 @@ class Pin(models.Model):
         # increase resource n_pins
         self.resource.n_pins += 1
         self.resource.save()
+
+
+    def set_n_likes(self):
+        """set number of likes."""
+        self.n_likes = self.likes.all().count()
+        self.save()
 
 
     def save(self, **kwargs):

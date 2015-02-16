@@ -255,6 +255,10 @@ class User(AbstractUser):
             verbose_name="Followers number")
     n_following = models.PositiveIntegerField(default=0,
             verbose_name="Followed users number")
+    n_likes = models.PositiveIntegerField(default=0,
+            verbose_name="Liked pins number")
+    n_public_likes = models.PositiveIntegerField(default=0,
+            verbose_name="Liked pins number")
     n_public_pins = models.PositiveIntegerField(default=0,
             verbose_name="Public pins'number")
     n_pins = models.PositiveIntegerField(default=0,
@@ -288,15 +292,22 @@ class User(AbstractUser):
 
     def set_n_following(self):
         """Set number of followed users."""
-        print('set_n_following')
         print(self.username)
         self.n_following = self.following.all().count()
         self.save()
+
+    
+    def set_n_likes(self):
+        """Set number of liked pins."""
+        self.n_likes = self.likes.all().count()
+        self.n_public_likes = self.likes.filter(policy=1).count()
+        self.save()
+
     
 
     def add_follower(self, follower):
         """Add a follower to the user.
-        follower: user object."""
+        follower: User object."""
         self.followers.add(follower)
         self.set_n_followers()
         follower.set_n_following()
@@ -314,16 +325,30 @@ class User(AbstractUser):
 
 
 
-
-
     def remove_follower(self, follower):
         """Remove a follower to the user.
-        follower: user object."""
+        follower: User object."""
         self.followers.remove(follower)
         self.set_n_followers()
         follower.set_n_following()
         for board in self.board_set.all():
             board.remove_follower(follower)
+
+
+    def add_like(self, pin):
+        """Add a pin to user's like.
+        pin: Pin object"""
+        self.likes.add(pin)
+        self.set_n_likes()
+        pin.set_n_likes()
+
+
+    def remove_like(self, pin):
+        """Remove a pin from user's like.
+        pin: Pin object"""
+        self.likes.remove(pin)
+        self.set_n_likes()
+        pin.set_n_likes()
 
 
     def get_public_boards(self):

@@ -56,7 +56,11 @@
     </div>
     <div id="user-notifications">
     <a href="{% url "notifications_list" %}" title="Notifications">
-    {{ user.n_unread_notifications }}
+    {% if user.n_unread_notifications > 99 %}
+        99+
+    {% else %}
+        {{ user.n_unread_notifications }}
+    {% endif %}
     </a>
     </div>
 
