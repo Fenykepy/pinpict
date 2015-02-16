@@ -7,24 +7,7 @@
 {% block body %}
 {% spaceless %}
 <section id="pins">
-<div id="user-wrapper">
-<article id="user">
-    {% if owner.avatar %}
-    <img src="{{ MEDIA_URL }}{{ owner.avatar }}" alt="{{ owner.username }}" />
-    {% else %}
-    <img src="{% static 'images/structure/default_avatar.png' %}" alt="{{ owner.username }}" />
-    {% endif %}
-        <h1>{{ owner.get_full_name }}</h1>
-    <hr />
-    {% if owner.website %}
-    <div class="user-website"><a href="{{ owner.website }}" target="_blank">{{ owner.website }}</a></div>
-    {% endif %}
-    <ul>
-        <li><a href="{% url "boards_list" owner.slug %}"><span class="number">{{ owner.n_public_boards }}</span></br><span class="title">Board{{ owner.n_public_boards|pluralize }}</span></a></li>
-        <li class="selected"><a href=""><span class="number">{{ owner.n_public_pins }}</span></br><span class="title">Pin{{ owner.n_public_pins|pluralize }}</span></a></li>
-    </ul>
-</article>
-</div>
+{% include 'user/user_owner.html' with selected='pin' %}
 {% for pin in pins %}
 {% include 'pin/pin_pin.html' %}
 {% endfor %}
