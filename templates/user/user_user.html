@@ -14,7 +14,7 @@
     <ul>
     {% for board in owner.get_public_boards|slice:":4" %}
         <li>
-        {% with preview=board.pin_set.first %}
+        {% with preview=board.get_main_cover %}
         {% if preview %}
             <img class="board-small-preview" src="{{ MEDIA_URL }}previews/50/{{ preview.resource.previews_path }}" alt="{{ board.title }}"/>
         {% else %}

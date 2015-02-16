@@ -248,10 +248,13 @@ class User(AbstractUser):
             help_text="A link to your vkontakte page."
     )
     followers = models.ManyToManyField("self", null=True, blank=True,
-            related_name="user_followers",
+            symmetrical=False,
+            related_name="following",
             verbose_name="Users who follow user")
     n_followers = models.PositiveIntegerField(default=0,
             verbose_name="Followers number")
+    n_following = models.PositiveIntegerField(default=0,
+            verbose_name="Followed users number")
     n_public_pins = models.PositiveIntegerField(default=0,
             verbose_name="Public pins'number")
     n_pins = models.PositiveIntegerField(default=0,
@@ -282,6 +285,13 @@ class User(AbstractUser):
         """Set number of followers."""
         self.n_followers = self.followers.all().count()
         self.save()
+
+    def set_n_following(self):
+        """Set number of followed users."""
+        print('set_n_following')
+        print(self.username)
+        self.n_following = self.following.all().count()
+        self.save()
     
 
     def add_follower(self, follower):
@@ -289,6 +299,7 @@ class User(AbstractUser):
         follower: user object."""
         self.followers.add(follower)
         self.set_n_followers()
+        follower.set_n_following()
         for board in self.board_set.all():
             board.add_follower(follower, notification=False)
 
@@ -310,6 +321,7 @@ class User(AbstractUser):
         follower: user object."""
         self.followers.remove(follower)
         self.set_n_followers()
+        follower.set_n_following()
         for board in self.board_set.all():
             board.remove_follower(follower)
 

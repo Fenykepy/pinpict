@@ -11,7 +11,8 @@ from django.contrib.sitemaps.views import sitemap
 from pinpict.sitemaps import UserSitemap, BoardSitemap, PinSitemap
 from board.views import *
 from user.views import LoginView, RegistrationView, ProfilView, \
-        PasswordView, RecoveryView, ListNotifications
+        PasswordView, RecoveryView, ListNotifications, \
+        ListFollowers, ListFollowing
 from pin.views import ListBoardPins, ListUserPins, ListLastPins
 
 admin.autodiscover()
@@ -71,6 +72,20 @@ urlpatterns = patterns('',
         ListUserPins.as_view(), name='user_pins'),
     url(r'^(?P<user>[-\w]+)/pins/$',
         ListUserPins.as_view(), name='user_pins'),
+
+    ## user followers list
+    url(r'^(?P<user>[-\w]+)/followers/page/(?P<page>\d+)/$',
+        ListFollowers.as_view(), name='user_followers'),
+    url(r'^(?P<user>[-\w]+)/followers/$',
+        ListFollowers.as_view(), name='user_followers'),
+
+    ## user followed list
+    url(r'^(?P<user>[-\w]+)/following/page/(?P<page>\d+)/$',
+        ListFollowing.as_view(), name='user_following'),
+    url(r'^(?P<user>[-\w]+)/following/$',
+        ListFollowing.as_view(), name='user_following'),
+
+
 
 
 

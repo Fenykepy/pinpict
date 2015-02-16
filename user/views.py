@@ -173,6 +173,7 @@ class PasswordView(FormView):
         return context
 
 
+
 class ListNotifications(ListView, ListPinsMixin):
     """List all notifications of an user."""
     model = Notification
@@ -181,10 +182,50 @@ class ListNotifications(ListView, ListPinsMixin):
     paginate_by = 100
 
     def get_queryset(self):
-        # set to 0 
+        # reset notifications to 0 
         self.request.user.n_unread_notifications = 0
         self.request.user.save()
         return self.request.user.get_notifications()
+
+
+
+class ListFollowers(ListView, ListPinsMixin):
+    """List all followers of an user."""
+    model = User
+    context_object_name = 'users'
+    template_name = 'user/user_list.html'
+    paginate_by=100
+
+    def get_queryset(self):
+        self.user = get_object_or_404(User, slug=self.kwargs['user'])
+        return self.user.followers.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(ListFollowers, self).get_context_data(**kwargs)
+        context['owner'] = self.user
+        context['selected'] = 'followers'
+
+        return context
+
+
+
+class ListFollowing(ListView, ListPinsMixin):
+    """List all followers of an user."""
+    model = User
+    context_object_name = 'users'
+    template_name = 'user/user_list.html'
+    paginate_by=100
+
+    def get_queryset(self):
+        self.user = get_object_or_404(User, slug=self.kwargs['user'])
+        return self.user.following.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(ListFollowing, self).get_context_data(**kwargs)
+        context['owner'] = self.user
+        context['selected'] = 'following'
+
+        return context
 
 
 class RecoveryView(FormView):

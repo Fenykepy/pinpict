@@ -56,6 +56,14 @@
                 class="selected"
             {% endif %}
         ><a href="{% url "user_pins" owner.slug %}"><span class="number">{{ owner.n_public_pins }}</span></br><span class="title">Pin{{ owner.n_public_pins|pluralize }}</span></a></li>
+        <li {% if selected == 'followers' %}
+                class="selected"
+            {% endif %}
+        ><a href="{% url "user_followers" owner.slug %}"><span class="number">{{ owner.n_followers }}</span></br><span class="title">Follower{{ owner.n_followers|pluralize }}</span></a></li>
+        <li {% if selected == 'following' %}
+                class="selected"
+            {% endif %}
+        ><a href="{% url "user_following" owner.slug %}"><span class="number">{{ owner.n_following }}</span></br><span class="title">Following</span></a></li>
     </ul>
     {% endspaceless %}
     {% endwith %}

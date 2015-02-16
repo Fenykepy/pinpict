@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+{{ owner.username }}{{ selected }} on Pinpict
+{% endblock %}
+
+{% block body %}
+{% spaceless %}
+<section id="boards">
+{% include 'user/user_owner.html' %}
+{% for item in users %}
+{% include 'user/user_user.html' with owner=item %}
+{% endfor %}
+{% endspaceless %}
+</section>
+{% if page_obj.paginator.num_pages > 1 %}
+<section id="navigation">
+        {% include 'pagination/pagination.html' %}
+</section>
+{% endif %}
+{% endblock body %}

@@ -119,13 +119,33 @@ a, a:visited {
         }
     }
 }
+#user-notifications {
+    box-sizing: border-box;
+    position:absolute;
+    right: 20px;
+    top: 11px;
+    width: 40px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    vertical-align: middle;
+    .degrade(@40, @22, @44);
+    border-radius: 0 3px 3px 0;
+    border-left: 1px solid @00;
+    padding: 0 2px;
+    a {
+        display: block;
+        height: 100%;
+        width: 100%;
+    }
+}
 #user-bar, #login-button {
-    width: 200px;
-    border-radius: 3px;
-    padding: 3px 6px 3px 36px;
+    width: 160px;
+    border-radius: 3px 0 0 3px;
+    padding: 3px 3px 3px 36px;
     position: absolute;
     top: 11px;
-    right: 20px;
+    right: 60px;
     background-color: @66;
     color: @00;
     height: 32px;
@@ -147,7 +167,7 @@ a, a:visited {
     ul {
         position: absolute;
         top: 29px;
-        right: 4px;
+        left: 4px;
         width: 190px;
         line-height: 30px;
         border: 1px solid @22;
