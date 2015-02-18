@@ -13,7 +13,8 @@ User receive notifications when :
 
 
 To implement later :
-    - pin has been liked                            -> pin_like         -> Pin
+#    - pin has been liked                            -> pin_like         -> Pin
+    - following liked pin                           -> following_liked_pin -> pin
 
     - pin has been commented                        -> pin_comment      -> Pin
     - board has been commented                      -> board_comment    -> Board

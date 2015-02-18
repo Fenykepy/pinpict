@@ -22,13 +22,13 @@
             {% endif %}/></a>
         <h2><a href="{% url "boards_list" notif.sender.slug %}">{{ notif.sender.get_full_name }}</a> {{ notif.title }}
         {% if notif.type == "ADD_PIN" %}
-            <a href="{% url "board_view" notif.sender.slug notif.content_object.board.slug %}">{{ notif.content_object.board.title }}.</a>
+            <a href="{% url "board_view" notif.sender.slug notif.content_object.board.slug %}">{{ notif.content_object.board.title }}</a>.
             </h2>
             <a href="{% url "pin_view" notif.content_object.pk %}"><img
                 src="{{ MEDIA_URL}}/previews/50/{{notif.content_object.resource.previews_path }}" /><button>View Pin</button></a>
 
         {% elif notif.type == "ADD_BOARD" %}
-            <a href="{% url "board_view" notif.sender.slug notif.content_object.slug %}">{{ notif.content_object.title }}.</a>
+            <a href="{% url "board_view" notif.sender.slug notif.content_object.slug %}">{{ notif.content_object.title }}</a>.
             </h2>
             <a href="{% url "board_view" notif.sender.slug  notif.content_object.slug %}"><button>View Board</button></a>
 
@@ -37,20 +37,34 @@
             <a href="{% url "boards_list" notif.sender.slug %}"><button>View follower</button></a>
 
         {% elif notif.type == "BOARD_FOLLOWER" %}
-            <a href="{% url "board_view" user.slug notif.content_object.slug %}">{{ notif.content_object.title }}.</a>
+            <a href="{% url "board_view" user.slug notif.content_object.slug %}">{{ notif.content_object.title }}</a>.
             </h2>
             <a href="{% url "board_view" user.slug  notif.content_object.slug %}"><button>View Board</button></a>
 
         {% elif notif.type == "RE_PINNED" %}
-            <a href="{% url "pin_view" notif.content_object.added_via.pk %}">pin.</a>
+            <a href="{% url "pin_view" notif.content_object.added_via.pk %}">pin</a>.
             </h2>
             <a href="{% url "pin_view" notif.content_object.pk %}"><img
                 src="{{ MEDIA_URL}}/previews/50/{{notif.content_object.resource.previews_path }}" /><button>View Pin</button></a>
 
         {% elif notif.type == "ALLOW_READ" %}
-            <a href="{% url "board_view" notif.sender.slug notif.content_object.slug %}">{{ notif.content_object.title }}.</a>
+            <a href="{% url "board_view" notif.sender.slug notif.content_object.slug %}">{{ notif.content_object.title }}</a>.
             </h2>
             <a href="{% url "board_view" notif.sender.slug  notif.content_object.slug %}"><button>View Board</button></a>
+
+        {% if notif.type == "PIN_LIKE" %}
+            <a href="{% url "pin_view" notif.content_object.pk %}"> pin</a>.
+            </h2>
+            <a href="{% url "pin_view" notif.content_object.pk %}"><img
+                src="{{ MEDIA_URL}}/previews/50/{{notif.content_object.resource.previews_path }}" /><button>View Pin</button></a>
+
+        {% if notif.type == "FOLLOWING_LIKED_PIN" %}
+            <a href="{% url "boards_list" notif.content_objects.pin_user.slug %}">{{ notif.content_object.pin_user.get_full_name }}</a>
+            's <a href="{% url "pin_view" notif.content_object.pk %}">pin</a>.
+            <a href="{% url "view" notif.sender.slug notif.content_object.board.slug %}">{{ notif.content_object.board.title }}.</a>
+            </h2>
+            <a href="{% url "pin_view" notif.content_object.pk %}"><img
+                src="{{ MEDIA_URL}}/previews/50/{{notif.content_object.resource.previews_path }}" /><button>View Pin</button></a>
         
         {% endif %}
         <div class="user-website">{{ notif.date|naturaltime }}</div>

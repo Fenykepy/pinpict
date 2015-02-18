@@ -142,6 +142,33 @@ class Notification(models.Model):
                         'pk': self.content_object.pk,
                     }),
                 )
+            elif (self.receiver.mail_pin_like and
+                    self.type == "PIN_LIKE"):
+                subject = "{} liked your pin".format(
+                        self.sender.username)
+                message = ("{}!\n"
+                        "See pin:\n"
+                        "{}\n\n"
+                ).format(
+                    subject,
+                    root_uri + reverse('pin_view', kwargs={
+                        'pk': self.content_object.pk,
+                    }),
+                )
+            elif (self.receiver.mail_following_liked_pin and
+                    self.type == "FOLLOWING_LIKED_PIN"):
+                subject = "{} liked {}'s pin".format(
+                        self.sender.username,
+                        self.content_object.pin_user.username)
+                message = ("{}!\n"
+                        "See pin:\n"
+                        "{}\n\n"
+                ).format(
+                    subject,
+                    root_uri + reverse('pin_view', kwargs={
+                        'pk': self.content.object.pk,
+                    }),
+                )
 
             elif (self.receiver.mail_allow_read and
                     self.type == "ALLOW_READ"):
@@ -275,14 +302,18 @@ class User(AbstractUser):
     verbose_name=("Receive a mail when a user starts to follow"
         " one of my boards"))
     mail_following_add_pin = models.BooleanField(default=True,
-    verbose_name="Receive a mail when following user add a new pin")
+        verbose_name="Receive a mail when following user add a new pin")
     mail_following_add_board = models.BooleanField(default=True,
-    verbose_name="Receive a mail when following user add a new board")
+        verbose_name="Receive a mail when following user add a new board")
     mail_repinned = models.BooleanField(default=True,
-    verbose_name="Receive a mail when one of my pins are pinned")
+        verbose_name="Receive a mail when one of my pins are pinned")
     mail_allow_read = models.BooleanField(default=True,
-    verbose_name=("Receive a mail when a user allows me to see one"
+        verbose_name=("Receive a mail when a user allows me to see one"
         " of it's private boards"))
+    mail_following_liked_pin = models.BooleanField(default=True,
+        verbose_name="Receive a mail when a user I follow liked a pin")
+    mail_pin_like = models.BooleanField(default=True,
+        verbose_name="Receive a mail when a user liked one of my pins")
 
     
     def set_n_followers(self):
@@ -341,6 +372,30 @@ class User(AbstractUser):
         self.likes.add(pin)
         self.set_n_likes()
         pin.set_n_likes()
+
+        # send notification to pin owner
+        Notification.objects.create(
+            type="PIN_LIKE",
+            sender=self,
+            receiver=pin.pin_user,
+            title="liked your",
+            content_object=pin
+        )
+
+        # send notification to user followers
+        # if they can see pin
+        for follower in self.followers.all():
+            if not follower in pin.board.users_can_read.all():
+                continue
+            Notification.objects.create(
+                type="FOLLOWING_LIKED_PIN",
+                sender=self,
+                receiver=follower,
+                title="liked",
+                content_objects=pin
+            )
+
+
 
 
     def remove_like(self, pin):

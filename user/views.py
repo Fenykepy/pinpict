@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 
 from pinpict.settings import EMAIL_SUBJECT_PREFIX
 from user.models import User, Notification, mail_staffmembers
+from pin.models import Pin
 from user.forms import *
 from pin.views import ListPinsMixin
 
@@ -293,6 +294,7 @@ def confirm_recovery_view(request, uuid):
     return redirect(reverse_lazy('user_password'))
 
 
+
 @login_required
 def userFollow(request, pk):
     """Add a follower to an user."""
@@ -305,6 +307,7 @@ def userFollow(request, pk):
         kwargs={'pk': pk}))
 
 
+
 @login_required
 def userUnfollow(request, pk):
     """Remove a follower from an user."""
@@ -315,4 +318,40 @@ def userUnfollow(request, pk):
 
     return HttpResponse(reverse_lazy('user_follow',
         kwargs={'pk': pk}))
+
+
+
+@login_required
+def likePin(request, pk):
+    """Add a pin to user likes list."""
+    if not request.is_ajax():
+        raise Http404
+    pin = get_object_or_404(Pin, id=pk)
+    # if pin is private and user hasn't right to see it, 404
+    if (pin.policy == 0 and request.user != pin.pin_user
+            and not request.user in pin.board.users_can_read.all()):
+        raise Http404
+    user.add_like(pin)
+    
+    return HttpResponse(reverse_lazy('user_unlike_pin',
+        kwargs={'pk': pk}))
+
+
+
+@login_required
+def unlikePin(request, pk):
+    """Remove a pin from user likes list."""
+    if not request.is_ajax():
+        raise Http404
+    pin = get_object_or_404(Pin, id=pk)
+    # if pin is private and user hasn't right to see it, 404
+    if (pin.policy == 0 and request.user != pin.pin_user
+            and not request.user in pin.board.users_can_read.all()):
+        raise Http404
+    user.remove_like(pin)
+    
+    return HttpResponse(reverse_lazy('user_like_pin',
+        kwargs={'pk': pk}))
+
+
 

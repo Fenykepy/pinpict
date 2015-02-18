@@ -11,6 +11,12 @@ urlpatterns = patterns('',
     url(r'^unfollow/(?P<pk>\d+)/', 'user.views.userUnfollow',
         name='user_unfollow'),
 
+    ## add and remove pin like
+    url(r'^like/(?P<pk>\d+)/', 'user.views.likePin',
+        name='user_like_pin'),
+    url(r'^unlike/(?P<pk>\d+)/', 'user.views.unlikePin',
+        name='user_unlike_pin'),
+
     ## search engine
     url(r'^search/page/(?P<page>\d+)/', login_required(search_view_factory(
             view_class=SearchView,
