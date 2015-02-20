@@ -73,6 +73,29 @@ $(document).ready(function () {
         });
         e.preventDefault();
     });
+    
+    // pins likes
+    $("body").on("click", "a.like-pin", function(e) {
+        var link = $(this);
+        var button = $(this).children("button");
+        console.log(button.html());
+        $.ajax(link.attr("href"))
+            .done(function(data) {
+                console.log(data);
+                link.attr("href", data);
+                if (button.html() == "Like") {
+                    button.html("Unlike");
+                    link.attr("title", "Unlike this pin");
+                } else {
+                    button.html("Like");
+                    link.attr("title", "Like this pin");
+                }
+
+        }).fail(function() {
+            alert("An error occured");
+        });
+        e.preventDefault();
+    });
 
 
     // boards following

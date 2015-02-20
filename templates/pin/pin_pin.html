@@ -3,7 +3,12 @@
     <div class="buttons-wrapper">
     {% if owner == user %}
         <a href="{% url 'update_pin' pin.pk %}" title="Edit pin"><button class="edit">Edit</button></a>
+    {% elif user.is_authenticated and user in pin.likes.all %}
+        <a href="{% url "user_unlike_pin" pin.pk %}" class="like-pin" title="Unlike this pin"><button class="edit" type="button">Unlike</button></a>
+    {% elif user.is_authenticated %}
+        <a href="{% url "user_like_pin" pin.pk %}" class="like-pin" title="Like this pin"><button class="edit" type="button">Like</button></a>
     {% endif %}
+
     <form method="post" action="{% url "create_pin" %}">
         {% csrf_token %}
         <input type="hidden" name="pin" value="{{ pin.pk }}" />

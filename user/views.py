@@ -331,7 +331,7 @@ def likePin(request, pk):
     if (pin.policy == 0 and request.user != pin.pin_user
             and not request.user in pin.board.users_can_read.all()):
         raise Http404
-    user.add_like(pin)
+    request.user.add_like(pin)
     
     return HttpResponse(reverse_lazy('user_unlike_pin',
         kwargs={'pk': pk}))
@@ -348,7 +348,7 @@ def unlikePin(request, pk):
     if (pin.policy == 0 and request.user != pin.pin_user
             and not request.user in pin.board.users_can_read.all()):
         raise Http404
-    user.remove_like(pin)
+    request.user.remove_like(pin)
     
     return HttpResponse(reverse_lazy('user_like_pin',
         kwargs={'pk': pk}))
