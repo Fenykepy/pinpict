@@ -70,6 +70,7 @@ class Notification(models.Model):
             sender_url = root_uri + reverse('boards_list', kwargs={
                 'user': self.sender.slug,
             })
+            subject = False
             if (self.receiver.mail_user_follower and 
                     self.type == "USER_FOLLOWER"):
                 subject = "{} started to follow you".format(
