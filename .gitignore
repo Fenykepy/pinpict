@@ -7,6 +7,8 @@ __pycache__/
 
 # bdd
 db.sqlite3
+db.sqlite3.master
+db.sqlite3.dev
 
 # data files
 pinpict/data/tmp/*/
