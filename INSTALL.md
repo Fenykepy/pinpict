@@ -53,7 +53,13 @@ Run as root:
 Run as `<my_user>`:
     
     $ cd /var/www/pinpict_env/pinpict
-    $ python3 manage.py syncdb
+    $ python3 manage.py migrate
+
+#### Create a superuser ####
+
+Run as `<my_user>`:
+
+    $ python3 manage.py createsuperuser
 
  * Answer questions to create a superuser.
 

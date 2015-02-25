@@ -13,6 +13,13 @@
 </header>
 <div id="user-wrapper">
 {% for notif in notifications %}
+{% if not notif.content_object %}
+<article class="notification read">
+    <img src="{% static 'images/structure/default_avatar.png' %}" />
+    <h2><em>Sadly, it seems {{ notif.content_type }} related to this notification has been removed by it's author…</em></h2>
+    <div class="user-website">{{ notif.date|naturaltime }}</div>
+</article>
+{% else %}
 <article class="notification {% if notif.read %}read{% endif %}">
         <a href="{% url "boards_list" notif.sender.slug %}"><img
             {% if notif.sender.avatar %}
@@ -55,6 +62,7 @@
         {% endif %}
         <div class="user-website">{{ notif.date|naturaltime }}</div>
 </article>
+{% endif %}
 {% empty %}
 <article class="notification read center-align">
     <h2><em>No notifications yet...</em></h2>
