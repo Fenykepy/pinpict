@@ -22,13 +22,13 @@
     </a>
     {% if owner == user %}
         <a href="{% url 'update_pin' pin.pk %}" data-navigate="edit">
-        <button type="button">Edit</button>
+            <button type="button">Edit</button></a>
     {% elif user.is_authenticated and user in pin.likes.all %}
         <a href="{% url "user_unlike_pin" pin.pk %}" class="like-pin" title="Unlike this pin"><button type="button">Unlike</button></a>
     {% elif user.is_authenticated %}
         <a href="{% url "user_like_pin" pin.pk %}" class="like-pin" title="Like this pin"><button type="button">Like</button></a>
     {% endif %}
-    <button type="button" id="n_likes">{{ pin.n_likes }}</button>
+        <a href="{% url "pin_likers" pin.pk %}"><button type="button" id="n_likes">{{ pin.n_likes }}</button></a>
     <a id="back-to-board" rel="bookmark" href="{% url "board_view" owner.slug pin.board.slug %}" title="Back to board"><span class="accessibility-text">back to board</span></a>
 </header>
 {% if prev %}

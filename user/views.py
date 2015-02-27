@@ -195,7 +195,7 @@ class ListFollowers(ListView, ListPinsMixin):
     model = User
     context_object_name = 'users'
     template_name = 'user/user_list.html'
-    paginate_by=100
+    paginate_by = 100
 
     def get_queryset(self):
         self.user = get_object_or_404(User, slug=self.kwargs['user'])
@@ -215,7 +215,7 @@ class ListFollowing(ListView, ListPinsMixin):
     model = User
     context_object_name = 'users'
     template_name = 'user/user_list.html'
-    paginate_by=100
+    paginate_by = 100
 
     def get_queryset(self):
         self.user = get_object_or_404(User, slug=self.kwargs['user'])

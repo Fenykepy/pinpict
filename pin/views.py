@@ -124,6 +124,21 @@ class ListLastPins(ListView, ListPinsMixin):
         return Pin.objects.filter(policy=1).order_by('-date_created')
 
 
+
+class ListPinLikers(ListView, ListPinsMixin):
+    """List all likers of a pin."""
+    model = User
+    context_object_name = 'users'
+    template_name = 'pin/pin_likers_list.html'
+    paginate_by = 100
+
+
+    def get_queryset(self):
+        self.pin = get_object_or_404(Pin, pk=self.kwargs['pk'])
+        return self.pin.likes.all()
+
+
+
 class PinView(DetailView):
     """View for a specific pin."""
     model = Pin

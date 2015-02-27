@@ -157,7 +157,8 @@ class Notification(models.Model):
                     }),
                 )
             elif (self.receiver.mail_following_liked_pin and
-                    self.type == "FOLLOWING_LIKED_PIN"):
+                    self.type == "FOLLOWING_LIKED_PIN" and
+                    self.content_object.pin_user != self.receiver):
                 subject = "{} liked {}'s pin".format(
                         self.sender.username,
                         self.content_object.pin_user.username)
@@ -167,7 +168,7 @@ class Notification(models.Model):
                 ).format(
                     subject,
                     root_uri + reverse('pin_view', kwargs={
-                        'pk': self.content.object.pk,
+                        'pk': self.content_object.pk,
                     }),
                 )
 
@@ -386,14 +387,17 @@ class User(AbstractUser):
         # send notification to user followers
         # if they can see pin
         for follower in self.followers.all():
-            if not follower in pin.board.users_can_read.all():
+            if (pin.board.policy == 0 and 
+                    not follower in pin.board.users_can_read.all()):
+                continue
+            if (pin.pin_user == follower):
                 continue
             Notification.objects.create(
                 type="FOLLOWING_LIKED_PIN",
                 sender=self,
                 receiver=follower,
                 title="liked",
-                content_objects=pin
+                content_object=pin
             )
 
 
