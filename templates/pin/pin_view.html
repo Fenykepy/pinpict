@@ -28,7 +28,7 @@
     {% elif user.is_authenticated %}
         <a href="{% url "user_like_pin" pin.pk %}" class="like-pin" title="Like this pin"><button type="button">Like</button></a>
     {% endif %}
-    <button type="button">{{ pin.n_likes }}</button>
+    <button type="button" id="n_likes">{{ pin.n_likes }}</button>
     <a id="back-to-board" rel="bookmark" href="{% url "board_view" owner.slug pin.board.slug %}" title="Back to board"><span class="accessibility-text">back to board</span></a>
 </header>
 {% if prev %}

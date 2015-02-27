@@ -83,10 +83,16 @@ $(document).ready(function () {
             .done(function(data) {
                 console.log(data);
                 link.attr("href", data);
+                var likes = $('#n_likes');
+                var n_likes = likes.html();
                 if (button.html() == "Like") {
+                    n_likes ++;
+                    likes.html(n_likes);
                     button.html("Unlike");
                     link.attr("title", "Unlike this pin");
                 } else {
+                    n_likes --;
+                    likes.html(n_likes);
                     button.html("Like");
                     link.attr("title", "Like this pin");
                 }

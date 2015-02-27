@@ -1,7 +1,7 @@
 {% load static %}
 <article class="pin">
     <div class="buttons-wrapper">
-    {% if owner == user %}
+    {% if pin.pin_user == user %}
         <a href="{% url 'update_pin' pin.pk %}" title="Edit pin"><button class="edit">Edit</button></a>
     {% elif user.is_authenticated and user in pin.likes.all %}
         <a href="{% url "user_unlike_pin" pin.pk %}" class="like-pin" title="Unlike this pin"><button class="edit" type="button">Unlike</button></a>
@@ -15,7 +15,7 @@
         <input type="submit" value="Pin it" class="pinit" title="Pin it ! file is {{ pin.resource.width }} x {{ pin.resource.height }}px" />
     </form>
     <a href="{% url "pin_view" pin.pk %}" class="pin-link"><img src="{{ MEDIA_URL }}previews/236/{{ pin.resource.previews_path }}" alt="" /></a>
-    {% if owner == user %}
+    {% if pin.pin_user == user %}
     <ul class="rate">
     {% include 'pin/pin_rate.html' %}
     </ul>
