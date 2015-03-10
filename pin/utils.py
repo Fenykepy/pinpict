@@ -133,7 +133,10 @@ class PictureHTMLParser(HTMLParser):
                 if not alt and attr[0] == 'title' and attr[1]:
                     title = attr[1]
             # if src isn't an image return, or src is already in set
-            if not src or not self.url_is_image(src) or src in self.urls:
+            if not src or src in self.urls:
+                return
+            # if it's <a> tag and src hasn't image extension, return
+            if tag == 'a' and not self.url_is_image(src):
                 return
             pict = {
                 'href': src,
@@ -264,6 +267,7 @@ def scan_html_for_picts(url):
 
     # return in case of fail
     if not response.status in (200, 304, 302):
+        print('error {}'.format(response.status))
         return []
     # if resource itself is an image return its url
     if response['content-type'][:5] == 'image':
@@ -288,10 +292,13 @@ def scan_html_for_picts(url):
         charset = 'utf-8'
     
     decoded = content.decode(charset, errors='replace')
+    print(decoded)
 
     # parse html
     parser = PictureHTMLParser(convert_charrefs=True, url=url)
     parser.feed(decoded)
+
+    print(parser.pictures)
     
     
     # return pictures list
