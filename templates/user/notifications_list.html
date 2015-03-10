@@ -66,9 +66,8 @@
                 src="{{ MEDIA_URL}}/previews/50/{{notif.content_object.resource.previews_path }}" /><button>View Pin</button></a>
 
         {% elif notif.type == "FOLLOWING_LIKED_PIN" %}
-            <a href="{% url "boards_list" notif.content_objects.pin_user.slug %}">{{ notif.content_object.pin_user.get_full_name }}</a>
+            <a href="{% url "boards_list" notif.content_object.pin_user.slug %}">{{ notif.content_object.pin_user.get_full_name }}</a>
             's <a href="{% url "pin_view" notif.content_object.pk %}">pin</a>.
-            <a href="{% url "view" notif.sender.slug notif.content_object.board.slug %}">{{ notif.content_object.board.title }}.</a>
             </h2>
             <a href="{% url "pin_view" notif.content_object.pk %}"><img
                 src="{{ MEDIA_URL}}/previews/50/{{notif.content_object.resource.previews_path }}" /><button>View Pin</button></a>

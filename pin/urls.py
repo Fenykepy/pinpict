@@ -66,6 +66,11 @@ urlpatterns = patterns('',
         url(r'^(?P<pk>\d+)/$',
             PinView.as_view(), name='pin_view'),
 
+        ## view users who liked a pin
+        url(r'^(?P<pk>\d+)/likers/$',
+            ListPinLikers.as_view(), name='pin_likers'),
+
+
         ## update a pin
         url(r'^(?P<pk>\d+)/edit/$',
             login_required(UpdatePin.as_view()), name='update_pin'),
