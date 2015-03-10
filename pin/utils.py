@@ -267,7 +267,7 @@ def scan_html_for_picts(url):
 
     # return in case of fail
     if not response.status in (200, 304, 302):
-        print('error {}'.format(response.status))
+        #print('error {}'.format(response.status))
         return []
     # if resource itself is an image return its url
     if response['content-type'][:5] == 'image':
@@ -292,7 +292,7 @@ def scan_html_for_picts(url):
         charset = 'utf-8'
     
     decoded = content.decode(charset, errors='replace')
-    print(decoded)
+    #print(decoded)
 
     # parse html
     parser = PictureHTMLParser(convert_charrefs=True, url=url)
