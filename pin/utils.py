@@ -264,7 +264,7 @@ def scan_html_for_picts(url):
     #print('url used in html parser: {}'.format(url))
     response, content = h.request(url, headers={
         'User-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0'})
-    print(content)
+    #print(content)
 
     # return in case of fail
     if not response.status in (200, 304, 302):
@@ -293,13 +293,13 @@ def scan_html_for_picts(url):
         charset = 'utf-8'
     
     decoded = content.decode(charset, errors='replace')
-    print(decoded)
+    #print(decoded)
 
     # parse html
     parser = PictureHTMLParser(convert_charrefs=True, url=url)
     parser.feed(decoded)
 
-    print(parser.pictures)
+    #print(parser.pictures)
     
     
     # return pictures list
