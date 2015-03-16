@@ -365,11 +365,11 @@ class ResourceFactory(object):
         h = httplib2.Http('.cache')
         # request image
         response, content = h.request(url, headers={
-            'User-agent': 'Mozilla/5.0'})
+            'User-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0'})
         # if file is not an image, return false
         if not response['content-type'].lower() in self.ALLOWED_MIME_TYPE:
-            print('file is not image type')
-            print(response['Content-Type'])
+            #print('file is not image type')
+            #print(response['Content-Type'])
             return False
         # if error in status code (404, 403, etc.)
         if not response.status in (200, 302, 304):
