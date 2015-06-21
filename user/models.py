@@ -276,6 +276,13 @@ class User(AbstractUser):
             verbose_name="Vkontakte",
             help_text="A link to your vkontakte page."
     )
+    instagram_link = models.URLField(
+            null=True,
+            blank=True,
+            max_length=2000,
+            verbose_name="Instagram",
+            help_text="A link to your instagram page."
+    )
     followers = models.ManyToManyField("self", null=True, blank=True,
             symmetrical=False,
             related_name="following",

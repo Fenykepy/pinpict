@@ -164,6 +164,7 @@ class ProfilForm(ModelForm):
             'gplus_link',
             'pinterest_link',
             'vk_link',
+            'instagram_link',
             'mail_user_follower',
             'mail_board_follower',
             'mail_following_add_pin',

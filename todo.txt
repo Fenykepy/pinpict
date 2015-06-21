@@ -13,6 +13,9 @@
 #    - user facebook, flickr, pinterest, vk, twitter, google+ links on user models
 #        - user links in template (with small logo)
 #        - add a link for 500px
+#        - add a link for pinterest
+        - add a link for github
+        - add a link for tumblr
 #    - user avatar auto renaming and resizing
 #    - user uuid field
 #    - user uuid expiration field
@@ -181,6 +184,9 @@
     - create a PP icon for pages footers
     - create a Pin It button
 #    - create social links logos
+    - create github logo
+    - create tumblr logo
+#    - create instagram logo
     - create a sprite
 
 
