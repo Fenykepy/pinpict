@@ -191,8 +191,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.22627417"
-     inkscape:cx="24532.394"
-     inkscape:cy="75.782738"
+     inkscape:cx="22581.221"
+     inkscape:cy="-100.99396"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -955,7 +955,10 @@
            y="132.29948" /></flowRegion><flowPara
          id="flowPara8033-3-3">Instagramm</flowPara></flowRoot>    <g
        id="g4524"
-       transform="matrix(0.75683594,0,0,0.75683594,7261.8507,-746.17301)">
+       transform="matrix(0.75683594,0,0,0.75683594,7261.8507,-746.17301)"
+       inkscape:export-filename="/home/lavilotte-rolle/sites/pinpict-env/pinpict/pinpict/assets/images/structure/instagram.grey.png"
+       inkscape:export-xdpi="2.3225806"
+       inkscape:export-ydpi="2.3225806">
       <path
          inkscape:connector-curvature="0"
          id="path3555"
@@ -971,7 +974,10 @@
     </g>
     <g
        id="g4620"
-       transform="translate(322.61747,22.097095)">
+       transform="translate(322.61747,22.097095)"
+       inkscape:export-filename="/home/lavilotte-rolle/sites/pinpict-env/pinpict/pinpict/assets/images/structure/instagram.png"
+       inkscape:export-xdpi="2.3225806"
+       inkscape:export-ydpi="2.3225806">
       <rect
          style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:none"
          id="rect5198-6-6"

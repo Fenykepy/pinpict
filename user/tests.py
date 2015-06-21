@@ -424,6 +424,7 @@ class UserProfilTest(TestCase):
             'twitter_link': 'https://twitter.com/',
             'gplus_link': 'https://plus.google.com/',
             'pinterest_link': 'http://www.pinterest.com/fredericlavilot/',
+            'instagram_link': 'http://instagram.com/',
             'vk_link': 'https://vk.com/',
             }, follow=True
         )
@@ -441,6 +442,7 @@ class UserProfilTest(TestCase):
         self.assertEqual(user.twitter_link, 'https://twitter.com/')
         self.assertEqual(user.gplus_link, 'https://plus.google.com/')
         self.assertEqual(user.pinterest_link, 'http://www.pinterest.com/fredericlavilot/')
+        self.assertEqual(user.instagram_link, 'http://instagram.com/')
         self.assertEqual(user.vk_link, 'https://vk.com/')
 
 
