@@ -72,8 +72,9 @@ class Resource(models.Model):
     previews_path = models.CharField(max_length=254,
         blank=True, null=True)
     user = models.ForeignKey(User, blank=True, null=True,
-            verbose_name="User who originaly uploaded or" +
-            " downloaded resource.""")
+            verbose_name=(
+                "User who originaly uploaded or "
+                "downloaded resource."))
             
 
     class Meta:
