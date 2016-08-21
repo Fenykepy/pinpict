@@ -1,20 +1,20 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 from django.contrib.auth.decorators import login_required
 
 from haystack.views import SearchView, search_view_factory
 
 from board.forms import BoardSearchForm
-from board.views import CreateBoard, CreatePrivateBoard, getCoversList
+from board.views import *
 
-urlpatterns = patterns('',
+urlpatterns = [
 
     ## covers list
     url(r'^covers/(?P<pk>\d+)/', getCoversList, name='get_covers_list'),
 
     ## add and remove follower
-    url(r'^follow/(?P<pk>\d+)/', 'board.views.boardFollow',
+    url(r'^follow/(?P<pk>\d+)/', boardFollow,
         name='board_follow'),
-    url(r'^unfollow/(?P<pk>\d+)/', 'board.views.boardUnfollow',
+    url(r'^unfollow/(?P<pk>\d+)/', boardUnfollow,
         name='board_unfollow'),
 
 
@@ -40,4 +40,4 @@ urlpatterns = patterns('',
                 form_class=BoardSearchForm
             ),
             name='board_search'),
-)
+]

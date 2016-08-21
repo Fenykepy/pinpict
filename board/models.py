@@ -42,10 +42,8 @@ class PrivateBoardsManager(models.Manager):
 class Board(models.Model):
     """Table for all boards."""
     date_created = models.DateTimeField(auto_now_add=True,
-            auto_now=False,
             verbose_name="Creation date")
-    date_updated =models.DateTimeField(auto_now_add=True,
-            auto_now=True,
+    date_updated =models.DateTimeField(auto_now=True,
             verbose_name="Last update date")
     title = models.CharField(max_length=254, verbose_name="Title")
     slug = models.SlugField(max_length=254, db_index=True,
@@ -68,10 +66,10 @@ class Board(models.Model):
             verbose_name="Order pins by")
     reverse_pins_order = models.BooleanField(default=False,
             verbose_name="Descending order")
-    users_can_read = models.ManyToManyField(User, null=True, blank=True,
+    users_can_read = models.ManyToManyField(User, blank=True,
             related_name="users_can_read",
             verbose_name="Users who can see board if private")
-    followers = models.ManyToManyField(User, null=True, blank=True,
+    followers = models.ManyToManyField(User, blank=True,
             related_name="board_followers",
             verbose_name="Users who follow board")
     n_followers = models.PositiveIntegerField(default=0,

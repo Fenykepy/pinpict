@@ -283,7 +283,7 @@ class User(AbstractUser):
             verbose_name="Instagram",
             help_text="A link to your instagram page."
     )
-    followers = models.ManyToManyField("self", null=True, blank=True,
+    followers = models.ManyToManyField("self", blank=True,
             symmetrical=False,
             related_name="following",
             verbose_name="Users who follow user")

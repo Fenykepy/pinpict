@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
@@ -10,9 +10,7 @@ from django.contrib.sitemaps.views import sitemap
 
 from pinpict.sitemaps import UserSitemap, BoardSitemap, PinSitemap
 from board.views import *
-from user.views import LoginView, RegistrationView, ProfilView, \
-        PasswordView, RecoveryView, ListNotifications, \
-        ListFollowers, ListFollowing
+from user.views import *
 from pin.views import ListBoardPins, ListUserPins, ListLastPins
 
 admin.autodiscover()
@@ -24,7 +22,7 @@ sitemaps = {
 }
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     # Examples:
     # url(r'^$', 'pinpict.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
@@ -33,7 +31,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     ## site map
-    url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap',
+    url(r'^sitemap\.xml$', sitemap,
         {'sitemaps': sitemaps}),
 
     ## user management
@@ -41,14 +39,14 @@ urlpatterns = patterns('',
     url(r'^login/$', LoginView.as_view(), name='user_login'),
 
     ## logout
-    url(r'^logout/$', 'user.views.logout_view', name='user_logout'),
+    url(r'^logout/$', logout_view, name='user_logout'),
 
     ## registration
     url(r'^register/$', RegistrationView.as_view(), name='user_registration'),
 
     ## password recovery
     url(r'^recovery/$', RecoveryView.as_view(), name='user_recovery'),
-    url(r'^recovery/(?P<uuid>[-\w]+)/$', 'user.views.confirm_recovery_view', name='user_confirm_recovery'),
+    url(r'^recovery/(?P<uuid>[-\w]+)/$', confirm_recovery_view, name='user_confirm_recovery'),
 
     ## profil
     url(r'^profil/$', login_required(ProfilView.as_view()), name='user_profil'),
@@ -120,15 +118,7 @@ urlpatterns = patterns('',
     url(r'^(?P<user>[-\w]+)/(?P<board>[-\w]+)/delete/$',
         login_required(DeleteBoard.as_view()),
         name='board_delete'),
-)
-
-# to test error templates
-if settings.DEBUG:
-    urlpatterns = patterns('',
-        (r'^403/$', TemplateView.as_view(template_name='403.html')),
-        (r'^404/$', TemplateView.as_view(template_name='404.html')),
-        (r'^500/$', TemplateView.as_view(template_name='500.html')),
-    ) + urlpatterns
+]
 
 # To get static files during development
 urlpatterns += staticfiles_urlpatterns()

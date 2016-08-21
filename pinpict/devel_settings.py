@@ -1,9 +1,6 @@
 # Developpement settings
-
 #DEBUG = False
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-#TEMPLATE_DEBUG = False
 
 ## Cache configuration
 ## for debug

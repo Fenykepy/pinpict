@@ -23,7 +23,7 @@ from thumbnail import ThumbnailFactory
 
 
 class ResourceFileSystemStorage(FileSystemStorage):
-    def get_available_name(self, name):
+    def get_available_name(self, name, max_length=None):
         return name
 
     def _save(self, name, content):
@@ -51,7 +51,6 @@ def set_pathname(instance, filename):
 class Resource(models.Model):
     """Table for all ressources."""
     date_created = models.DateTimeField(auto_now_add=True,
-            auto_now=False,
             verbose_name="Creation date")
     sha1 = models.CharField(max_length=42, unique=True, db_index=True)
     source_file = models.ImageField(upload_to=set_pathname,
@@ -155,10 +154,8 @@ class Resource(models.Model):
 class Pin(models.Model):
     """Table for all pins."""
     date_created = models.DateTimeField(auto_now_add=True,
-            auto_now=False,
             verbose_name="Creation date")
-    date_updated =models.DateTimeField(auto_now_add=True,
-            auto_now=True,
+    date_updated =models.DateTimeField(auto_now=True,
             verbose_name="Last update date")
     source_domain = models.CharField(max_length=254, blank=True, null=True,
             verbose_name="Domain pin comes from")
@@ -172,7 +169,7 @@ class Pin(models.Model):
     pin_user = models.ForeignKey(User, related_name="pin_user")
     policy = models.PositiveIntegerField(blank=True, null=True)
     owner_rate = models.PositiveSmallIntegerField(default=0, verbose_name="Rate")
-    likes = models.ManyToManyField(User, null=True, blank=True,
+    likes = models.ManyToManyField(User, blank=True,
             related_name="likes")
     n_likes = models.PositiveIntegerField(default=0, verbose_name="Number of likes")
 

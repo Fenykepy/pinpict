@@ -1,20 +1,21 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from haystack.views import SearchView, search_view_factory
 from user.forms import UserSearchForm
+from user.views import *
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     ## add and remove follower
-    url(r'^follow/(?P<pk>\d+)/', 'user.views.userFollow',
+    url(r'^follow/(?P<pk>\d+)/', userFollow,
         name='user_follow'),
-    url(r'^unfollow/(?P<pk>\d+)/', 'user.views.userUnfollow',
+    url(r'^unfollow/(?P<pk>\d+)/', userUnfollow,
         name='user_unfollow'),
 
     ## add and remove pin like
-    url(r'^like/(?P<pk>\d+)/', 'user.views.likePin',
+    url(r'^like/(?P<pk>\d+)/', likePin,
         name='user_like_pin'),
-    url(r'^unlike/(?P<pk>\d+)/', 'user.views.unlikePin',
+    url(r'^unlike/(?P<pk>\d+)/', unlikePin,
         name='user_unlike_pin'),
 
     ## search engine
@@ -30,6 +31,6 @@ urlpatterns = patterns('',
             form_class=UserSearchForm
         )),
         name='user_search'),
-)
+]
 
 

@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 from django.contrib.auth.decorators import login_required
 
 from haystack.views import SearchView, search_view_factory
@@ -9,11 +9,11 @@ from pin.forms import PinSearchForm
 from pin.views import *
 from pin.models import Pin
 
-urlpatterns = patterns('',
+urlpatterns = [
 
         ## pin creation
         # create pin itself
-        url(r'^create/$', 'pin.views.create_pin', name='create_pin'),
+        url(r'^create/$', create_pin, name='create_pin'),
 
         # choose pin file origin
         url(r'^choose-origin/$',
@@ -80,10 +80,10 @@ urlpatterns = patterns('',
             login_required(DeletePin.as_view()), name='pin_delete'),
 
         ## rate a pin
-        url(r'^(?P<pk>\d+)/rate/(?P<rate>[0-5])/$',
-            'pin.views.rate_pin', name="pin_rate"),
+        url(r'^(?P<pk>\d+)/rate/(?P<rate>[0-5])/$', rate_pin,
+                name="pin_rate"),
 
         ## set main pin
-        url(r'^(?P<pk>\d+)/main/$', 'pin.views.set_main_cover', name="set_main_cover"),
+        url(r'^(?P<pk>\d+)/main/$', set_main_cover, name="set_main_cover"),
 
-)
+]
