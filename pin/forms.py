@@ -1,5 +1,5 @@
 from django import forms
-from django.db import models
+from django.apps import apps
 
 from board.forms import Form, ModelForm
 from haystack.forms import ModelSearchForm
@@ -71,6 +71,6 @@ class PinSearchForm(ModelSearchForm):
     """Pin search form."""
 
     def get_models(self):
-        return [models.get_model('pin.pin')]
+        return [apps.get_model('pin', 'Pin')]
 
 

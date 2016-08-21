@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 from django.utils.translation import ugettext, ugettext_lazy as _
-from django.db import models
+from django.apps import apps
 
 from haystack.forms import ModelSearchForm
 
@@ -200,4 +200,4 @@ class UserSearchForm(ModelSearchForm):
     """User search form."""
 
     def get_models(self):
-        return [models.get_model('user.user')]
+        return [apps.get_model('user', 'User')]

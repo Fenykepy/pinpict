@@ -1,5 +1,5 @@
 from django import forms
-from django.db import models
+from django.apps import apps
 
 from haystack.forms import ModelSearchForm
 from board.models import Board
@@ -44,4 +44,4 @@ class BoardSearchForm(ModelSearchForm):
     """Board search form."""
 
     def get_models(self):
-        return [models.get_model('board.board')]
+        return [apps.get_model('board', 'Board')]
