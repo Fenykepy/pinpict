@@ -27,6 +27,10 @@ urlpatterns = [
     # url(r'^$', 'pinpict.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
+    ## rest api
+    url(r'^api/auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api/pin/', include('pin.urls')),
+
     ## administration
     url(r'^admin/', include(admin.site.urls)),
 
