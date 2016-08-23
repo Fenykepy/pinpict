@@ -10,10 +10,7 @@ from django.contrib.sitemaps.views import sitemap
 
 from pinpict.sitemaps import UserSitemap, BoardSitemap, PinSitemap
 from board.views import *
-from user.views import *
 from pin.views import ListBoardPins, ListUserPins, ListLastPins
-
-admin.autodiscover()
 
 sitemaps = {
     'users': UserSitemap,
@@ -29,41 +26,14 @@ urlpatterns = [
 
     ## rest api
     url(r'^api/auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api/users/', include('user.urls')), # users API
     url(r'^api/pin/', include('pin.urls')),
-
-    ## administration
-    url(r'^admin/', include(admin.site.urls)),
 
     ## site map
     url(r'^sitemap\.xml$', sitemap,
         {'sitemaps': sitemaps}),
 
-    ## user management
-    ## login
-    url(r'^login/$', LoginView.as_view(), name='user_login'),
 
-    ## logout
-    url(r'^logout/$', logout_view, name='user_logout'),
-
-    ## registration
-    url(r'^register/$', RegistrationView.as_view(), name='user_registration'),
-
-    ## password recovery
-    url(r'^recovery/$', RecoveryView.as_view(), name='user_recovery'),
-    url(r'^recovery/(?P<uuid>[-\w]+)/$', confirm_recovery_view, name='user_confirm_recovery'),
-
-    ## profil
-    url(r'^profil/$', login_required(ProfilView.as_view()), name='user_profil'),
-
-    ## password changement
-    url(r'^profil/password/$', login_required(PasswordView.as_view()), name='user_password'),
-
-    ## notifications
-    url(r'^notifications/$',
-        login_required(ListNotifications.as_view()), name='notifications_list'),
-    url(r'^notifications/page/(?P<page>\d+)/$',
-        login_required(ListNotifications.as_view()), name='notifications_list'),
-    
     ## home page with pagination
     url(r'^page/(?P<page>\d+)/$',
         login_required(ListLastPins.as_view()), name='home'),
@@ -75,27 +45,10 @@ urlpatterns = [
     url(r'^(?P<user>[-\w]+)/pins/$',
         ListUserPins.as_view(), name='user_pins'),
 
-    ## user followers list
-    url(r'^(?P<user>[-\w]+)/followers/page/(?P<page>\d+)/$',
-        ListFollowers.as_view(), name='user_followers'),
-    url(r'^(?P<user>[-\w]+)/followers/$',
-        ListFollowers.as_view(), name='user_followers'),
-
-    ## user followed list
-    url(r'^(?P<user>[-\w]+)/following/page/(?P<page>\d+)/$',
-        ListFollowing.as_view(), name='user_following'),
-    url(r'^(?P<user>[-\w]+)/following/$',
-        ListFollowing.as_view(), name='user_following'),
-
-
-
-
 
     ## home page
     url(r'^$', login_required(ListLastPins.as_view()), name='home'),
 
-    ## user urls
-    url(r'^user/', include('user.urls')),
 
     ## pin urls
     url(r'^pin/', include('pin.urls')),

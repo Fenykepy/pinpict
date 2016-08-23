@@ -14,8 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-                'pk',
-                'url',
+                'slug',
                 'username',
                 'first_name',
                 'last_name',
@@ -31,7 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
                 'gplus_link',
                 'pinterest_link',
                 'vk_link',
-                'instagram_link'
+                'instagram_link',
                 'n_followers',
                 'n_following',
                 'n_likes',
@@ -54,7 +53,7 @@ class UserSerializer(serializers.ModelSerializer):
         def create(self, validated_data):
             return User.objects.create(**validated_data)
 
-        def update(self, instance, validated_data)
+        def update(self, instance, validated_data):
             password = validated_data.get('password', None)
 
             if password:
@@ -74,8 +73,7 @@ class SafeUserSerializer(UserSerializer):
     class Meta:
         model = User
         fields = (
-                'pk',
-                'url',
+                'slug',
                 'username',
                 'first_name',
                 'last_name',
@@ -91,7 +89,7 @@ class SafeUserSerializer(UserSerializer):
                 'gplus_link',
                 'pinterest_link',
                 'vk_link',
-                'instagram_link'
+                'instagram_link',
                 'n_followers',
                 'n_following',
                 'n_likes',
@@ -111,9 +109,10 @@ class SafeUserSerializer(UserSerializer):
                 'mail_pin_like',
         )
 
-        read_only_fields = ('pk', 'url', 'n_followers', 'n_following',
-            'n_likes' 'n_public_likes', 'n_pins', 'n_public_pins',
-            'n_boards', 'n_public_boards', 'n_unread_notifications')
+        read_only_fields = (
+            'pk', 'is_staff', 'is_active', 'n_followers', 'n_following',
+            'n_likes', 'n_public_likes', 'n_pins', 'n_public_pins',
+            'n_boards', 'n_public_boards', 'n_unread_notifications'
         )
 
 
@@ -126,6 +125,7 @@ class PublicUserSerializer(UserSerializer):
     class Meta:
         model = User
         fields = (
+                'slug',
                 'username',
                 'avatar',
                 'website',
@@ -136,7 +136,7 @@ class PublicUserSerializer(UserSerializer):
                 'gplus_link',
                 'pinterest_link',
                 'vk_link',
-                'instagram_link'
+                'instagram_link',
                 'n_followers',
                 'n_following',
                 'n_public_likes',
