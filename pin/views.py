@@ -232,6 +232,7 @@ def create_pin(request):
     # from invalid pin_pict js button, redirect to find
     if (request.method == 'POST' and 'url' in request.POST
             and not 'src' in request.POST):
+        print('js button')
         form = DownloadPinForm(request.POST)
         if form.is_valid():
             url = form.cleaned_data['url']
@@ -343,7 +344,8 @@ def create_pin(request):
                 if resource:
                     pin.resource = resource
                 else:
-                    #print('error: make resource from url didn\'t return a resource.')
+                    print(resource)
+                    print('error: make resource from url didn\'t return a resource.')
                     return False
                 del request.session['pin_create_src']
             elif request.session.get('pin_create_tmp_resource'):
@@ -359,6 +361,7 @@ def create_pin(request):
                 del request.session['pin_create_tmp_resource']
             else:
                 # raise an resource error
+                print('resource error')
                 return False
             
             # save pin in db
