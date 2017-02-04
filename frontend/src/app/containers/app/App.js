@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 
 // import favicon here, for it to be compiled
+import favicon from './favicon.png'
 
 import { connect } from 'react-redux'
 

@@ -40,6 +40,8 @@ RESERVED_WORDS = (
         'logout',
         'profil',
         'register',
+        'signup',
+        'signin',
         'recovery',
         'page',
         'user',

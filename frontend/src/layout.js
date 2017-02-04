@@ -14,8 +14,8 @@ export default  `
     <!DOCTYPE html>
     <html lang="fr">
       <head>
-        <title>5160</title>
-        <meta name="description" content="5160, the influence social network" />
+        <title>PinPict</title>
+        <meta name="description" content="Save pictures you like" />
         <meta charset="utf-8" />
         <link rel="icon" type="image/png" href="/static/images/favicon.png" />
         <link rel="stylesheet" href="${assets.app.css}" />
