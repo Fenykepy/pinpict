@@ -1,0 +1,26 @@
+@import (reference) "~styles/palette.less";
+@import (reference) "~styles/sizes.less";
+
+.headerLinks {
+    display: flex;
+    margin: 0 40px 0 auto;
+}
+
+.link {
+    display: flex;
+    align-items: center;
+    width: auto;
+    // % height doesn't work with safari on flex children
+    height: @header-height;
+    color: @white;
+    padding: 0 25px;
+    &:hover, &:active, &:focus {
+        .linkActive;
+    }
+} 
+
+.linkActive {
+    text-decoration: none;
+    color: @white;
+    background-color: @trans-white; 
+}

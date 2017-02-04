@@ -1,0 +1,27 @@
+@import (reference) "~styles/palette.less";
+@import (reference) "~styles/sizes.less";
+
+.header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: @header-height;
+    display: flex;
+    color: @white;
+    background-color: @g10;
+}
+
+.title {
+    background: url('../header/pinpict.png') no-repeat center center;
+    width: 190px;
+    margin: 0 30px;
+    a {
+        display: block;
+        height: 100%;
+        &:hover {
+            background: @trans-white;
+        }
+    }
+}
+

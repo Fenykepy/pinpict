@@ -1,7 +1,7 @@
 // import a promise polyfill
 require('es6-promise').polyfill()
 // import less files
-require('global-styles/controller.less')
+require('styles/controller.less')
 
 import React from 'react'
 import { render } from 'react-dom'
