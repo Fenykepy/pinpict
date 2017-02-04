@@ -1,12 +1,13 @@
 
-# Root
-
-- api_root
-- api_pin
-- api_board
-- api_user
-- token_auth
-- token_refresh
-- token_verify
+[OK] - Endpoint to get token from credentials
+[OK] - Endpoint to verify existing token
+- Endpoint to get/update current user data
+- Endpoint to get specific user datas
+- Endpoint to get current user notifications
+- Endpoint to register
+- Endpoint to get all pins (public, and own private), pagination
+- Endpoint to get all specific user pins (public, own privates)
+- Endpoint to get all specific user boards (public, own privates)
+- Endpoint to get a board pins
 
 CSRF ?
