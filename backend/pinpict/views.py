@@ -1,17 +1,13 @@
-from django.shortcuts import render, redirect
-from django.core.urlresolvers import reverse_lazy
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+from rest_framework.decorators import api_view
 
-def home(request):
-    """Home view. If user is logged in, redirect to user home page,
-    else login page.
-    """
-    if request.user.is_authenticated():
-        return redirect(reverse_lazy('boards_list',
-            kwargs={
-                'user': request.user.slug,
-            }))
-    
-    return redirect(reverse_lazy('user_login'))
+@api_view(('GET', ))
+def api_root(request, format=None):
+    return Response({
+        #'users-menu': reverse('user-root', request=request, format=format),
+        'token-auth': reverse('token-auth', request=request, format=format),
+        'token-verify': reverse('token-verify', request=request, format=format),
+    })
 
-    
 
