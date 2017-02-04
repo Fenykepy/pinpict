@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 
+# Node modules
+frontend/node_modules
+
 # C extensions
 *.so
 
@@ -9,14 +12,11 @@ __pycache__/
 db.sqlite3
 db.sqlite3.master
 db.sqlite3.dev
+*.sqlite3
 
 # data files
-pinpict/data/tmp/*/
-pinpict/data/tmp/*
-pinpict/data/previews/*/
-pinpict/data/previews/*
-pinpict/data/images/avatars/*/
-pinpict/data/images/avatars**
+backend/pinpict/data/
+
 # Distribution / packaging
 .Python
 env/
