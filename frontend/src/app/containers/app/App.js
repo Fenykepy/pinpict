@@ -5,7 +5,7 @@ import favicon from './favicon.png'
 
 import { connect } from 'react-redux'
 
-//import { appSelector } from 'app/selectors'
+import { appSelector } from 'app/selectors'
 
 
 import Header from '../../components/header/Header'
@@ -49,7 +49,7 @@ class App extends Component {
     return (
       <div>
         <Header
-          authenticated={false}
+          authenticated={this.props.user.is_authenticated || false}
         />
         <section
           role="main"
@@ -69,7 +69,10 @@ App.childContextTypes = {
 
 App.propTypes = {
   dispatch: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    is_authenticated: PropTypes.bool,
+  }).isRequired
 }
 
 // Wrap the component to inject state into it
-export default connect(state => state)(App)
+export default connect(appSelector)(App)

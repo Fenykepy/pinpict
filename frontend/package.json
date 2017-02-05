@@ -31,7 +31,7 @@
     "react": "^15.0.2",
     "react-dom": "^15.0.2",
     "react-redux": "^4.4.5",
-    "react-router": "^2.4.0",
+    "react-router": "^3.0.2",
     "redux": "^3.5.2",
     "redux-thunk": "^2.0.1",
     "reselect": "^2.5.1"
@@ -53,6 +53,7 @@
     "node-libs-browser": "^0.5.3",
     "react-transform-hmr": "^1.0.1",
     "style-loader": "^0.13.0",
+    "svgo-loader": "^1.1.2",
     "webpack": "^1.12.3",
     "webpack-dev-middleware": "^1.2.0",
     "webpack-hot-middleware": "^2.4.1"

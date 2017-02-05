@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch'
 
-import settings from '../config'
+import settings from 'config'
 
 import { browserHistory } from 'react-router'
 
@@ -67,6 +67,7 @@ class Fetch {
   }
 
   post(url, state, headers={}, body) {
+    console.log(url, state, headers)
     return fetch(base_url + url,
         {
           method: "POST",
