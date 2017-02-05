@@ -19,11 +19,11 @@ ADMINS = (
 MANAGERS = ADMINS
 
 
-INTERNAL_IPS = ('127.0.0.1',)
+INTERNAL_IPS = ('127.0.0.1', )
 
 ## Email configuration
 DEFAULT_FROM_EMAIL = 'pro@lavilotte-rolle.fr'
-EMAIL_SUBJECT_PREFIX = '[Pin Pict]'
+EMAIL_SUBJECT_PREFIX = '[PinPict]'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -42,10 +42,12 @@ HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 SECRET_KEY = '#v04u18pw)rsgry7fhw*7)t0^)nm!l6fod90fb7y8ckbu0u8yx'
 
 
-# pagination settings
-MAX_PIN_PER_PAGE = 100
-MAX_BOARD_PER_PAGE = 100
-HAYSTACK_SEARCH_RESULTS_PER_PAGE = 2
+# Allow CORS for developpment
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000',
+    '127.0.0.1:3000'
+)
+CORS_ALLOW_CREDENTIALS = True
 
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
