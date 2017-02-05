@@ -42,17 +42,17 @@ export function fetchUserIfNeeded() {
     }
     // else return a resolved promise
     return new Promise((resolve, reject) =>
-      resolve({user: getState().user.user}))
+      resolve({user: getState().user}))
   }
 }
 
 function fetchUser() {
   // fetch current user data
-  return function(dispatch) {
+  return function(dispatch, getState) {
     // start request
     dispatch(requestUser())
     // return a promise
-    return Fetch.get('api/users/current/')
+    return Fetch.get('api/users/current/', getState())
       .then(json =>
         dispatch(requestUserSuccess(json))
       )
@@ -110,7 +110,7 @@ export function login(credentials) {
     })
     .then(() => {
       // fetch authenticated user's data
-      dispatch(fetchCurrentUserIfNeeded())
+      dispatch(fetchUserIfNeeded())
     })
     .catch(error => {
       error.response.json().then(json => {
@@ -121,7 +121,14 @@ export function login(credentials) {
   }
 }
 
-
+// Logout
+export function logout() {
+  // we delete auth cookie
+  deleteCookie('auth_token')
+  return {
+    type: types.USER_LOGOUT
+  }
+}
 
 
 
