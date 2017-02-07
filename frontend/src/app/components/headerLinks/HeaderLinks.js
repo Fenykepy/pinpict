@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react'
 import LoginLink from 'user/components/loginLink/LoginLink'
 import SignupLink from 'user/components/signupLink/SignupLink'
 
-// import usermenubutton
+import UserMenuButton from 'user/containers/userMenuButton/UserMenuButton'
 
 import styles from './headerLinks.less'
 
@@ -15,7 +15,7 @@ export default class HeaderLinks extends Component {
       // we show user menu button
       return (
         <ul className={styles.headerLinks}>
-          <li>user menu here</li>
+          <li><UserMenuButton /></li>
         </ul>
       )
     }
@@ -33,4 +33,8 @@ export default class HeaderLinks extends Component {
       </ul>
     )
   }
+}
+
+HeaderLinks.propTypes = {
+  authenticated: PropTypes.bool,
 }

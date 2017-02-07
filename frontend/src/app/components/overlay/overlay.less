@@ -1,0 +1,21 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 999;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.transparent {
+    composes: overlay;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.opaque {
+    composes: overlay;
+    background-color: rgba(0, 0, 0, 1);
+}

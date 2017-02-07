@@ -4,9 +4,9 @@ import { connect } from 'react-redux'
 
 import { userMenuSelector } from 'user/selectors'
 
-import { logout } from 'public/user/actions'
+import { logout } from 'user/actions'
 
-import UserMenu from 'public/user/components/userMenu/UserMenu'
+import UserMenu from 'user/components/userMenu/UserMenu'
 
 import styles from './userMenuButton.less'
 
@@ -54,6 +54,10 @@ class UserMenuButton extends Component {
       user,
     } = this.props
 
+    console.log('UserMenuButton', this.props)
+
+    if (! this.props.user) return null
+
     return (
       <div
         className={styles.wrapper}
@@ -74,7 +78,6 @@ export default connect (userMenuSelector)(UserMenuButton)
 
 UserMenuButton.propTypes = {
   user: PropTypes.shape({
-    username: PropTypes.string.isRequired,
-    admin: PropTypes.bool,
-  }).isRequired,
+    username: PropTypes.string,
+  }),
 }

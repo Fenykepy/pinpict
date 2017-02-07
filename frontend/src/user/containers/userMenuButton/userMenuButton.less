@@ -1,0 +1,21 @@
+@import (reference) "~styles/palette.less";
+@import (reference) "~styles/mixins.less";
+
+.userMenu {
+    composes: link from "app/components/headerLinks/headerLinks.less";
+    background: none;
+    position: relative;
+    &:before {
+        left: 25px;
+        top: 30px;
+        .arrow-down(@white, 6px, 6px)
+    }
+}
+
+.userMenu > div {
+    padding-left: 25px; // we escape arrow
+}
+
+.wrapper {
+    position: relative;
+}

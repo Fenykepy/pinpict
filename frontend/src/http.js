@@ -67,7 +67,6 @@ class Fetch {
   }
 
   post(url, state, headers={}, body) {
-    console.log(url, state, headers)
     return fetch(base_url + url,
         {
           method: "POST",

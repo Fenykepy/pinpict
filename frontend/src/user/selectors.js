@@ -10,6 +10,6 @@ export const loginSelector = createStructuredSelector({
 })
 
 export const userMenuSelector = createStructuredSelector({
-  user: userDataSelector
+  user: userDataSelector,
 })
 

@@ -1,0 +1,26 @@
+@import (reference) "~styles/palette.less";
+@import (reference) "~styles/mixins.less";
+
+.dropdown {
+    z-index: 1000; // we place it uppon overlay (z-index 999)
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    min-width: 200px;
+    background-color: @white;
+    border: 1px solid @gCC;
+    border-radius: 3px;
+    margin-bottom: 30px;
+    &:before {
+        // we create small arrow up, border
+        .arrow-up(@gCC, 10px, 10px);
+        top: -10px;
+        right: 25px;
+    }
+    &:after {
+        // we create some arrow up, background
+        .arrow-up(@white, 10px, 10px);
+        top: -9px;
+        right: 25px;
+    }
+}
