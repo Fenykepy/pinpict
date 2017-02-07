@@ -15,6 +15,8 @@ import Router from 'react-router/lib/Router'
 
 import getRoutes from './routes'
 
+import { verifyToken } from 'user/actions'
+
 
 let store = createStoreWithMiddleware(rootReducer)
 
@@ -25,10 +27,10 @@ let unsusbscribe = store.subscribe(() =>
 )
 */
 
-
+// try to authenticate user
+store.dispatch(verifyToken())
 
 const routes = <Router
-
   history={browserHistory}
   routes={getRoutes()}
 />

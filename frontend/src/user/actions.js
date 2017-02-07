@@ -3,6 +3,9 @@ import * as types from './actionsTypes'
 import Fetch from 'http'
 
 import { setCookie, getCookie, deleteCookie } from 'cookies'
+import { getJWTDate } from 'utils'
+
+
 // actions creators
 
 // Fetching user
@@ -121,6 +124,8 @@ export function login(credentials) {
   }
 }
 
+
+
 // Logout
 export function logout() {
   // we delete auth cookie
@@ -132,3 +137,143 @@ export function logout() {
 
 
 
+// Verify token
+function storeToken(token) {
+  return {
+    type: types.USER_STORE_TOKEN,
+    token
+  }
+}
+
+function requestVerifyToken() {
+  return {
+    type: types.USER_REQUEST_VERIFY_TOKEN
+  }
+}
+
+function receivedVerifiedToken(token) {
+  return {
+    type: types.USER_REQUEST_VERIFY_TOKEN_SUCCESS,
+    token
+  }
+}
+
+function requestVerifyTokenFailure(error) {
+  return {
+    type: types.USER_REQUEST_VERIFY_TOKEN_FAILURE,
+    error
+  }
+}
+
+
+export function verifyToken() {
+  /*
+   * verify if given token is valid
+   */
+  return function(dispatch, getState) {
+    let token = getCookie('auth_token')
+    if (token) {
+      // store token in state
+      dispatch(storeToken(token))
+      // start request
+      dispatch(requestVerifyToken())
+      // return a promise
+      return Fetch.post('api/token-verify/',
+        getState(),
+          {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          JSON.stringify({'token': token})
+        )
+        .then(json => {
+          dispatch(refreshTokenIfNeeded(json.token))
+          return dispatch(receivedVerifiedToken(json.token))
+        })
+        .then(() =>
+          // fetch authenticated user's data
+          dispatch(fetchUserIfNeeded())
+        )
+        .catch(error => {
+          console.warn(error)
+          dispatch(requestVerifyTokenFailure(error))
+        })
+    }
+  }
+}
+
+
+// Refresh token
+
+function requestRefreshToken() {
+  return {
+    type: types.USER_REQUEST_REFRESH_TOKEN
+  }
+}
+
+function receivedRefreshToken(token) {
+  return {
+    type: types.USER_REQUEST_REFRESH_TOKEN_SUCCESS,
+    token
+  }
+}
+
+function requestRefreshTokenFailure(error) {
+  return {
+    type: types.USER_REQUEST_REFRESH_TOKEN_FAILURE,
+    error
+  }
+}
+
+export function refreshTokenIfNeeded(token) {
+  /*
+   * refresh token if it expires in less than one day
+   */
+  return function(dispatch) {
+    //console.log('refresh token if needed')
+    // we pass expiration date in milliseconds
+    let exp = getJWTDate(token) * 1000
+    //let delta = 24 * 60 * 60 * 1000
+    let delta = 24 * 60 * 60 * 50 * 1000
+
+    if (exp < Date.now() + delta) {
+      // token need to be refreshed
+      dispatch(refreshToken(token))
+    }
+  }
+}
+
+function refreshToken(token) {
+  /*
+   * refresh token
+   */
+  return function(dispatch, getState) {
+    //console.log('refresh token')
+    // start request
+    dispatch(requestRefreshToken())
+    // return a promise
+    return Fetch.post('api/token-refresh/',
+          getState(),
+          {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          JSON.stringify({'token': token})
+        )
+        .then(json => {
+          //console.log('refresh token success')
+          setCookie('auth_token', json.token, 7)
+          return dispatch(receivedRefreshToken(json.token))
+        })
+        .then(() =>
+          // fetch authenticated user's data
+          dispatch(fetchUserIfNeeded())
+        )
+        .catch(error => {
+          console.warn(error)
+          // check if token is valid
+          dispatch(verifyToken())
+          dispatch(requestRefreshTokenFailure(error))
+        })
+  }
+}

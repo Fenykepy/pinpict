@@ -11,6 +11,9 @@ import {
   USER_REQUEST_VERIFY_TOKEN,
   USER_REQUEST_VERIFY_TOKEN_SUCCESS,
   USER_REQUEST_VERIFY_TOKEN_FAILURE,
+  USER_REQUEST_REFRESH_TOKEN,
+  USER_REQUEST_REFRESH_TOKEN_SUCCESS,
+  USER_REQUEST_REFRESH_TOKEN_FAILURE,
   USER_LOGOUT,
   USER_STORE_TOKEN,
 } from './actionsTypes'
@@ -71,6 +74,20 @@ function user(state = {}, action) {
         is_verifying_token: false,
         is_authenticated: false,
         token_errors: action.errors,
+      })
+    case USER_REQUEST_REFRESH_TOKEN:
+      return Object.assign({}, state, {
+        is_refreshing_token: true,
+      })
+    case USER_REQUEST_REFRESH_TOKEN_SUCCESS:
+      return Object.assign({}, state, {
+        is_refreshing_token: false,
+        token: action.token
+      })
+    case USER_REQUEST_REFRESH_TOKEN_FAILURE:
+      return Object.assign({}, state, {
+        is_refreshing_token: false,
+        refreshing_errors: action.errors
       })
     case USER_REQUEST_REGISTER:
       return {
