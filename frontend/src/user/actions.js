@@ -31,9 +31,8 @@ function requestUserFailure(errors) {
 
 function shouldFetchUser(state) {
   let user = state.user
-  if (! user) return true
-  if (user.is_authenticated || user.is_fetching ||
-    user.is_logging_in || user.is_registering) return false
+  if (! user.is_authenticated || user.is_fetching ||
+    user.is_fetched) return false
   return true
 }
 
@@ -50,6 +49,7 @@ export function fetchUserIfNeeded() {
 }
 
 function fetchUser() {
+  console.log('Fetch user')
   // fetch current user data
   return function(dispatch, getState) {
     // start request

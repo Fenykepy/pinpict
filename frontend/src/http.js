@@ -22,10 +22,10 @@ class Fetch {
   }
 
   setAuthorization(headers, state) {
-    if (state && state.common && state.common.user.token) {
+    if (state && state.user && state.user.token) {
       return Object.assign({},
         headers,
-        {'Authorization': 'JWT ' + state.common.user.token}
+        {'Authorization': 'JWT ' + state.user.token}
       )
     }
     return headers
