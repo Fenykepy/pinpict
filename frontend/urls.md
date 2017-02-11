@@ -19,3 +19,53 @@ RESERVED WORDS :
 - Add a pin => modal window anywhere
 - Add a board => modal window uppon list of boards
 - Edit board => modal window uppon board list on pins
+
+
+redux database (reducers)
+
+user {
+}
+
+members {
+    'tom': {
+        is_fetching: false,
+        fetched: true,
+        username: 'Tom',
+        boards: ['slug', 'slug'],
+        pins: ['pk', 'pk'],
+        is_fetching_pins: false,
+        pins_fetched: false,
+        followers: ['slug', 'slug'], // fetched separately
+        is_fetching_followers: false,
+        followers_fetched: false,
+        following: ['slug', 'slug'], // fetched separately
+        is_fetching_following: false,
+        following_fetched: false,
+        ...
+    }
+}
+
+boards {
+    'user_slug_board_slug': {
+        is_fetching: false,
+        fetched: true,
+        pins: ['pk', 'pk']
+        ...
+    }
+}
+
+pins {
+    'pk': {
+        is_fetching: false,
+        fetched: true,
+        ...
+    }
+}
+
+notifications {
+    'pk': {
+        is_fetching: false,
+        fetched: true,
+    }
+}
+
