@@ -32,7 +32,7 @@ class PublicBoardsManager(models.Manager):
 
 
 class PrivateBoardsManager(models.Manager):
-    """Returns a queryset with all public boards."""
+    """Returns a queryset with all private boards."""
     def get_queryset(self):
         return super(PrivateBoardsManager, self).get_queryset().filter(
                 policy=0)

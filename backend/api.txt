@@ -72,9 +72,13 @@ OK  "/api/users/current/" [GET, PUT, PATCH](auth)
     JSON list of all boards [GET](admin)
     create a new board [POST](auth)
 
+    "/api/boards/user/<user_slug>/" [GET](any)
+    JSON list of boards abstracts (private boards if user has right)
+
     "/api/boards/user/<user_slug>/board/<board_slug>/" [GET, PUT, PATCH, DELETE](any)
     JSON board detail (private board if user has right)
     update or delete a board if admin or owner
+
 
 
 

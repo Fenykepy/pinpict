@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view
 def api_root(request, format=None):
     return Response({
         #'users-menu': reverse('user-root', request=request, format=format),
+        'boards-menu': reverse('board-root', request=request, format=format),
         'token-auth': reverse('token-auth', request=request, format=format),
         'token-verify': reverse('token-verify', request=request, format=format),
     })

@@ -26,12 +26,14 @@ redux database (reducers)
 user {
 }
 
-members {
+members { // public users
     'tom': {
         is_fetching: false,
         fetched: true,
         username: 'Tom',
-        boards: ['slug', 'slug'],
+        is_fetching_boards: false,
+        boards_fetched: true,
+        boards: ['slug', 'slug'], // fetched separately
         pins: ['pk', 'pk'],
         is_fetching_pins: false,
         pins_fetched: false,
@@ -49,7 +51,9 @@ boards {
     'user_slug_board_slug': {
         is_fetching: false,
         fetched: true,
-        pins: ['pk', 'pk']
+        is_fetching_abstract: false,
+        abstract_fetched: false,
+        pins: ['pk', 'pk'],
         ...
     }
 }
