@@ -7,6 +7,7 @@ class BoardSerializer(serializers.ModelSerializer):
     A serializer for Board object with all fields.
     """
     pins = serializers.SerializerMethodField()
+    user = serializers.SlugField(source="user.slug")
     #cover = serializers.SerializerMethodField()
 
     class Meta:
@@ -64,7 +65,7 @@ class BoardAbstractSerializer(BoardSerializer):
     class Meta:
         model = Board
         fields = (
-            'title', 'slug', 'n_pins', 'policy'
+            'title', 'slug', 'n_pins', 'policy', 'user',
         )
         read_only_fields = fields
 
