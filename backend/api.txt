@@ -37,16 +37,6 @@ OK  "/api/users/current/" [GET, PUT, PATCH](auth)
     "/api/users/recover/" [POST](any)
     Update user password with recovering 
 
-    "/api/users/<slug>/pins/" [GET](any)
-    JSON flat list of a user pins pks by creation date
-    Private pins if user has right or is admin (auth)
-
-    "/api/users/<slug>/boards/" [GET](any)
-    JSON list of user boards
-    Private boards if user has rights or is admin (auth)
-
-
-
 ## Pins
 
     "/api/pins/menu/" [GET](admin)
@@ -57,6 +47,11 @@ OK  "/api/users/current/" [GET, PUT, PATCH](auth)
     private pins in list if user has right or is admin (auth)
     create a new pin (auth)
 
+    "/api/pins/user/<user>/" [GET](any)
+    JSON flat list of a user pins pks by creation date
+    Private pins if user has right or is admin (auth)
+
+
     "/api/pins/<pk>/" [GET, PUT, PATCH, DELETE](any, auth to update/delete)
     JSON pin detail
     update or delete pin if admin or owner
@@ -65,20 +60,21 @@ OK  "/api/users/current/" [GET, PUT, PATCH](auth)
 
 ## Boards
 
-    "/api/boards/menu/" [GET](admin)
+OK  "/api/boards/menu/" [GET](admin)
     JSON list of board api endpoints
 
-    "/api/boards/" [GET, POST] (admin, auth)
+OK  "/api/boards/" [GET, POST] (admin, auth)
     JSON list of all boards [GET](admin)
     create a new board [POST](auth)
 
-    "/api/boards/user/<user_slug>/" [GET](any)
-    JSON list of boards abstracts (private boards if user has right)
+OK  "/api/boards/user/<user>/" [GET](any)
+    JSON list of user public boards abstracts
 
-    "/api/boards/user/<user_slug>/board/<board_slug>/" [GET, PUT, PATCH, DELETE](any)
+OK  "/api/boards/private/user/<user>/" [GET](authenticated with rights)
+
+    "/api/boards/user/<user>/board/<board>/" [GET, PUT, PATCH, DELETE](any)
     JSON board detail (private board if user has right)
     update or delete a board if admin or owner
-
 
 
 

@@ -104,11 +104,6 @@ class Board(models.Model):
         # save object
         super(Board, self).save()
 
-    def get_absolute_url(self):
-        return reverse('board_view', kwargs={
-            'user': self.user.slug,
-            'board': self.slug,
-        })
 
     def get_sorted_pins(self):
         """Return board's pins sorted by "pins_order" field and

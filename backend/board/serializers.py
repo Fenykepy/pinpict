@@ -31,7 +31,7 @@ class BoardSerializer(serializers.ModelSerializer):
         )
         read_only_fields = (
             'user', 'followers', 'n_followers',
-            'n_pins'
+            'n_pins', 'slug',
         )
 
     def get_pins(self, object):
@@ -64,7 +64,7 @@ class BoardAbstractSerializer(BoardSerializer):
     class Meta:
         model = Board
         fields = (
-            'title', 'slug', 'n_pins', 'user'
+            'title', 'slug', 'n_pins', 'user', 'policy'
         )
         read_only_fields = fields
 

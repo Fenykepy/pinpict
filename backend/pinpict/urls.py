@@ -27,10 +27,10 @@ urlpatterns = [
     url(r'^api/users/', include('user.urls')), # users API
 
     ## Pins endpoints
-    url(r'^api/pin/', include('pin.urls')),
+    url(r'^api/pins/', include('pin.urls')),
 
     ## Boards endpoints
-    url(r'^api/board/', include('board.urls')),
+    url(r'^api/boards/', include('board.urls')),
 
 ]
 
