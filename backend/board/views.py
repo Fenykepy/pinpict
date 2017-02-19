@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 
 from pinpict.permissions import IsStaffOrAuthenticatedAndCreateOnly, \
         IsBoardAllowed
@@ -57,39 +57,43 @@ class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 
-class UserPublicBoardsList(generics.ListAPIView):
+@api_view(['GET'])
+@permission_classes((permissions.AllowAny, ))
+def user_public_boards_list(request, user, format=None):
     """
-    This view presents a list of a member's publics boards.
+    Returns a list of a user's publics boards without pagination.
     """
-    permission_classes = (permissions.AllowAny, )
-    serializer_class = BoardAbstractSerializer
+    user = get_object_or_404(User, slug=user)
+    boards = Board.publics.filter(user=user).only(
+        'title', 'slug', 'n_pins', 'policy')
+    serializer = BoardAbstractSerializer(boards, many=True)
 
-    def get_queryset(self):
-        """Return queryset."""
-        user = get_object_or_404(User, slug=self.kwargs['user'])
-        return Board.publics.filter(user=user)
-
+    return Response(serializer.data)
 
 
-class UserPrivateBoardsList(generics.ListAPIView):
+
+@api_view(['GET'])
+@permission_classes((permissions.IsAuthenticated, ))
+def user_private_boards_list(request, user, format=None):
     """
     This view presents a list of a member's privates boards :
         - all private boards if user is owner;
         - all private boards if user is admin;
         - allowed private boards if user is authenticated;
     """
-    permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = BoardAbstractSerializer
-
-    def get_queryset(self):
-        """Return queryset."""
-        user = get_object_or_404(User, slug=self.kwargs['user'])
+    user = get_object_or_404(User, slug=user)
+    # return all private boards if user is owner or staff
+    if request.user == user or request.user.is_staff:
         queryset = Board.privates.filter(user=user)
-        # return all private boards
-        if self.request.user == user or self.request.user.is_staff:
-            return queryset
-        # user is authenticated but nor owner nor staff
-        else:
-            return queryset.filter(users_can_read=self.request.user)
+    else:
+        queryset = Board.privates.filter(
+                user=user,
+                users_can_read=request.user
+        )
+        
+    boards = queryset.only(
+        'title', 'slug', 'n_pins', 'policy')
+    serializer = BoardAbstractSerializer(boards, many=True)
 
+    return Response(serializer.data)
 

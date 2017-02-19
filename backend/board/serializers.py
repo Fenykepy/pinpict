@@ -64,7 +64,7 @@ class BoardAbstractSerializer(BoardSerializer):
     class Meta:
         model = Board
         fields = (
-            'title', 'slug', 'n_pins', 'user', 'policy'
+            'title', 'slug', 'n_pins', 'policy'
         )
         read_only_fields = fields
 
