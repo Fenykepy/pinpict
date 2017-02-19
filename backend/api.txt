@@ -72,7 +72,7 @@ OK  "/api/boards/user/<user>/" [GET](any)
 
 OK  "/api/boards/private/user/<user>/" [GET](authenticated with rights)
 
-    "/api/boards/user/<user>/board/<board>/" [GET, PUT, PATCH, DELETE](any)
+OK  "/api/boards/user/<user>/board/<board>/" [GET, PUT, PATCH, DELETE](any)
     JSON board detail (private board if user has right)
     update or delete a board if admin or owner
 

@@ -6,7 +6,7 @@ from rest_framework.reverse import reverse
 from rest_framework.decorators import api_view, permission_classes
 
 from pinpict.permissions import IsStaffOrAuthenticatedAndCreateOnly, \
-        IsBoardAllowed
+        IsBoardAllowed, IsStaffOrReadOnly
 
 from board.serializers import *
 from board.models import Board
@@ -42,7 +42,7 @@ class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
     This view presents a specific board and allows
     to update or delete it.
     """
-    permission_classes = (permissions.IsAdminUser, IsBoardAllowed)
+    permission_classes = ( IsBoardAllowed, IsStaffOrReadOnly,)
 
     def get_serializer_class(self):
         user = get_object_or_404(User, slug=self.kwargs['user'])

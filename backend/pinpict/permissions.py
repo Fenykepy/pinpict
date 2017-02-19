@@ -2,6 +2,23 @@ from rest_framework import permissions
 
 
 
+class IsStaffOrReadOnly(permissions.BasePermission):
+    """
+    Custom permission to only allow staff members to edit object.
+    """
+
+    def has_permission(self, request, view):
+        # Read permissions are allowed to any request,
+        # so we'll always allow GET, HEAD or OPTIONS requests.
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        if request.user and request.user.is_staff:
+            return True
+        
+        return False
+
+
+
 class IsStaffOrCreateOnly(permissions.BasePermission):
     """
     Custom permission to only allow staff members to list
@@ -67,7 +84,7 @@ class IsBoardAllowed(permissions.BasePermission):
        if request.method in SAFE_METHODS:
            return True
        # GET is allowed to public boards (policy == 1)
-       if (request.method in permissions.PUBLIC_METHODS and
+       if (request.method in PUBLIC_METHODS and
                obj.policy == 1):
            return True
        # Board's owner has full rights
@@ -75,7 +92,7 @@ class IsBoardAllowed(permissions.BasePermission):
            return True
        # GET is allowed to private boards
        # if user is in white list
-       if (request.method in permissions.PUBLIC_METHODS and
+       if (request.method in PUBLIC_METHODS and
                request.user in obj.users_can_read):
            return True
        # Otherwise it's not allowed
