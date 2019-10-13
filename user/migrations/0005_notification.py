@@ -21,9 +21,9 @@ class Migration(migrations.Migration):
                 ('title', models.TextField(null=True, blank=True, verbose_name='Title')),
                 ('read', models.BooleanField(default=False, db_index=True)),
                 ('object_id', models.PositiveIntegerField()),
-                ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
-                ('receiver', models.ForeignKey(null=True, to=settings.AUTH_USER_MODEL, related_name='receiver')),
-                ('sender', models.ForeignKey(null=True, to=settings.AUTH_USER_MODEL, related_name='sender')),
+                ('content_type', models.ForeignKey(to='contenttypes.ContentType', on_delete=models.CASCADE)),
+                ('receiver', models.ForeignKey(null=True, to=settings.AUTH_USER_MODEL, related_name='receiver', on_delete=models.CASCADE)),
+                ('sender', models.ForeignKey(null=True, to=settings.AUTH_USER_MODEL, related_name='sender', on_delete=models.CASCADE)),
             ],
             options={
             },

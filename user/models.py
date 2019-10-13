@@ -6,7 +6,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -42,9 +42,9 @@ class Notification(models.Model):
     title = models.TextField(null=True, blank=True,
             verbose_name="Title")
     read = models.BooleanField(default=False, db_index=True)
-    receiver = models.ForeignKey('User', related_name="receiver", null=True)
-    sender = models.ForeignKey('User', related_name="sender", null=True)
-    content_type = models.ForeignKey(ContentType)
+    receiver = models.ForeignKey('User', related_name="receiver", on_delete=models.CASCADE, null=True)
+    sender = models.ForeignKey('User', related_name="sender", on_delete=models.CASCADE, null=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 

@@ -1,5 +1,5 @@
 from django import template
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 
 register = template.Library()
 

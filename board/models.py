@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save, post_delete, m2m_changed
 from django.dispatch import receiver
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from pinpict.settings import BOARD_RESERVED_WORDS
 from user.models import User, has_changed, Notification
@@ -59,7 +59,7 @@ class Board(models.Model):
     policy = models.PositiveIntegerField(
             choices=BOARD_POLICY_CHOICES, verbose_name="Policy",
             null=False, blank=False, default=1)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     order = models.PositiveIntegerField(default=100000)
     pins_order = models.CharField(max_length=254, null=True, blank=True,
             choices=PIN_ORDERING_CHOICES, default='date_created',

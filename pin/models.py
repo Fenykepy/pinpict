@@ -10,7 +10,7 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.http import Http404
 from django.utils.encoding import iri_to_uri
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from user.models import User
 from board.models import Board
@@ -69,6 +69,7 @@ class Resource(models.Model):
     previews_path = models.CharField(max_length=254,
         blank=True, null=True)
     user = models.ForeignKey(User, blank=True, null=True,
+            on_delete=models.CASCADE,
             verbose_name=(
                 "User who originaly uploaded or "
                 "downloaded resource."))
@@ -160,11 +161,11 @@ class Pin(models.Model):
     source = models.URLField(null=True, blank=True,
             verbose_name="Web page pin comes from", max_length=2000)
     description = models.TextField(verbose_name="Pin description")
-    board = models.ForeignKey(Board)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE)
     main = models.BooleanField(default=False, verbose_name="Use as main preview")
-    resource = models.ForeignKey(Resource)
-    added_via = models.ForeignKey('self', blank=True, null=True)
-    pin_user = models.ForeignKey(User, related_name="pin_user")
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+    added_via = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+    pin_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="pin_user")
     policy = models.PositiveIntegerField(blank=True, null=True)
     owner_rate = models.PositiveSmallIntegerField(default=0, verbose_name="Rate")
     likes = models.ManyToManyField(User, blank=True,

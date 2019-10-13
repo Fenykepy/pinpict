@@ -1,9 +1,6 @@
 from django.conf import settings
 from django.conf.urls import include, url
 
-from rest_framework_jwt.views import obtain_jwt_token, \
-        verify_jwt_token, refresh_jwt_token
-
 from pinpict.views import api_root
 
 
@@ -15,14 +12,6 @@ urlpatterns = [
     ## drf auth endpoints
     url(r'^api/auth/', include('rest_framework.urls', namespace='rest_framework')),
 
-    ## JWT management endpoints
-    url(r'^api/token-auth/', obtain_jwt_token,
-        name='token-auth'),
-    url(r'^api/token-verify/', verify_jwt_token,
-        name='token-verify'),
-    url(r'^api/token-refresh/', refresh_jwt_token,
-        name='token-refresh'),
-    
     ## Users endpoints
     url(r'^api/users/', include('user.urls')), # users API
 

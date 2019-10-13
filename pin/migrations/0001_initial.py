@@ -25,9 +25,9 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(verbose_name='Pin description')),
                 ('policy', models.PositiveIntegerField(null=True, blank=True)),
                 ('owner_rate', models.PositiveSmallIntegerField(default=0, verbose_name='Rate')),
-                ('added_via', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True, blank=True)),
-                ('board', models.ForeignKey(to='board.Board')),
-                ('pin_user', models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='pin_user')),
+                ('added_via', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)),
+                ('board', models.ForeignKey(to='board.Board', on_delete=models.CASCADE)),
+                ('pin_user', models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='pin_user', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['date_created'],
@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
                 ('size', models.PositiveIntegerField(default=0, verbose_name='Size of picture, in bytes')),
                 ('type', models.CharField(verbose_name='Type of file', max_length=30)),
                 ('previews_path', models.CharField(max_length=254, null=True, blank=True)),
-                ('user', models.ForeignKey(verbose_name='User who originaly uploaded or downloaded resource.', to=settings.AUTH_USER_MODEL, null=True, blank=True)),
+                ('user', models.ForeignKey(verbose_name='User who originaly uploaded or downloaded resource.', to=settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['date_created'],
@@ -58,7 +58,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='pin',
             name='resource',
-            field=models.ForeignKey(to='pin.Resource'),
+            field=models.ForeignKey(to='pin.Resource', on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

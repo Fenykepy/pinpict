@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('n_pins', models.PositiveIntegerField(default=0, verbose_name='Pins number')),
                 ('policy', models.PositiveIntegerField(default=1, choices=[(0, 'Private'), (1, 'Public')], verbose_name='Policy')),
                 ('order', models.PositiveIntegerField(default=100000)),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['order', 'date_created'],
