@@ -16,6 +16,7 @@ def user_root(request, format=None):
         'token-obtain': reverse('token-obtain', request=request, format=format),
         'token-refresh': reverse('token-refresh', request=request, format=format),
         'current-user': reverse('current-user', request=request, format=format),
+        'user-list': reverse('user-list', request=request, format=format),
     })
 
 
@@ -39,5 +40,30 @@ class PublicUserDetail(generics.RetrieveAPIView):
     serializer_class = PublicUserSerializer
     queryset = User.objects.all()
     lookup_field = 'slug'
+
+
+class UserList(generics.ListCreateAPIView):
+    """
+    This view presents a list of all users and allows
+    new users to be created.
+    """
+    permission_classes = (permissions.IsAdminUser, )
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+    lookup_field = 'slug'
+
+
+
+class UserDetail(generics.RetrieveUpdateAPIView):
+    """
+    This view presents a specific user and allows
+    to update or delete it.
+    """
+    permission_classes = (permissions.IsAdminUser, )
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+    lookup_field = 'slug'
+
+
 
 

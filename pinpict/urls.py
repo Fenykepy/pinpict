@@ -13,13 +13,13 @@ urlpatterns = [
     url(r'^api/auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     ## Users endpoints
-    url(r'^api/users/', include('user.urls')), # users API
+    url(r'^api/user/', include('user.urls')), # users API
 
     ## Pins endpoints
-    url(r'^api/pins/', include('pin.urls')),
+    url(r'^api/pin/', include('pin.urls')),
 
     ## Boards endpoints
-    url(r'^api/boards/', include('board.urls')),
+    url(r'^api/board/', include('board.urls')),
 
 ]
 
