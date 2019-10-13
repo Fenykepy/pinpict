@@ -37,6 +37,8 @@ OK  "/api/users/current/" [GET, PUT, PATCH](auth)
     "/api/users/recover/" [POST](any)
     Update user password with recovering 
 
+
+
 ## Pins
 
     "/api/pins/menu/" [GET](admin)
@@ -50,7 +52,6 @@ OK  "/api/users/current/" [GET, PUT, PATCH](auth)
     "/api/pins/user/<user>/" [GET](any)
     JSON flat list of a user pins pks by creation date
     Private pins if user has right or is admin (auth)
-
 
     "/api/pins/<pk>/" [GET, PUT, PATCH, DELETE](any, auth to update/delete)
     JSON pin detail
