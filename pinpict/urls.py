@@ -1,13 +1,13 @@
 from django.conf import settings
 from django.conf.urls import include, url
 
-from pinpict.views import api_root
+from pinpict import views
 
 
 urlpatterns = [
     
     ## drf api
-    url('^api/$', api_root, name='api-root'),
+    url('^api/$', views.api_root, name='api-root'),
 
     ## drf auth endpoints
     url(r'^api/auth/', include('rest_framework.urls', namespace='rest_framework')),
