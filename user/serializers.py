@@ -10,10 +10,15 @@ class UserSerializer(serializers.ModelSerializer):
     # set required to false else with browsable api
     # each put with empty file erase existing one
     avatar = serializers.ImageField(required=False)
+    url = serializers.HyperlinkedIdentityField(
+            view_name='user-detail',
+            lookup_field='slug',
+    )
 
     class Meta:
         model = User
         fields = (
+                'url',
                 'slug',
                 'username',
                 'first_name',
