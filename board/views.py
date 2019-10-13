@@ -15,14 +15,15 @@ from user.models import User
 
 
 @api_view(('GET', ))
+@permission_classes([permissions.IsAdminUser])
 def board_root(request, format=None):
     return Response({
-        'boards-list': reverse('boards-list', request=request, format=format),
+        'board-list': reverse('board-list', request=request, format=format),
     })
 
 
 
-class BoardsList(generics.ListCreateAPIView):
+class BoardList(generics.ListCreateAPIView):
     """
     This view presents a list of all boards and allows new
     boards to be created.

@@ -5,8 +5,8 @@ from board import views
 
 urlpatterns = [
     url(r'^menu/$', views.board_root, name='board-root'),
-    url(r'^$', views.BoardsList.as_view(),
-        name='boards-list'),
+    url(r'^$', views.BoardList.as_view(),
+        name='board-list'),
     url(r'^user/(?P<user>[-\w]+)/board/(?P<board>[-\w]+)/$',
         views.BoardDetail.as_view(),
         name='board-detail'),

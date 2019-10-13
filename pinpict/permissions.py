@@ -56,7 +56,7 @@ class IsStaffOrAuthenticatedAndCreateOnly(permissions.BasePermission):
         ADMIN_ALLOWED_METHODS = ('GET', 'DELETE')
         if request.method in ALLOWED_METHODS:
             return True
-        if (request.user and request.user.is_authenticated() and
+        if (request.user and request.user.is_authenticated and
                 request.method in AUTHENTICATED_ALLOWED_METHODS):
             return True
         if (request.user and request.user.is_staff and
