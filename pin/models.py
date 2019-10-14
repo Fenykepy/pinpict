@@ -1,25 +1,28 @@
 import os
-import imghdr
-from uuid import uuid4
-
-
-from django.core.files.storage import FileSystemStorage
-from django.core.files.images import ImageFile
 from django.db import models
 from django.db.models.signals import post_delete
+from django.core.files.storage import FileSystemStorage
 from django.dispatch import receiver
-from django.http import Http404
-from django.utils.encoding import iri_to_uri
-from django.urls import reverse
+
 
 from user.models import User
 from board.models import Board
 from pin.utils import extract_domain_name, get_sha1_hexdigest
+
+# to refactore
 from pinpict.settings import PREVIEWS_WIDTH, PREVIEWS_CROP,\
         PREVIEWS_ROOT, MEDIA_ROOT
 from thumbnail import ThumbnailFactory
 
+# to delete after migration
+import imghdr
+from uuid import uuid4
+from django.core.files.images import ImageFile
+from django.http import Http404
+from django.utils.encoding import iri_to_uri
 
+
+# we keep resourceFileSystemStorage until existing db has been migrated
 class ResourceFileSystemStorage(FileSystemStorage):
     def get_available_name(self, name, max_length=None):
         return name
@@ -33,6 +36,20 @@ class ResourceFileSystemStorage(FileSystemStorage):
 
 
 
+class PinFileSystemStorage(FileSystemStorage):
+    def get_available_name(self, name, max_length=None):
+        return name
+
+    def _save(self, name, content):
+        if self.exists(name):
+            # if the file exists, do not call the superclasses _save method
+            return name
+        # if the file is new, DO call it
+        return super(PinFileSystemStorage, self)._save(name, content)
+
+
+
+
 def set_pathname(instance, filename):
     """Set pathname under form
     full/4a/52/4a523fe9c50a2f0b1dd677ae33ea0ec6e4a4b2a9.ext."""
@@ -41,11 +58,11 @@ def set_pathname(instance, filename):
             'full',
             instance.sha1[0:2],
             instance.sha1[2:4],
-            instance.sha1 + '.' + instance.type
+            instance.sha1
     )
 
 
-
+# we keep resource until existing db has been migrated
 class Resource(models.Model):
     """Table for all ressources."""
     date_created = models.DateTimeField(auto_now_add=True,
@@ -152,19 +169,29 @@ class Resource(models.Model):
 
 class Pin(models.Model):
     """Table for all pins."""
-    date_created = models.DateTimeField(auto_now_add=True,
-            verbose_name="Creation date")
-    date_updated =models.DateTimeField(auto_now=True,
-            verbose_name="Last update date")
+    sha1 = models.CharField(max_length=42, unique=True, db_index=True, null=True)
+    source_file = models.ImageField(upload_to=set_pathname,
+            storage=PinFileSystemStorage(),
+            null=True,
+    )
+    source_file_url = models.URLField(blank=True, null=True,
+        verbose_name="Source of original picture", max_length=2000)
     source_domain = models.CharField(max_length=254, blank=True, null=True,
             verbose_name="Domain pin comes from")
     source = models.URLField(null=True, blank=True,
             verbose_name="Web page pin comes from", max_length=2000)
+    date_created = models.DateTimeField(auto_now_add=True,
+            verbose_name="Creation date")
+    date_updated =models.DateTimeField(auto_now=True,
+            verbose_name="Last update date")
     description = models.TextField(verbose_name="Pin description")
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
+    
+    # to delete after migration
     main = models.BooleanField(default=False, verbose_name="Use as main preview")
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
-    added_via = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+
+    added_via = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
     pin_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="pin_user")
     policy = models.PositiveIntegerField(blank=True, null=True)
     owner_rate = models.PositiveSmallIntegerField(default=0, verbose_name="Rate")
@@ -178,12 +205,6 @@ class Pin(models.Model):
 
     def __str__(self):
         return "%s" % self.description
-
-
-    def get_absolute_url(self):
-        return reverse('pin_view', kwargs={
-            'pk': self.pk,
-        })
 
 
     def increase_n_pins(self):
@@ -212,6 +233,7 @@ class Pin(models.Model):
 
     def save(self, **kwargs):
         """get domain from source, then save."""
+
         self.policy = self.board.policy
         if self.source:
             self.source_domain = extract_domain_name(self.source)
@@ -229,8 +251,27 @@ class Pin(models.Model):
                 self.board.save()
                 self.pin_user.n_public_pins = self.pin_user.get_n_public_pins()
                 self.pin_user.save()
-
+        
+        # compute sha1 here
+        self.sha1 = get_sha1_hexdigest(self.source_file)
         super(Pin, self).save()
+
+        # parse and add tags here
+        hashtags = extract_hashtags(self.description)
+        for hashtag in hashtags:
+            tag, created = Tag.objects.get_or_create(name=hashtag)
+            tag.pins.add(self)
+
+
+class Tag(models.Model):
+    """Table for all tags."""
+    name=models.CharField(primary_key=True, max_length=254)
+    pins = models.ManyToManyField(Pin, blank=True)
+
+
+
+def extract_hashtags(s):
+    return set(part[1:] for part in s.split() if part.startswith('#'))
 
 
 

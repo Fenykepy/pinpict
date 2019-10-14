@@ -47,10 +47,10 @@ OK  "/api/user/token/refresh/" [POST](auth)
     create a new pin (auth)
 
     "/api/pin/user/<user>/" [GET](any)
-    JSON flat list of a user pins pks by creation date
+    JSON flat list of a user pins sha1s by creation date
     Private pins if user has right or is admin (auth)
 
-    "/api/pin/<pk>/" [GET, PUT, PATCH, DELETE](any, auth to update/delete)
+    "/api/pin/<sha1>/" [GET, PUT, PATCH, DELETE](any, auth to update/delete)
     JSON pin detail
     update or delete pin if admin or owner
 
