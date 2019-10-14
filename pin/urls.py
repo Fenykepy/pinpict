@@ -1,10 +1,12 @@
 from django.conf.urls import url, include
-from django.contrib.auth.decorators import login_required
+from rest_framework.urlpatterns import format_suffix_patterns
 
-from pin.views import *
-from pin.models import Pin
+from pin import views
 
 urlpatterns = [
-
-
+        url('^menu/$', views.pin_root, name='pin-root'),
+        url('^tags/$', views.tags_flat_list, name='tags-list'),
 ]
+
+
+urlpatterns = format_suffix_patterns(urlpatterns)
