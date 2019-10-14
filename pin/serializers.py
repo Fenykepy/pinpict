@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from pin.models import Pin
+from pin.models import Pin, Tag
 
 class PinSerializer(serializers.ModelSerializer):
     """
@@ -11,5 +11,12 @@ class PinSerializer(serializers.ModelSerializer):
         model = Pin
 
 
+class TagSerializer(serializers.ModelSerializer):
+    """
+    A serializer with all tags data.
+    """
+    class Meta:
+        model = Tag
+        fields = ('name')
 
 
