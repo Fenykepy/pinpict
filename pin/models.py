@@ -189,7 +189,7 @@ class Pin(models.Model):
     
     # to delete after migration
     main = models.BooleanField(default=False, verbose_name="Use as main preview")
-    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE, null=True)
 
     added_via = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="pin_user")
@@ -214,15 +214,10 @@ class Pin(models.Model):
         self.board.save()
 
         # increase user n_pins
-        self.pin_user.n_pins += 1
+        self.user.n_pins += 1
         if self.board.policy == 1:
-            self.pin_user.n_public_pins += 1
-        self.pin_user.save()
-
-
-        # increase resource n_pins
-        self.resource.n_pins += 1
-        self.resource.save()
+            self.user.n_public_pins += 1
+        self.user.save()
 
 
     def set_n_likes(self):

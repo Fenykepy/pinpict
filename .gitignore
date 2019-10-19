@@ -15,7 +15,7 @@ db.sqlite3.dev
 *.sqlite3
 
 # data files
-backend/pinpict/data/
+pinpict/data/
 
 # Distribution / packaging
 .Python
