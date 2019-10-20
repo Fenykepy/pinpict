@@ -6,7 +6,7 @@ from rest_framework.reverse import reverse
 from rest_framework.decorators import api_view, permission_classes
 
 from pinpict.permissions import IsStaffOrAuthenticatedAndCreateOnly, \
-        IsBoardAllowed, IsStaffOrReadOnly
+        IsBoardAllowed, IsStaffOrReadOnly, IsStaffOrOwner
 
 from board.serializers import *
 from board.models import Board
@@ -43,18 +43,28 @@ class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
     This view presents a specific board and allows
     to update or delete it.
     """
-    permission_classes = ( IsBoardAllowed, IsStaffOrReadOnly,)
-
-    def get_serializer_class(self):
-        user = get_object_or_404(User, slug=self.kwargs['user'])
-        if self.request.user == user or self.request.user.is_staff:
-            return BoardSerializer
-        else:
-            return PublicBoardSerializer
+    permission_classes = ( IsStaffOrOwner, )
+    serializer_class = BoardSerializer
 
     def get_object(self):
         user = get_object_or_404(User, slug=self.kwargs['user'])
-        return Board.objects.get(user=user,slug=self.kwargs['board'])
+        return Board.objects.prefetch_related(
+                'pins', 'followers', 'users_can_read').get(
+                user=user, slug=self.kwargs['board'])
+
+
+
+class ShortBoardDetail(generics.RetrieveAPIView):
+    """
+    This view presents a specific board restricted informations.
+    """
+    permission_classes = ( IsBoardAllowed, )
+    serializer_class = PublicBoardSerializer
+
+    def get_object(self):
+        user = get_object_or_404(User, slug=self.kwargs['user'])
+        return Board.objects.prefetch_related('pins').get(
+                user=user, slug=self.kwargs['board'])
 
 
 
@@ -66,8 +76,9 @@ def user_public_boards_list(request, user, format=None):
     """
     user = get_object_or_404(User, slug=user)
     boards = Board.publics.filter(user=user).only(
-        'title', 'slug', 'n_pins', 'policy', 'user')
-    serializer = BoardAbstractSerializer(boards, many=True)
+        'title', 'slug', 'n_pins', 'policy', 'cover1', 'cover2',
+        'cover3', 'cover4', 'cover5')
+    serializer = AbstractBoardSerializer(boards, many=True)
 
     return Response(serializer.data)
 
@@ -93,8 +104,9 @@ def user_private_boards_list(request, user, format=None):
         )
         
     boards = queryset.only(
-        'title', 'slug', 'n_pins', 'policy', 'user')
-    serializer = BoardAbstractSerializer(boards, many=True)
+        'title', 'slug', 'n_pins', 'policy', 'cover1', 'cover2',
+        'cover3', 'cover4', 'cover5')
+    serializer = AbstractBoardSerializer(boards, many=True)
 
     return Response(serializer.data)
 

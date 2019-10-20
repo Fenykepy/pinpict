@@ -101,4 +101,22 @@ class IsBoardAllowed(permissions.BasePermission):
 
 
 
+class IsStaffOrOwner(permissions.BasePermission):
+    """
+    Custom permission to only allow author or staff members
+    to retrieve or edit an objects
+    """
+   
+    def has_object_permission(self, request, view, obj):
+        # staff users are allowed
+        if request.user.is_staff:
+            return True
+        # owner is allowed
+        if request.user == obj.user:
+            return True
+        # Otherwise it's not allowed
+        return False
+
+
+
 

@@ -7,12 +7,10 @@ class BoardSerializer(serializers.ModelSerializer):
     A serializer for Board object with all fields.
     """
     pins = serializers.SerializerMethodField()
-    covers = serializers.SerializerMethodField()
     user = serializers.SlugField(
             source="user.slug",
             read_only=True,
     )
-    #cover = serializers.SerializerMethodField()
 
     class Meta:
         model = Board
@@ -32,18 +30,18 @@ class BoardSerializer(serializers.ModelSerializer):
             'followers',
             'n_followers',
             'pins',
-            'covers',
+            'cover1', 'cover2', 'cover3',
+            'cover4', 'cover5',
         )
         read_only_fields = (
-            'user', 'followers', 'n_followers',
-            'n_pins', 'slug',
+            'followers', 'n_followers', 'user',
+            'n_pins', 'slug', 'cover1', 'cover2',
+            'cover3', 'cover4', 'cover5',
         )
 
     def get_pins(self, object):
-        return object.get_sorted_pins().values_list('pk', flat=True)
+        return object.get_sorted_pins().only('pk').values_list('pk', flat=True)
 
-    def get_covers(self, object):
-        return object.get_covers()
 
 
 class PublicBoardSerializer(BoardSerializer):
@@ -54,14 +52,14 @@ class PublicBoardSerializer(BoardSerializer):
     class Meta:
         model= Board
         fields = (
-            'title', 'slug', 'description', 'n_pins', 'user',
-            'covers',
+            'title', 'slug', 'description', 'n_pins', 'pins',
+            'pin_default_description',
         )
         read_only_fields = fields
 
 
 
-class BoardAbstractSerializer(BoardSerializer):
+class AbstractBoardSerializer(BoardSerializer):
     """
     A serializer for Board object with few public fields.
     """
@@ -69,7 +67,8 @@ class BoardAbstractSerializer(BoardSerializer):
     class Meta:
         model = Board
         fields = (
-            'title', 'slug', 'n_pins', 'policy', 'user', 'covers'
+            'title', 'slug', 'n_pins', 'policy', 'cover1',
+            'cover2', 'cover3', 'cover4', 'cover5',
         )
         read_only_fields = fields
 

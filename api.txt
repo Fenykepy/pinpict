@@ -38,21 +38,24 @@ OK  "/api/user/token/refresh/" [POST](auth)
 
 ## Pins
 
-    "/api/pin/menu/" [GET](admin)
+OK  "/api/pin/menu/" [GET](admin)
     JSON list of pin api endpoints
 
-    "/api/pin/" [GET, POST] (any)
+OK  "/api/pin/" [GET, POST] (any)
     JSON list of all pins, by creation date
     private pins in list if user has right or is admin (auth)
     create a new pin (auth)
 
     "/api/pin/user/<user>/" [GET](any)
-    JSON flat list of a user pins sha1s by creation date
+    JSON flat list of a user pins pks by creation date
     Private pins if user has right or is admin (auth)
 
-    "/api/pin/<sha1>/" [GET, PUT, PATCH, DELETE](any, auth to update/delete)
+OK  "/api/pin/<pk>/" [GET, PUT, PATCH, DELETE](any, auth to update/delete)
     JSON pin detail
     update or delete pin if admin or owner
+
+OK  "/api/pin/tags/" [GET](any)
+    JSON flat list of all tags' slug
 
 
 
@@ -65,15 +68,19 @@ OK  "/api/board/" [GET, POST] (admin, auth)
     JSON list of all boards [GET](admin)
     create a new board [POST](auth)
 
-OK  "/api/board/user/<user>/" [GET](any)
+OK  "/api/board/public/user/<user>/" [GET](any)
     JSON list of user public boards abstracts
 
 OK  "/api/board/private/user/<user>/" [GET](authenticated with rights)
+    JSON list of user private's boards abstracts
 
-OK  "/api/board/user/<user>/board/<board>/" [GET, PUT, PATCH, DELETE](any)
+OK  "/api/board/user/<user>/board/<board>/" [GET](any)
     JSON board detail (private board if user has right)
-    update or delete a board if admin or owner
+    get a board 
 
+OK  "/api/board/edit/user/<user>/board/<board>/" [GET, PUT, PATCH, DELETE](owner or admin)
+    JSON board detail for edition
+    update or delete a board if admin or owner
 
 
 ## Notifications

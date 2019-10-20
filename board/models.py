@@ -66,6 +66,11 @@ class Board(models.Model):
             verbose_name="Order pins by")
     reverse_pins_order = models.BooleanField(default=False,
             verbose_name="Descending order")
+    cover1 = models.CharField(max_length=42, null=True)
+    cover2 = models.CharField(max_length=42, null=True)
+    cover3 = models.CharField(max_length=42, null=True)
+    cover4 = models.CharField(max_length=42, null=True)
+    cover5 = models.CharField(max_length=42, null=True)
     users_can_read = models.ManyToManyField(User, blank=True,
             related_name="users_can_read",
             verbose_name="Users who can see board if private")
@@ -95,9 +100,13 @@ class Board(models.Model):
         unique_slugify(self, slug,
                 queryset=Board.objects.filter(user=self.user))
 
+        # if pins_order or reverse_pins order have changed, update covers
+        if has_changed(self, 'pins_order') or has_changed(self, 'reverse_pins_order'):
+            self.set_covers()
+
         # if policy has changed, update pin's policy
         if has_changed(self, 'policy'):
-            self.pin_set.all().update(policy=self.policy)
+            self.pins.all().update(policy=self.policy)
             self.user.n_public_pins = self.user.get_n_public_pins()
             self.user.n_public_boards = self.user.get_n_public_boards()
             self.user.save()
@@ -117,13 +126,16 @@ class Board(models.Model):
     def get_sorted_pins(self):
         """Return board's pins sorted by "pins_order" field and
         reverse if reverse_pins_order."""
-        return self.pin_set.all().order_by(self.get_order_string())
+        return self.pins.all().order_by(self.get_order_string())
 
 
-    def get_covers(self):
-        """Return 5th first pins to use as cover."""
-        return self.pin_set.all().order_by(self.get_order_string()
+    def set_covers(self):
+        """Set 5th first pins as covers."""
+        covers = self.pins.all().order_by(self.get_order_string()
                 )[:5].values_list('sha1', flat=True)
+        for i in range(len(covers)):
+            setattr(self, 'cover' + str(i+1), covers[i])
+        self.save()
 
 
     def set_n_followers(self):
