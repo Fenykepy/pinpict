@@ -185,7 +185,8 @@ class Pin(models.Model):
     date_updated =models.DateTimeField(auto_now=True,
             verbose_name="Last update date")
     description = models.TextField(verbose_name="Pin description")
-    board = models.ForeignKey(Board, on_delete=models.CASCADE)
+    board = models.ForeignKey(Board,
+            related_name="pins", on_delete=models.CASCADE)
     
     # to delete after migration
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, null=True)
@@ -232,22 +233,33 @@ class Pin(models.Model):
         if self.source:
             self.source_domain = extract_domain_name(self.source)
 
-        # if created increase n_pins
+        # compute sha1 here
+        self.sha1 = get_sha1_hexdigest(self.source_file)
+
+        # if created 
         if not self.pk:
+            # increase pins number
             self.increase_n_pins()
+            # set board covers
+            self.board.set_covers()
         # else check if board has changed
         else:
             old = Pin.objects.get(pk=self.pk)
             if old.board != self.board:
+                # decrease old board pins number
                 old.board.n_pins -= 1
                 old.board.save()
+                # increase new board pins number
                 self.board.n_pins += 1
                 self.board.save()
+                # update user's publics pins number
                 self.pin_user.n_public_pins = self.pin_user.get_n_public_pins()
                 self.pin_user.save()
+                # set old and new board covers
+                old.board.set_covers()
+                self.board.set_covers()
+
         
-        # compute sha1 here
-        self.sha1 = get_sha1_hexdigest(self.source_file)
         super(Pin, self).save()
 
         # parse and add tags here
@@ -286,31 +298,8 @@ def decrease_n_pins(sender, instance, **kwargs):
     instance.resource.n_pins -= 1
     instance.resource.save()
 
-
-
-def update_n_pins(instance, **kwargs):
-    """Update Board's n_pins, Resource's n_pins and
-    User's n_pins after a pin is save or delete."""
-    # update user's boards n_pins
-    boards = Board.objects.filter(user=instance.board.user)
-    for board in boards:
-        board.n_pins = board.pin_set.all().count()
-        board.save()
-
-    # update resource n_pins
-    instance.resource.n_pins = instance.resource.pin_set.all().count()
-    instance.resource.save()
-
-    # update user n_pins
-    instance.board.user.n_pins = instance.pin_user.get_n_pins()
-    instance.board.user.n_public_pins = instance.pin_user.get_n_public_pins()
-    instance.board.user.save()
-
-
-
-
-
-
+    # set board covers
+    instance.board.set_covers()
 
 
 
