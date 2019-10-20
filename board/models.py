@@ -61,7 +61,7 @@ class Board(models.Model):
             null=False, blank=False, default=1)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     order = models.PositiveIntegerField(default=100000)
-    pins_order = models.CharField(max_length=254, null=True, blank=True,
+    pins_order = models.CharField(max_length=254,
             choices=PIN_ORDERING_CHOICES, default='date_created',
             verbose_name="Order pins by")
     reverse_pins_order = models.BooleanField(default=False,
