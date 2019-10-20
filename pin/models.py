@@ -4,6 +4,7 @@ from django.db.models.signals import post_delete
 from django.core.files.storage import FileSystemStorage
 from django.dispatch import receiver
 
+from PIL import Image
 
 from user.models import User
 from board.models import Board
@@ -48,16 +49,33 @@ class PinFileSystemStorage(FileSystemStorage):
         return super(PinFileSystemStorage, self)._save(name, content)
 
 
+def set_subdirs(instance, dir):
+    """Set subdirs under form <dir>/4a/52/"""
+    return os.path.join(
+            dir,
+            instance.sha1[0:2],
+            instance.sha1[2:4]
+    )
+
+
+def mk_subdirs(instance, dir):
+    """Make subdirs if necessary."""
+    path = os.path.join(
+            PREVIEWS_ROOT,
+            set_subdirs(instance, dir)
+    )
+    if not os.path.exists(path):
+        os.makedirs(path)
+    return path
 
 
 def set_pathname(instance, filename):
     """Set pathname under form
-    full/4a/52/4a523fe9c50a2f0b1dd677ae33ea0ec6e4a4b2a9.ext."""
+    previews/full/4a/52/4a523fe9c50a2f0b1dd677ae33ea0ec6e4a4b2a9
+    """
     return os.path.join(
             'previews',
-            'full',
-            instance.sha1[0:2],
-            instance.sha1[2:4],
+            set_subdirs(instance, 'full'),
             instance.sha1
     )
 
@@ -96,80 +114,11 @@ class Resource(models.Model):
         ordering = ['date_created']
 
 
-    def __str__(self):
-        return "%s" % self.source_file
-
-
-    def _set_previews_filename(self):
-        """Create preview filename from sha1."""
-        return '{}.jpg'.format(self.sha1)
-
-
-    def _set_previews_subdirs(self):
-        """Create preview path with two subdirectorys from sha1."""
-        return '{}/{}/'.format(
-            self.sha1[0:2],
-            self.sha1[2:4]
-        )
-
-
-    def generate_previews(self):
-        """Create thumbs from resource."""
-
-        filename = self._set_previews_filename()
-        subdirs = self._set_previews_subdirs()
-        self.previews_path = os.path.join(subdirs, filename)
-        self.save()
-        # def source name
-        source_filename = os.path.join(MEDIA_ROOT, self.source_file.name)
-
-        def mk_subdirs(size_dir_name):
-            """create preview subdirs if they don't exist.
-            return full preview pathname"""
-            dest_path = os.path.join(PREVIEWS_ROOT, size_dir_name, subdirs)
-            if not os.path.exists(dest_path):
-                os.makedirs(dest_path)
-            # def destination name
-            return os.path.join(dest_path, filename)
-                
-
-        # generate width based previews
-        for preview in PREVIEWS_WIDTH:
-            ## preview[0] -- int width of preview
-            target_width = preview[0]
-            ## preview[1] -- string name of subfolder
-            ## preview[2] -- int JPEG quality
-            quality = preview[2]
-
-            # mk subdirs if necessary
-            destination = mk_subdirs(preview[1])
-            # create thumbnail
-            with ThumbnailFactory(filename=source_filename) as img:
-                img.resize_width(target_width)
-                img.save(filename=destination, format='pjpeg', quality=quality)
-
-        # generate width and height based previews
-        for preview in PREVIEWS_CROP:
-            ## preview[0] -- int width of preview
-            target_width = preview[0]
-            ## preview[1] -- int height of preview
-            target_height = preview[1]
-            ## preview[2] -- string name of subfolder
-            ## preview[3] -- int JPEG quality
-            quality = preview[3]
-
-            # create subdirs if necessary
-            destination = mk_subdirs(preview[2])
-            # create cropped thumbnail
-            with ThumbnailFactory(filename=source_filename) as img:
-                img.resize_crop(target_width, target_height)
-                img.save(filename=destination, format='pjpeg', quality=quality)
-
 
 
 class Pin(models.Model):
     """Table for all pins."""
-    sha1 = models.CharField(max_length=42, unique=True, db_index=True, null=True)
+    sha1 = models.CharField(max_length=42, db_index=True, null=True)
     source_file = models.ImageField(upload_to=set_pathname,
             storage=PinFileSystemStorage(),
             null=True,
@@ -226,6 +175,113 @@ class Pin(models.Model):
         self.save()
 
 
+    def generate_previews(self):
+        """Create thumbnails from pin."""
+        height = self.source_file.height
+        width = self.source_file.width
+        ratio = width / height
+
+
+        def save_image(image, filename, quality):
+            image.save(
+                    filename,
+                    'jpeg',
+                    quality = quality,
+                    progressive = True
+            )
+
+
+        def resize_width(file, filename, target_width, quality):
+            with file.open() as img:
+                image = Image.open(img)
+                # if image is too small, we just save it
+                if width > target_width:
+                    target_height = int(target_width / ratio)
+                    image = image.resize((target_width, target_height))
+                save_image(image, filename, quality)
+
+
+        def resize_height(file, filename, target_height, quality):
+            with file.open() as img:
+                image = Image.open(img)
+                # if image is too small, we just save it
+                if height > target_height:
+                    target_width = int(target_height * ratio)
+                    image = image.resize((target_width, target_height))
+                save_image(image, filename, quality)
+
+
+        def resize_crop(file, filename, target_width, target_height, quality):
+            if width <= target_width and height <= target_height:
+                # file is too small, we just save it
+                return save_image(image, filename, quality)
+            
+            if width < target_width:
+                # width is too small
+                return resize_height(file, filename, target_height, quality)
+
+            if height < target_height:
+                # height is too small
+                return resize_width(file, filename, target_height, quality)
+
+            target_ratio = target_width / target_height
+
+            if ratio >= target_ratio:
+                resize_height(file, filename, target_height, quality)
+                with Image.open(filename) as image:
+                    new_width, new_height = image.size
+                    delta = new_width - target_width
+                    left = int(delta / 2)
+                    upper = 0
+                    right = left + target_width
+                    lower = target_height
+                    image.crop((left, upper, right, lower))
+                    save_image(image, filename, quality)
+
+            else:
+                resize_width(file, filename, target_width, quality)
+                with Image.open(filename) as image:
+                    new_width, new_height = image.size
+                    delta = new_height - target_height
+                    left = 0
+                    upper = int(delta / 2)
+                    right = target_width
+                    lower = upper + target_height
+                    image.crop((left, upper, right, lower))
+                    save_image(image, filename, quality)
+
+        
+        # generate width based previews
+        for preview in PREVIEWS_WIDTH:
+            target_width = preview[0]
+            dir = preview[1]
+            quality = preview[2]
+
+            resize_width(
+                    self.source_file,
+                    os.path.join(mk_subdirs(self, dir), self.sha1),
+                    target_width,
+                    quality
+            )
+
+
+        # generate width and height based previews
+        for preview in PREVIEWS_CROP:
+            target_width = preview[0]
+            target_height = preview[1]
+            dir = preview[2]
+            quality = preview[3]
+            
+            resize_crop(
+                    self.source_file,
+                    os.path.join(mk_subdirs(self, dir), self.sha1),
+                    target_width,
+                    target_height,
+                    quality
+            )
+
+
+
     def save(self, **kwargs):
         """get domain from source, then save."""
 
@@ -262,11 +318,15 @@ class Pin(models.Model):
         
         super(Pin, self).save()
 
+        # generate previews
+        self.generate_previews()
+
         # parse and add tags here
         hashtags = extract_hashtags(self.description)
         for hashtag in hashtags:
             tag, created = Tag.objects.get_or_create(name=hashtag)
             tag.pins.add(self)
+
 
 
 class Tag(models.Model):
@@ -306,195 +366,3 @@ def decrease_n_pins(sender, instance, **kwargs):
 
 
 
-
-
-# TO DELETE
-
-
-class ResourceFactory(object):
-    """Class to create new resources."""
-    
-    ALLOWED_MIME_TYPE = (
-            'image/jpeg',
-            'image/png',
-            'image/gif',
-            'image/tiff',
-            'image/svg+xml',
-    )
-    
-    def __init__(self):
-        self.resource = None
-        self.path = None
-        self.filepath = None
-        self.sha1 = None
-        return
-
-
-    def make_resource_from_url(self, url, user=None):
-        """Make a resource from given url.
-        It must point to an image content-type file.
-        return resource object
-        """
-        # set up
-        self.resource = Resource()
-        self.resource.source_file_url = url[:2000]
-        self.resource.user = user
-
-        # get file from http
-        return self._get_file_over_http(url)
-
-
-    def make_resource_from_file(self, file, user=None):
-        """Make a resource from given file.
-        It must be an image file.
-        """
-        # set up
-        self.resource = Resource()
-        self.resource.user = user
-        if not os.path.isfile(file):
-            raise Http404
-        self.filepath = file
-
-        return self._get_file_sha1(file)
-        
-
-    
-    def make_tmp_resource(self, file):
-        """Store given file in temporary folder if
-        no resource exists with its hash, return filepath
-        if resource exists with its hash, remove file and return resourceo        file -- in memory uploaded file object.
-        """
-        # return resource object if any, else self.filepath, which is None
-        resource = self._get_file_sha1(file)
-        if resource:
-            return resource
-
-        # set pathname as MEDIA_ROOT/tmp/<sha1>
-        pathname = os.path.join(
-                self._get_tmp_resource_path(),
-                self.sha1
-        )
-
-        # save file in tmp folder
-        with open(pathname, 'wb+') as destination:
-            for chunk in file.chunks():
-                destination.write(chunk)
-        del file
-
-        # return file url relative to MEDIA_URL
-        return 'tmp/' + self.sha1
-
-
-
-    def _get_file_over_http(self, url):
-        """Retrieve a image file over http.
-        return False if file is not an image.
-        return file path otherwise.
-        """
-        # get file in tmp dir
-        #print('get_file_ove_http, url: {}'.format(url))
-        url = iri_to_uri(url)
-        #print('get_file_ove_http, secure url: {}'.format(url))
-        # set cache
-        h = httplib2.Http('.cache')
-        # request image
-        response, content = h.request(url, headers={
-            'User-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0'})
-        # if file is not an image, return false
-        if not response['content-type'].lower() in self.ALLOWED_MIME_TYPE:
-            #print('file is not image type')
-            #print(response['Content-Type'])
-            return False
-        # if error in status code (404, 403, etc.)
-        if not response.status in (200, 302, 304):
-            return false
-        # set unique filename
-        self.filepath = '/tmp/{}'.format(uuid4())
-        # save image
-        with open(self.filepath, mode='wb') as file:
-            file.write(content)
-
-
-        # else return file_path
-        return self._get_file_sha1(self.filepath)
-
-    
-    def _get_file_sha1(self, file):
-        """Return file sha1 hash."""
-        try:
-            self.sha1 = get_sha1_hexdigest(file)
-        except AttributeError:
-            with open(file, 'rb') as f:
-                self.sha1 = get_sha1_hexdigest(ImageFile(f))
-        if self.resource:
-            self.resource.sha1 = self.sha1
-        return self._get_clone(self.sha1)
-
-
-    def _get_clone(self, sha1):
-        """Search existing resource with same hash.
-        if any returns it, else return false.
-        """
-        try:
-            clone = Resource.objects.get(sha1=sha1)
-        except:
-            return self._create_new_resource()
-        #print('clone')
-        return clone
-
-
-    def _get_image_type(self):
-        """Return image type of self.filepath."""
-        #with Image(filename=self.filepath) as img:
-        #    type = img.format
-        # in case of no result, try other way
-        if not type:
-            #print('type: {}'.format(type))
-            type = imghdr.what(self.filepath)
-        # last solution, take actual extension
-        if not type:
-            #print('type: {}'.format(type))
-            basename, ext = os.path.splitext(self.filepath)
-            type = ext.strip('.')
-        # else use default unknown ext
-        if not type:
-            #print('type: {}'.format(type))
-            type = 'unknown'
-
-        return type.lower()
-
-
-    def _get_tmp_resource_path(self):
-        """Return path tmp file will be saved to."""
-        self.path = os.path.join(MEDIA_ROOT, 'tmp')
-        if not os.path.exists(self.path):
-            os.makedirs(self.path)
-        return self.path
-
-
-
-    def _create_new_resource(self):
-        """Create a new resource."""
-        if not self.resource:
-            # tmp resource creation, return self.filepath
-            return self.filepath
-        # create type before opening file
-        type = self._get_image_type()
-        #print(type)
-        with open(self.filepath, 'rb') as f:
-            file = ImageFile(f)
-            self.resource.source_file = file
-            self.resource.size = file.size
-            self.resource.width = file.width
-            self.resource.height = file.height
-            self.resource.type = type
-            self.resource.save()
-            self.resource.generate_previews()
-
-
-        return self.resource
-
-            
-
-       
- 
