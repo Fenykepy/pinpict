@@ -7,7 +7,10 @@ class BoardSerializer(serializers.ModelSerializer):
     A serializer for Board object with all fields.
     """
     pins = serializers.SerializerMethodField()
-    user = serializers.SlugField(source="user.slug")
+    user = serializers.SlugField(
+            source="user.slug",
+            read_only=True,
+    )
     #cover = serializers.SerializerMethodField()
 
     class Meta:
