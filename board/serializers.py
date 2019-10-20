@@ -7,6 +7,7 @@ class BoardSerializer(serializers.ModelSerializer):
     A serializer for Board object with all fields.
     """
     pins = serializers.SerializerMethodField()
+    covers = serializers.SerializerMethodField()
     user = serializers.SlugField(
             source="user.slug",
             read_only=True,
@@ -31,7 +32,7 @@ class BoardSerializer(serializers.ModelSerializer):
             'followers',
             'n_followers',
             'pins',
-            #'cover',
+            'covers',
         )
         read_only_fields = (
             'user', 'followers', 'n_followers',
@@ -41,8 +42,8 @@ class BoardSerializer(serializers.ModelSerializer):
     def get_pins(self, object):
         return object.get_sorted_pins().values_list('pk', flat=True)
 
-    #def get_cover(self, object):
-    #    return object.get_main_cover()
+    def get_covers(self, object):
+        return object.get_covers()
 
 
 class PublicBoardSerializer(BoardSerializer):
@@ -54,7 +55,7 @@ class PublicBoardSerializer(BoardSerializer):
         model= Board
         fields = (
             'title', 'slug', 'description', 'n_pins', 'user',
-            'pins',
+            'covers',
         )
         read_only_fields = fields
 
@@ -68,7 +69,7 @@ class BoardAbstractSerializer(BoardSerializer):
     class Meta:
         model = Board
         fields = (
-            'title', 'slug', 'n_pins', 'policy', 'user',
+            'title', 'slug', 'n_pins', 'policy', 'user', 'covers'
         )
         read_only_fields = fields
 

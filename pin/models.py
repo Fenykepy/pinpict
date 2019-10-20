@@ -188,7 +188,6 @@ class Pin(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     
     # to delete after migration
-    main = models.BooleanField(default=False, verbose_name="Use as main preview")
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, null=True)
 
     added_via = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
@@ -308,6 +307,19 @@ def update_n_pins(instance, **kwargs):
     instance.board.user.save()
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+# TO DELETE
 
 
 class ResourceFactory(object):

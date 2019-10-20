@@ -80,9 +80,11 @@ class Board(models.Model):
     publics = PublicBoardsManager()
     privates = PrivateBoardsManager()
 
+
     class Meta:
         ordering = ['order', 'date_created']
         unique_together = (('user', 'slug'),)
+
 
     def save(self, **kwargs):
         """Make a unique slug for from title, then save."""
@@ -100,33 +102,35 @@ class Board(models.Model):
             self.user.n_public_boards = self.user.get_n_public_boards()
             self.user.save()
 
-
         # save object
         super(Board, self).save()
+
+
+    def get_order_string(self):
+        """Return "pins_order" reversed if necessary."""
+        prefix = ''
+        if self.reverse_pins_order:
+            prefix = '-'
+        return prefix + self.pins_order
 
 
     def get_sorted_pins(self):
         """Return board's pins sorted by "pins_order" field and
         reverse if reverse_pins_order."""
-        prefix = ''
-        if self.reverse_pins_order:
-            prefix = '-'
-        return self.pin_set.all().order_by(prefix + self.pins_order)
+        return self.pin_set.all().order_by(self.get_order_string())
 
-    def get_main_cover(self):
-        """Return main cover pin instance."""
-        mains = self.pin_set.all().filter(main=True);
-        # try to get main pin else return first one if any
-        try:
-            main = mains.get()
-            return main
-        except:
-            return self.pin_set.all()[:1].get()
+
+    def get_covers(self):
+        """Return 5th first pins to use as cover."""
+        return self.pin_set.all().order_by(self.get_order_string()
+                )[:5].values_list('sha1', flat=True)
+
 
     def set_n_followers(self):
         """Set number of followers."""
         self.n_followers = self.followers.all().count()
         self.save()
+
 
     def add_follower(self, follower, notification=True):
         """Add a follower to the board.
@@ -150,6 +154,7 @@ class Board(models.Model):
         follower: user object."""
         self.followers.remove(follower)
         self.set_n_followers()
+
 
     def __str__(self):
         return "%s" % self.title
