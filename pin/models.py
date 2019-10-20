@@ -177,92 +177,18 @@ class Pin(models.Model):
 
     def generate_previews(self):
         """Create thumbnails from pin."""
-        height = self.source_file.height
-        width = self.source_file.width
-        ratio = width / height
-
-
-        def save_image(image, filename, quality):
-            image.save(
-                    filename,
-                    'jpeg',
-                    quality = quality,
-                    progressive = True
-            )
-
-
-        def resize_width(file, filename, target_width, quality):
-            with file.open() as img:
-                image = Image.open(img)
-                # if image is too small, we just save it
-                if width > target_width:
-                    target_height = int(target_width / ratio)
-                    image = image.resize((target_width, target_height))
-                save_image(image, filename, quality)
-
-
-        def resize_height(file, filename, target_height, quality):
-            with file.open() as img:
-                image = Image.open(img)
-                # if image is too small, we just save it
-                if height > target_height:
-                    target_width = int(target_height * ratio)
-                    image = image.resize((target_width, target_height))
-                save_image(image, filename, quality)
-
-
-        def resize_crop(file, filename, target_width, target_height, quality):
-            if width <= target_width and height <= target_height:
-                # file is too small, we just save it
-                return save_image(image, filename, quality)
-            
-            if width < target_width:
-                # width is too small
-                return resize_height(file, filename, target_height, quality)
-
-            if height < target_height:
-                # height is too small
-                return resize_width(file, filename, target_height, quality)
-
-            target_ratio = target_width / target_height
-
-            if ratio >= target_ratio:
-                resize_height(file, filename, target_height, quality)
-                with Image.open(filename) as image:
-                    new_width, new_height = image.size
-                    delta = new_width - target_width
-                    left = int(delta / 2)
-                    upper = 0
-                    right = left + target_width
-                    lower = target_height
-                    image.crop((left, upper, right, lower))
-                    save_image(image, filename, quality)
-
-            else:
-                resize_width(file, filename, target_width, quality)
-                with Image.open(filename) as image:
-                    new_width, new_height = image.size
-                    delta = new_height - target_height
-                    left = 0
-                    upper = int(delta / 2)
-                    right = target_width
-                    lower = upper + target_height
-                    image.crop((left, upper, right, lower))
-                    save_image(image, filename, quality)
-
         
         # generate width based previews
         for preview in PREVIEWS_WIDTH:
             target_width = preview[0]
             dir = preview[1]
             quality = preview[2]
+            destination = os.path.join(mk_subdirs(self, dir), self.sha1)
 
-            resize_width(
-                    self.source_file,
-                    os.path.join(mk_subdirs(self, dir), self.sha1),
-                    target_width,
-                    quality
-            )
+            with ThumbnailFactory(filename=self.source_file) as img:
+                img.resize_width(target_width)
+                img.save(destination, quality=quality)
+
 
 
         # generate width and height based previews
@@ -271,16 +197,14 @@ class Pin(models.Model):
             target_height = preview[1]
             dir = preview[2]
             quality = preview[3]
-            
-            resize_crop(
-                    self.source_file,
-                    os.path.join(mk_subdirs(self, dir), self.sha1),
-                    target_width,
-                    target_height,
-                    quality
-            )
+            destination = os.path.join(mk_subdirs(self, dir), self.sha1)
+ 
+            with ThumbnailFactory(filename=self.source_file) as img:
+                img.resize_crop(target_width, target_height)
+                img.save(destination, quality=quality)
 
 
+           
 
     def save(self, **kwargs):
         """get domain from source, then save."""

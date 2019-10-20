@@ -28,7 +28,7 @@ PREVIEWS_WIDTH = [
 # (width, height, destination folder relative to PREVIEWS_ROOT, and JPEG quality
 PREVIEWS_CROP = [
         (216, 160, '216-160', 70),
-        (50, 50, '50', 70),
+        (50, 50, '50-50', 70),
 ]
 
 # words that can't be used as username
