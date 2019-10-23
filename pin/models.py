@@ -80,41 +80,6 @@ def set_pathname(instance, filename):
     )
 
 
-# we keep resource until existing db has been migrated
-class Resource(models.Model):
-    """Table for all ressources."""
-    date_created = models.DateTimeField(auto_now_add=True,
-            verbose_name="Creation date")
-    sha1 = models.CharField(max_length=42, unique=True, db_index=True)
-    source_file = models.ImageField(upload_to=set_pathname,
-            storage=ResourceFileSystemStorage()
-    )
-    source_file_url = models.URLField(blank=True, null=True,
-        verbose_name="Source of original picture", max_length=2000)
-    n_pins = models.PositiveIntegerField(default=0,
-        verbose_name="Board number")
-    width = models.PositiveIntegerField(default=0,
-            verbose_name="Pin width, in pixels")
-    height = models.PositiveIntegerField(default=0,
-            verbose_name="Pin height, in pixels")
-    size = models.PositiveIntegerField(default=0,
-        verbose_name="Size of picture, in bytes")
-    type = models.CharField(max_length=30,
-        verbose_name="Type of file")
-    previews_path = models.CharField(max_length=254,
-        blank=True, null=True)
-    user = models.ForeignKey(User, blank=True, null=True,
-            on_delete=models.CASCADE,
-            verbose_name=(
-                "User who originaly uploaded or "
-                "downloaded resource."))
-            
-
-    class Meta:
-        ordering = ['date_created']
-
-
-
 
 class Pin(models.Model):
     """Table for all pins."""
@@ -136,10 +101,6 @@ class Pin(models.Model):
     description = models.TextField(verbose_name="Pin description")
     board = models.ForeignKey(Board,
             related_name="pins", on_delete=models.CASCADE)
-    
-    # to delete after migration
-    resource = models.ForeignKey(Resource, on_delete=models.CASCADE, null=True)
-
     added_via = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="pin_user")
     policy = models.PositiveIntegerField(blank=True, null=True)
