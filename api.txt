@@ -57,6 +57,9 @@ OK  "/api/pin/<pk>/" [GET, PUT, PATCH, DELETE](any, auth to update/delete)
 OK  "/api/pin/tags/" [GET](any)
     JSON flat list of all tags' slug
 
+    "/api/pin/scan/" [POST](auth)
+    JSON list of all images found on given url
+
 
 
 ## Boards

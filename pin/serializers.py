@@ -2,6 +2,8 @@ from rest_framework import serializers
 
 from pin.models import Pin, Tag
 
+
+
 class PinSerializer(serializers.ModelSerializer):
     """
     A serializer for Pin object with all fields.
@@ -20,6 +22,7 @@ class PinSerializer(serializers.ModelSerializer):
         )
 
 
+
 class TagSerializer(serializers.ModelSerializer):
     """
     A serializer with all tags data.
@@ -29,3 +32,9 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ('name')
 
 
+
+class UrlSerializer(serializers.Serializer):
+    """
+    A serializer for url.
+    """
+    url = serializers.URLField()

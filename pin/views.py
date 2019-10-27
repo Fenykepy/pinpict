@@ -1,4 +1,4 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -17,6 +17,7 @@ def pin_root(request, format=None):
     return Response({
         'pin-list': reverse('pin-list', request=request, format=format),
         'tag-list': reverse('tag-list', request=request, format=format),
+        'scan-url': reverse('scan-url', request=request, format=format),
     })
 
 
@@ -29,6 +30,22 @@ def tags_flat_list(request, format=None):
     tags = Tag.objects.order_by('name').values_list('name', flat=True)
 
     return Response(tags)
+
+
+
+@api_view(('POST', ))
+@permission_classes([permissions.IsAuthenticated])
+def scan_url(request, format=None):
+    """
+    Returns a list of all pictures found on given url.
+    """
+    serializer = UrlSerializer(data=request.data)
+    print('scan url', serializer.initial_data)
+    if serializer.is_valid():
+        print(serializer.validated_data.get('url'))
+        url = serializer.validated_data.get('url')
+        return Response()
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
