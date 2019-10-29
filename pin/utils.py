@@ -4,7 +4,6 @@ import re
 
 from html.parser import HTMLParser
 
-
 def get_sha1_hexdigest(file):
     """Return sha1 hexadecimal sum of
     given file."""
@@ -50,7 +49,7 @@ def remove_empty_folders(path):
 
 class PictureHTMLParser(HTMLParser):
     """Scan for <a> and <img> tags."""
-    IMAGES = ('jpg', 'svg', 'jpeg')
+    IMAGES = ('jpg', 'svg', 'jpeg', 'png', 'gif')
 
     def __init__(self, url=None, *args, **kwargs):
         super(PictureHTMLParser, self).__init__(*args, **kwargs)

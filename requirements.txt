@@ -1,9 +1,14 @@
+beautifulsoup4==4.8.1
 Django==2.2.6
 django-cors-headers==3.1.1
 django-debug-toolbar==2.0
 djangorestframework==3.10.3
 djangorestframework-simplejwt==4.3.0
+lxml==4.4.1
 Pillow==6.2.0
 PyJWT==1.7.1
 pytz==2019.3
+selenium==3.141.0
+soupsieve==1.9.4
 sqlparse==0.3.0
+urllib3==1.25.6

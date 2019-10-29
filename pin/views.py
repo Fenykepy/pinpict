@@ -4,6 +4,9 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.decorators import api_view, permission_classes
 
+from selenium import webdriver
+#from bs4 import BeautifulSoup
+
 from pinpict.permissions import IsStaffOrAuthenticatedAndCreateOnly, \
         IsStaffOrReadOnly
 
@@ -44,6 +47,14 @@ def scan_url(request, format=None):
     if serializer.is_valid():
         print(serializer.validated_data.get('url'))
         url = serializer.validated_data.get('url')
+        # Scrap url content
+        driver = webdriver.Chrome("/usr/lib/chromium/chromedriver")
+        driver.get(url)
+        content = driver.page_source
+		# scan html here
+
+
+		# serialize results
         return Response()
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
