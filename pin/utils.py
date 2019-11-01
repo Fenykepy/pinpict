@@ -156,6 +156,8 @@ class PicturesFinder(object):
     def _build_absolute_url(self, url):
         """url is href or src element url.
         # self.url is url url comes from."""
+        if not url:
+            return None
         # if url starts with 'http', it's absolute.
         if url[:4] == 'http':
             return url
