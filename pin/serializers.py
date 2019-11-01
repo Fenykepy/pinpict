@@ -38,3 +38,11 @@ class UrlSerializer(serializers.Serializer):
     A serializer for url.
     """
     url = serializers.URLField()
+
+
+class ScannedPictureSerializer(serializers.Serializer):
+    """
+    A serializer for pictures found in html scan.
+    """
+    src = serializers.URLField()
+    description = serializers.CharField(allow_blank=True)
