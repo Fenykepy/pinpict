@@ -38,6 +38,7 @@ class UrlSerializer(serializers.Serializer):
     A serializer for url.
     """
     url = serializers.URLField()
+    full_search = serializers.BooleanField(default=False)
 
 
 class ScannedPictureSerializer(serializers.Serializer):

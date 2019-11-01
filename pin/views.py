@@ -44,7 +44,8 @@ def scan_url(request, format=None):
     serializer = UrlSerializer(data=request.data)
     if serializer.is_valid():
         url = serializer.validated_data.get('url')
-        finder = PicturesFinder(url)
+        full_search = serializer.validated_data.get('full_search')
+        finder = PicturesFinder(url, full_search=full_search)
         # serialize results
         serializer = ScannedPictureSerializer(finder.get_results(), many=True)
         return Response(serializer.data)

@@ -1,6 +1,7 @@
 import hashlib
 import os
 import re
+import requests
 
 from selenium import webdriver
 from bs4 import BeautifulSoup
@@ -56,10 +57,13 @@ class PicturesFinder(object):
     Class to find pictures from an url.
     returns a list of pictures dictionnaries:
     {"src": <absolute_url>, "description": <description>}
+    if full_search kwarg is True, it will make head request
+    on all link found in html to test if it's content-type is image.
     """
 
-    def __init__(self, url):
+    def __init__(self, url, full_search=False):
         self.url = url
+        self.full_search=full_search
         self.html = None
         self.soup = None
         self.pictures = []
@@ -148,7 +152,18 @@ class PicturesFinder(object):
         if ext and ext in ('jpg', 'svg', 'jpeg', 'png', 'gif'):
             return True
         
-        # TODO make head request to get mime type
+        # Make head request to get content type if full_search
+        if not self.full_search:
+            return False
+
+        try:
+            head = requests.head(url, timeout=1, allow_redirects=True)
+            ct = head.headers['content-type']
+            if ct and ct[:5].lower() == "image":
+                return True
+        except:
+            pass
+
         return False
 
 
