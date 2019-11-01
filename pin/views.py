@@ -3,6 +3,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.views import APIView
 
 
 from pinpict.permissions import IsStaffOrAuthenticatedAndCreateOnly, \
@@ -35,21 +36,24 @@ def tags_flat_list(request, format=None):
 
 
 
-@api_view(('POST', ))
-@permission_classes([permissions.IsAuthenticated])
-def scan_url(request, format=None):
+class ScanUrl(APIView):
     """
     Returns a list of all pictures found on given url.
     """
-    serializer = UrlSerializer(data=request.data)
-    if serializer.is_valid():
-        url = serializer.validated_data.get('url')
-        full_search = serializer.validated_data.get('full_search')
-        finder = PicturesFinder(url, full_search=full_search)
-        # serialize results
-        serializer = ScannedPictureSerializer(finder.get_results(), many=True)
-        return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    serializer_class = UrlSerializer
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request, format=None):
+        serializer = UrlSerializer(data=request.data)
+        if serializer.is_valid():
+            url = serializer.validated_data.get('url')
+            full_search = serializer.validated_data.get('full_search')
+            finder = PicturesFinder(url, full_search=full_search)
+            # serialize results
+            serializer = ScannedPictureSerializer(finder.get_results(), many=True)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 

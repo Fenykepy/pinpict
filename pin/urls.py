@@ -9,7 +9,7 @@ urlpatterns = [
         url(r'^(?P<pk>\d+)/$', views.PinDetail.as_view(),
             name='pin-detail'),
         url('^tags/$', views.tags_flat_list, name='tag-list'),
-	url('^scan/$', views.scan_url, name='scan-url'),
+	url('^scan/$', views.ScanUrl.as_view(), name='scan-url'),
 ]
 
 
