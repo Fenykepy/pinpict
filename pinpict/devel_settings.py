@@ -35,17 +35,14 @@ DATABASES = {
     }
 }
 
-# search engine real time update for developpement
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
-
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '#v04u18pw)rsgry7fhw*7)t0^)nm!l6fod90fb7y8ckbu0u8yx'
 
 
 # Allow CORS for developpment
 CORS_ORIGIN_WHITELIST = (
-    'localhost:3000',
-    '127.0.0.1:3000'
+        'http://localhost:3000',
+        'http://127.0.0.1:3000'
 )
 CORS_ALLOW_CREDENTIALS = True
 
@@ -58,7 +55,7 @@ ALLOWED_HOSTS = ['127.0.0.1']
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'Europe/Paris'
+TIME_ZONE = 'UTC'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
