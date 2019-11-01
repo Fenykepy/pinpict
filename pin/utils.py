@@ -77,7 +77,7 @@ class PicturesFinder(object):
         self._scan_images_tags()
 
         # search <a> tags
-        # TODO
+        self._scan_a_tags()
 
         return
 
@@ -87,15 +87,14 @@ class PicturesFinder(object):
         return self
 
     def _scrap(self):
-        # scrap content from url
+        """scrap content from url."""
         driver = webdriver.Chrome("/usr/lib/chromium/chromedriver")
         driver.get(self.url)
         self.html = driver.page_source
 
 
     def _scan_images_tags(self):
-        # get pictures from <img> tags
-        # use
+        """get pictures from <img> tags."""
         images = self.soup.find_all('img')
         for image in images:
             src = self._build_absolute_url(image.get('src'))
@@ -118,12 +117,46 @@ class PicturesFinder(object):
             self.pictures.append(pict)
 
 
+    def _scan_a_tags(self):
+        """get pictures from <a> tags."""
+
+        links = self.soup.find_all('a')
+        for link in links:
+            src = self._build_absolute_url(link.get('href'))
+            if not src or src in self.scanned_urls:
+                # url has been scanned or is empty, pass to next one
+                continue
+            if not self._is_image_url(src):
+                # given link is not an image
+                continue
+            pict = {
+                'src': src,
+                'description': link.get('title') or ""
+            }
+
+            # add pict to list and set
+            self.scanned_urls.add(src)
+            self.pictures.append(pict)
+
+    
+    def _is_image_url(self, url):
+        """Returns True if given url is considered pointing
+        to an image, False otherwise."""
+        
+        # first try extension test to avoid request
+        ext = url.split('.').pop().lower()
+        if ext and ext in ('jpg', 'svg', 'jpeg', 'png', 'gif'):
+            return True
+        
+        # TODO make head request to get mime type
+        return False
+
 
 
     def _build_absolute_url(self, url):
-        # url is href or src element url.
-        # self.url is url url comes from.
-        # if url starts with 'http', it's absolute
+        """url is href or src element url.
+        # self.url is url url comes from."""
+        # if url starts with 'http', it's absolute.
         if url[:4] == 'http':
             return url
         # if url is relative from root, add root_url
