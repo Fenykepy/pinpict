@@ -204,6 +204,14 @@ class Notification(models.Model):
         super(Notification, self).save()
 
 
+def set_avatar_pathname(instance, filename):
+    """Set avatar pathname under form
+    images/avatars/<username>
+    """
+    return os.path.join(
+            'images/avatars',
+            instance.username
+    )
 
 class User(AbstractUser):
     """User extention table."""
@@ -215,7 +223,7 @@ class User(AbstractUser):
             verbose_name="Home page URI, without trailing slash")
     avatar = models.ImageField(
             null=True, blank=True,
-            upload_to='images/avatars',
+            upload_to=set_avatar_pathname,
             verbose_name="Avatar",
             help_text="A picture to download as avatar."
     )
@@ -489,21 +497,11 @@ class User(AbstractUser):
 
 
         if self.avatar and has_changed(self, 'avatar'):
-            with ThumbnailFactory(file=self.avatar.file) as img:
-                img.resize_crop(AVATAR_MAX_SIZE, AVATAR_MAX_SIZE)
-                format = img.img.format
-                temp = io.BytesIO()
-                img.save(stream=temp)
-                temp.seek(0)
-            uploaded_file = SimpleUploadedFile('temp', temp.read())
             # set filename
-            filename = '{}.{}'.format(self.id, format.lower())
-            # save avatar
-            self.avatar.save(
-                    filename,
-                    uploaded_file,
-                    save=False)
-
+            with ThumbnailFactory(filename=self.avatar) as img:
+                img.resize_crop(AVATAR_MAX_SIZE, AVATAR_MAX_SIZE)
+                img.save(self.avatar)
+        
         # save object
         super(User, self).save()
 
