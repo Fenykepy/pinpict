@@ -4,8 +4,8 @@ import io
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.mail import send_mail
+from django.core.files.storage import FileSystemStorage
 from django.urls import reverse
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -13,7 +13,6 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 
 from board.slug import unique_slugify
 from pinpict.settings import AVATAR_MAX_SIZE, MEDIA_ROOT
-from pin.utils import get_sha1_hexdigest
 from pinpict.settings import DEFAULT_FROM_EMAIL
 
 from thumbnail import ThumbnailFactory
@@ -204,6 +203,16 @@ class Notification(models.Model):
         super(Notification, self).save()
 
 
+class AvatarFileSystemStorage(FileSystemStorage):
+    """ Always use username as avatar name. if file already
+    exists, overwrite it.
+    """
+    def get_available_name(self, name, max_length=None):
+        if self.exists(name):
+            os.remove(os.path.join(MEDIA_ROOT, name))
+        return name
+
+
 def set_avatar_pathname(instance, filename):
     """Set avatar pathname under form
     images/avatars/<username>
@@ -212,6 +221,7 @@ def set_avatar_pathname(instance, filename):
             'images/avatars',
             instance.username
     )
+
 
 class User(AbstractUser):
     """User extention table."""
@@ -224,6 +234,7 @@ class User(AbstractUser):
     avatar = models.ImageField(
             null=True, blank=True,
             upload_to=set_avatar_pathname,
+            storage=AvatarFileSystemStorage(),
             verbose_name="Avatar",
             help_text="A picture to download as avatar."
     )
@@ -496,15 +507,19 @@ class User(AbstractUser):
             unique_slugify(self, slug)
 
 
-        if self.avatar and has_changed(self, 'avatar'):
-            # set filename
-            with ThumbnailFactory(filename=self.avatar) as img:
-                img.resize_crop(AVATAR_MAX_SIZE, AVATAR_MAX_SIZE)
-                img.save(self.avatar)
+        avatar_changed = self.avatar and has_changed(self, 'avatar')
         
         # save object
         super(User, self).save()
-
+        
+        if avatar_changed:
+            print('resize avatar')
+            # set filename
+            with ThumbnailFactory(filename=self.avatar.file) as img:
+                img.resize_crop(AVATAR_MAX_SIZE, AVATAR_MAX_SIZE)
+                print('path', self.avatar.path)
+                img.save(self.avatar.path)
+       
 
 
 def mail_superusers(subject, message):
