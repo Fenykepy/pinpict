@@ -131,7 +131,7 @@ class Board(models.Model):
 
     def set_covers(self):
         """Set 5th first pins as covers."""
-        covers = self.pins.all().order_by(self.get_order_string()
+        covers = self.get_sorted_pins(
                 )[:5].values_list('sha1', flat=True)
         for i in range(len(covers)):
             setattr(self, 'cover' + str(i+1), covers[i])

@@ -194,8 +194,8 @@ class Pin(models.Model):
                 self.board.n_pins += 1
                 self.board.save()
                 # update user's publics pins number
-                self.pin_user.n_public_pins = self.pin_user.get_n_public_pins()
-                self.pin_user.save()
+                self.user.n_public_pins = self.user.get_n_public_pins()
+                self.user.save()
                 # set old and new board covers
                 old.board.set_covers()
                 self.board.set_covers()
@@ -234,14 +234,10 @@ def decrease_n_pins(sender, instance, **kwargs):
     instance.board.save()
 
     # decrease user n_pins
-    instance.pin_user.n_pins -= 1
+    instance.user.n_pins -= 1
     if instance.board.policy == 1:
-        instance.pin_user.n_public_pins -= 1
-    instance.pin_user.save()
-
-    # decrease resource n_pins
-    instance.resource.n_pins -= 1
-    instance.resource.save()
+        instance.user.n_public_pins -= 1
+    instance.user.save()
 
     # set board covers
     instance.board.set_covers()
