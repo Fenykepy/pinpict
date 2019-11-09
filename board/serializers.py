@@ -53,7 +53,7 @@ class PublicBoardSerializer(BoardSerializer):
         model= Board
         fields = (
             'title', 'slug', 'description', 'n_pins', 'pins',
-            'pin_default_description',
+            'pin_default_description', 'policy',
         )
         read_only_fields = fields
 
