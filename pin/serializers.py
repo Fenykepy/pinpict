@@ -12,7 +12,7 @@ class PinSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pin
         fields =(
-            'url', 'sha1', 'source_file', 'source_file_url', 'source_domain',
+            'id', 'url', 'sha1', 'source_file', 'source_file_url', 'source_domain',
             'source', 'date_created', 'date_updated', 'description', 'board',
             'added_via', 'user', 'policy', 'owner_rate', 'likes','n_likes',
         )
