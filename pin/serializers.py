@@ -25,7 +25,7 @@ class PinSerializer(serializers.ModelSerializer):
             'added_via', 'user', 'private', 'policy', 'owner_rate', 'likes','n_likes',
         )
         read_only_fields = (
-            'user', 'n_likes', 'likes', 'private', 'policy', 'added_via', 'date_created',
+            'id', 'user', 'n_likes', 'likes', 'private', 'policy', 'added_via', 'date_created',
             'date_updated', 'sha1', 'source_domain',
         )
 
