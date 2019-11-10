@@ -8,6 +8,14 @@ class PinSerializer(serializers.ModelSerializer):
     """
     A serializer for Pin object with all fields.
     """
+    user = serializers.SlugRelatedField(
+            read_only=True,
+            slug_field='slug'
+    )
+    board = serializers.SlugRelatedField(
+            read_only=True,
+            slug_field='slug'
+    )
 
     class Meta:
         model = Pin
