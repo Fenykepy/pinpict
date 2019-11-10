@@ -56,6 +56,8 @@ class Board(models.Model):
                 "has no alt attribute."))
     n_pins = models.PositiveIntegerField(default=0,
             verbose_name="Pins number")
+    private = models.BooleanField(default=False,
+            verbose_name="Private board")
     policy = models.PositiveIntegerField(
             choices=BOARD_POLICY_CHOICES, verbose_name="Policy",
             null=False, blank=False, default=1)

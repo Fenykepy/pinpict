@@ -22,6 +22,7 @@ class BoardSerializer(serializers.ModelSerializer):
             'pin_default_description',
             'n_pins',
             'policy',
+            'private',
             'user',
             'order',
             'pins_order',

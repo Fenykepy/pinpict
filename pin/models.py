@@ -103,6 +103,8 @@ class Pin(models.Model):
             related_name="pins", on_delete=models.CASCADE)
     added_via = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="pin_user")
+    private = models.BooleanField(default=False,
+            verbose_name="Private board")
     policy = models.PositiveIntegerField(blank=True, null=True)
     owner_rate = models.PositiveSmallIntegerField(default=0, verbose_name="Rate")
     likes = models.ManyToManyField(User, blank=True,
