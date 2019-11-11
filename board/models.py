@@ -134,7 +134,6 @@ class Board(models.Model):
                 )[:5].values_list('sha1', flat=True)
         for i in range(len(covers)):
             setattr(self, 'cover' + str(i+1), covers[i])
-        self.save()
 
 
     def set_n_followers(self):
