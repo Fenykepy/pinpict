@@ -358,7 +358,7 @@ class User(AbstractUser):
     def set_n_likes(self):
         """Set number of liked pins."""
         self.n_likes = self.likes.all().count()
-        self.n_public_likes = self.likes.filter(policy=1).count()
+        self.n_public_likes = self.likes.filter(private=False).count()
         self.save()
 
     
@@ -412,7 +412,7 @@ class User(AbstractUser):
         # send notification to user followers
         # if they can see pin
         for follower in self.followers.all():
-            if (pin.board.policy == 0 and 
+            if (pin.board.private and 
                     not follower in pin.board.users_can_read.all()):
                 continue
             if (pin.pin_user == follower):
@@ -437,7 +437,7 @@ class User(AbstractUser):
 
 
     def get_public_boards(self):
-        return self.board_set.filter(policy=1)
+        return self.board_set.filter(private=False)
 
 
     def get_notifications(self):
@@ -479,7 +479,7 @@ class User(AbstractUser):
 
     def get_public_pins(self):
         """return a queryset with all user's public pins."""
-        return self.pin_user.filter(policy=1)
+        return self.pin_user.filter(private=False)
 
     def get_n_pins(self):
         """get user n_pins."""
@@ -494,7 +494,7 @@ class User(AbstractUser):
         return self.board_set.all().count()
 
     def get_n_public_boards(self):
-        return self.board_set.filter(policy=1).count()
+        return self.board_set.filter(private=False).count()
 
     def get_absolute_url(self):
         return reverse('boards_list', kwargs={

@@ -73,7 +73,7 @@ class IsBoardAllowed(permissions.BasePermission):
     an object if he is it's owner, and to view an object if
     he is in a white list or if object is public.
     Assumes model instance has an `user` attribute.
-    Assumes model instance has a `policy` attribute.
+    Assumes model instance has a `private` attribute.
     Assumes model instance has a `users_can_read` attribute.
     """
    
@@ -83,9 +83,9 @@ class IsBoardAllowed(permissions.BasePermission):
        # HEAD and OPTIONS are allowed to anybody
        if request.method in SAFE_METHODS:
            return True
-       # GET is allowed to public boards (policy == 1)
+       # GET is allowed to public boards (private == False)
        if (request.method in PUBLIC_METHODS and
-               obj.policy == 1):
+               obj.private == False):
            return True
        # Board's owner has full rights
        if (obj.user == request.user):

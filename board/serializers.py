@@ -21,7 +21,6 @@ class BoardSerializer(serializers.ModelSerializer):
             'description',
             'pin_default_description',
             'n_pins',
-            'policy',
             'private',
             'user',
             'order',
@@ -54,7 +53,7 @@ class PublicBoardSerializer(BoardSerializer):
         model= Board
         fields = (
             'title', 'slug', 'description', 'n_pins', 'pins',
-            'pin_default_description', 'policy',
+            'pin_default_description', 'private',
         )
         read_only_fields = fields
 
@@ -68,7 +67,7 @@ class AbstractBoardSerializer(BoardSerializer):
     class Meta:
         model = Board
         fields = (
-            'title', 'slug', 'n_pins', 'policy', 'cover1',
+            'title', 'slug', 'n_pins', 'private', 'cover1',
             'cover2', 'cover3', 'cover4', 'cover5',
         )
         read_only_fields = fields

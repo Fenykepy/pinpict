@@ -26,7 +26,7 @@ class PublicBoardsManager(models.Manager):
     """Returns a queryset with all public boards."""
     def get_queryset(self):
         return super(PublicBoardsManager, self).get_queryset().filter(
-                policy=1)
+                private=False)
 
 
 
@@ -35,7 +35,7 @@ class PrivateBoardsManager(models.Manager):
     """Returns a queryset with all private boards."""
     def get_queryset(self):
         return super(PrivateBoardsManager, self).get_queryset().filter(
-                policy=0)
+                private=True)
 
 
 
@@ -58,9 +58,6 @@ class Board(models.Model):
             verbose_name="Pins number")
     private = models.BooleanField(default=False,
             verbose_name="Private board")
-    policy = models.PositiveIntegerField(
-            choices=BOARD_POLICY_CHOICES, verbose_name="Policy",
-            null=False, blank=False, default=1)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     order = models.PositiveIntegerField(default=100000)
     pins_order = models.CharField(max_length=254,
@@ -106,9 +103,9 @@ class Board(models.Model):
         if has_changed(self, 'pins_order') or has_changed(self, 'reverse_pins_order'):
             self.set_covers()
 
-        # if policy has changed, update pin's policy
-        if has_changed(self, 'policy'):
-            self.pins.all().update(policy=self.policy)
+        # if private field has changed, also update pin's private field
+        if has_changed(self, 'private'):
+            self.pins.all().update(private=self.private)
             self.user.n_public_pins = self.user.get_n_public_pins()
             self.user.n_public_boards = self.user.get_n_public_boards()
             self.user.save()
@@ -189,7 +186,7 @@ def allow_private_board_read(sender, instance, action, reverse,
         model, pk_set, **kwargs):
     """Send a notification when an user has been allowed
     to read a private board."""
-    if action != 'post_add' or instance.policy != 0:
+    if action != 'post_add' or instance.private == False:
         return
     # get receiver of notification
     for elem in pk_set:

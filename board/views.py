@@ -76,7 +76,7 @@ def user_public_boards_list(request, user, format=None):
     """
     user = get_object_or_404(User, slug=user)
     boards = Board.publics.filter(user=user).only(
-        'title', 'slug', 'n_pins', 'policy', 'cover1', 'cover2',
+        'title', 'slug', 'n_pins', 'cover1', 'cover2',
         'cover3', 'cover4', 'cover5')
     serializer = AbstractBoardSerializer(boards, many=True)
 
@@ -104,7 +104,7 @@ def user_private_boards_list(request, user, format=None):
         )
         
     boards = queryset.only(
-        'title', 'slug', 'n_pins', 'policy', 'cover1', 'cover2',
+        'title', 'slug', 'n_pins', 'cover1', 'cover2',
         'cover3', 'cover4', 'cover5')
     serializer = AbstractBoardSerializer(boards, many=True)
 

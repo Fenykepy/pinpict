@@ -105,7 +105,6 @@ class Pin(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="pin_user")
     private = models.BooleanField(default=False,
             verbose_name="Private board")
-    policy = models.PositiveIntegerField(blank=True, null=True)
     owner_rate = models.PositiveSmallIntegerField(default=0, verbose_name="Rate")
     likes = models.ManyToManyField(User, blank=True,
             related_name="likes")
@@ -127,7 +126,7 @@ class Pin(models.Model):
 
         # increase user n_pins
         self.user.n_pins += 1
-        if self.board.policy == 1:
+        if self.board.private == False:
             self.user.n_public_pins += 1
         self.user.save()
 
@@ -172,7 +171,7 @@ class Pin(models.Model):
     def save(self, **kwargs):
         """get domain from source, then save."""
 
-        self.policy = self.board.policy
+        self.private = self.board.private
         if self.source:
             self.source_domain = extract_domain_name(self.source)
 
@@ -237,7 +236,7 @@ def decrease_n_pins(sender, instance, **kwargs):
 
     # decrease user n_pins
     instance.user.n_pins -= 1
-    if instance.board.policy == 1:
+    if instance.board.private == False:
         instance.user.n_public_pins -= 1
     instance.user.save()
 
