@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from pin.models import Pin, Tag
+from board.models import Board
 
 
 
@@ -13,7 +14,7 @@ class PinSerializer(serializers.ModelSerializer):
             slug_field='slug'
     )
     board = serializers.SlugRelatedField(
-            read_only=True,
+            queryset=Board.objects.all(),
             slug_field='slug'
     )
 
