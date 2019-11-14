@@ -110,3 +110,18 @@ def user_private_boards_list(request, user, format=None):
 
     return Response(serializer.data)
 
+
+
+@api_view(['GET'])
+@permission_classes((permissions.IsAuthenticated, ))
+def user_boards_title_list(request, format=None):
+    """
+    This view presents a list authenticated user's boards
+    titles and slugs to be use in select.
+    """
+
+    boards = Board.objects.filter(user=request.user).order_by('title').only('title', 'slug')
+    serializer = TitleBoardSerializer(boards, many=True)
+
+    return Response(serializer.data)
+

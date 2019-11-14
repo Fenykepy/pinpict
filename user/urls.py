@@ -4,6 +4,7 @@ from rest_framework_simplejwt.views import (
 )
 
 from user import views
+from board.views import user_boards_title_list
 
 
 urlpatterns = [
@@ -11,6 +12,8 @@ urlpatterns = [
         url(r'^token/refresh/$', TokenRefreshView.as_view(), name="token-refresh"),
         url(r'^current/$', views.CurrentUserDetail.as_view(),
             name="current-user"),
+        url(r'^current/boards/$', user_boards_title_list,
+            name="current-user-boards"),
         url(r'^menu/$', views.user_root, name='user-root'),
         url(r'(?P<slug>[-\w]+)/public/$', views.PublicUserDetail.as_view(),
             name="public-user"),

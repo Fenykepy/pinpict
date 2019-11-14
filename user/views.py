@@ -16,6 +16,7 @@ def user_root(request, format=None):
         'token-obtain': reverse('token-obtain', request=request, format=format),
         'token-refresh': reverse('token-refresh', request=request, format=format),
         'current-user': reverse('current-user', request=request, format=format),
+        'current-user-boards': reverse('current-user-boards', request=request, format=format),
         'user-list': reverse('user-list', request=request, format=format),
     })
 

@@ -73,5 +73,14 @@ class AbstractBoardSerializer(BoardSerializer):
         read_only_fields = fields
 
 
+class TitleBoardSerializer(BoardSerializer):
+    """
+    A serialiser for board objects with only title and slug
+    (for select) in forms.
+    """
+
+    class Meta:
+        model = Board
+        fields = ('title', 'slug')
 
 
