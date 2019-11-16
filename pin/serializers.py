@@ -4,6 +4,18 @@ from pin.models import Pin, Tag
 from board.models import Board
 
 
+class UserSlugRelatedField(serializers.SlugRelatedField):
+    """
+    Same as serializers.SlugRelatedField, but slug is filtered against request.user
+    to get the related object.
+    Useful when slug is unique for given user only.
+    """
+
+    def get_queryset(self):
+        request = self.context.get('request')
+        return self.queryset.filter(user=request.user)
+
+
 
 class PinSerializer(serializers.ModelSerializer):
     """
@@ -13,7 +25,7 @@ class PinSerializer(serializers.ModelSerializer):
             read_only=True,
             slug_field='slug'
     )
-    board = serializers.SlugRelatedField(
+    board = UserSlugRelatedField(
             queryset=Board.objects.all(),
             slug_field='slug'
     )

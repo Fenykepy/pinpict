@@ -12,7 +12,6 @@ from pinpict.permissions import IsStaffOrAuthenticatedAndCreateOnly, \
 from pin.serializers import *
 from pin.models import Pin, Tag
 from pin.utils import PicturesFinder
-from board.models import Board
 
 
 @api_view(('GET', ))
@@ -67,15 +66,9 @@ class PinList(generics.ListCreateAPIView):
     serializer_class = PinSerializer
     queryset = Pin.objects.all()
 
+    # automatically add user on save
     def perform_create(self, serializer):
-        """
-        We automatically add user on save
-        As different user can have a board with same slug,
-        we get board filtered by request user.
-        """
-        board_slug = serializer.initial_data.get('board')
-        board = Board.objects.get(user=self.request.user, slug=board_slug)
-        serializer.save(user=self.request.user, board=board)
+        serializer.save(user=self.request.user)
 
 
 
