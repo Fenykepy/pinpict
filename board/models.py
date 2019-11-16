@@ -167,7 +167,7 @@ class Board(models.Model):
 
 
     def __str__(self):
-        return "%s" % self.title
+        return '{}_{} {}'.format(self.id, self.slug, self.title)
 
 
 
